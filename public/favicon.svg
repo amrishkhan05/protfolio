@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="SheikhStack favicon">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2367f2" />
+      <stop offset="55%" stop-color="#0f9d7a" />
+      <stop offset="100%" stop-color="#ff7f50" />
+    </linearGradient>
+    <linearGradient id="stroke" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.75" />
+    </linearGradient>
+  </defs>
+  <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#bg)" />
+  <path d="M18 21h17v6H24v7h10c7 0 12 5 12 11 0 7-5 12-12 12H18v-6h16c3 0 6-2 6-6 0-3-3-5-6-5H18V21z" fill="url(#stroke)" />
+  <path d="M46 20l-6 6-6-6" fill="none" stroke="url(#stroke)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+</svg>
