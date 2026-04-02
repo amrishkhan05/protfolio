@@ -4,6 +4,8 @@ const themeToggle = document.querySelector('.theme-toggle');
 const themeIcon = themeToggle?.querySelector('i');
 const viewCountNode = document.getElementById('portfolio-view-count');
 const ownerViewBadge = document.getElementById('owner-view-badge');
+const copyEmailBtn = document.getElementById('copy-email-btn');
+const backToTopBtn = document.getElementById('back-to-top');
 const ownerMaxViewsKey = 'portfolio-owner-max-views';
 const savedTheme = globalThis.localStorage?.getItem('portfolio-theme');
 const prefersDark = globalThis.matchMedia?.(
@@ -107,6 +109,33 @@ const updatePortfolioViews = async () => {
 
 updatePortfolioViews();
 
+const copyEmailToClipboard = async () => {
+  const email = copyEmailBtn?.dataset.email;
+
+  if (!copyEmailBtn || !email) {
+    return;
+  }
+
+  try {
+    await navigator.clipboard.writeText(email);
+    copyEmailBtn.classList.add('is-copied');
+    copyEmailBtn.querySelector('span').textContent = 'Copied';
+
+    globalThis.setTimeout(() => {
+      if (!copyEmailBtn) {
+        return;
+      }
+
+      copyEmailBtn.classList.remove('is-copied');
+      copyEmailBtn.querySelector('span').textContent = 'Copy Email';
+    }, 1500);
+  } catch (error) {
+    console.error('Unable to copy email:', error);
+  }
+};
+
+copyEmailBtn?.addEventListener('click', copyEmailToClipboard);
+
 themeToggle?.addEventListener('click', () => {
   const current = document.documentElement.dataset.theme || 'light';
   const next = current === 'dark' ? 'light' : 'dark';
@@ -161,10 +190,15 @@ const updateScrollProgress = () => {
 
   document.body.style.setProperty('--scroll-progress', `${progress}%`);
   topNav?.classList.toggle('is-scrolled', scrollTop > 10);
+  backToTopBtn?.classList.toggle('is-visible', scrollTop > 520);
 };
 
 globalThis.addEventListener('scroll', updateScrollProgress, { passive: true });
 updateScrollProgress();
+
+backToTopBtn?.addEventListener('click', () => {
+  globalThis.scrollTo({ top: 0, behavior: 'smooth' });
+});
 
 globalThis.addEventListener('pointermove', (event) => {
   document.body.style.setProperty('--mx', `${event.clientX}px`);
