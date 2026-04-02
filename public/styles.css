@@ -889,6 +889,33 @@ p {
   padding-bottom: 1rem;
 }
 
+.owner-view-badge {
+  position: fixed;
+  left: 50%;
+  bottom: 0.7rem;
+  transform: translateX(-50%);
+  z-index: 95;
+  font-size: 0.76rem;
+  letter-spacing: 0.02em;
+  color: #1f2e4f;
+  border: 1px solid rgba(20, 27, 43, 0.16);
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 999px;
+  padding: 0.24rem 0.58rem;
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(6px);
+}
+
+.owner-view-badge strong {
+  color: var(--primary);
+}
+
+[data-theme="dark"] .owner-view-badge {
+  color: #dce6ff;
+  border-color: rgba(196, 214, 255, 0.24);
+  background: rgba(18, 28, 44, 0.92);
+}
+
 .reveal {
   opacity: 0;
   transform: translateY(12px) scale(0.994);

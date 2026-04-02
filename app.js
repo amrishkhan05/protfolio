@@ -1,11 +1,181 @@
 /** @format */
 
 const express = require("express");
-const path = require("path");
+const fs = require("node:fs/promises");
+const os = require("node:os");
+const path = require("node:path");
 const app = express();
 const port = process.env.PORT || 3333;
+const hasKvConfig = Boolean(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN);
+const kvBaseUrl = process.env.KV_REST_API_URL;
+const kvToken = process.env.KV_REST_API_TOKEN;
+const kvViewsKey = "sheikhstack:portfolio:views";
+const kvUpdatedAtKey = "sheikhstack:portfolio:updatedAt";
+
+const metricsDir = process.env.VERCEL ? path.join(os.tmpdir(), "sheikstack-metrics") : path.join(__dirname, ".data");
+const metricsFilePath = path.join(metricsDir, "portfolio-views.json");
+let memoryMetrics = { views: 0, updatedAt: null };
+let useMemoryFallback = false;
+let writeQueue = Promise.resolve();
 
 app.use(express.static(path.join(__dirname, "public")));
+
+const kvGet = async (key) => {
+  const response = await fetch(`${kvBaseUrl}/get/${encodeURIComponent(key)}`, {
+    headers: {
+      Authorization: `Bearer ${kvToken}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`KV GET failed for ${key}: ${response.status}`);
+  }
+
+  const payload = await response.json();
+  return payload.result;
+};
+
+const kvSet = async (key, value) => {
+  const response = await fetch(`${kvBaseUrl}/set/${encodeURIComponent(key)}/${encodeURIComponent(value)}`, {
+    headers: {
+      Authorization: `Bearer ${kvToken}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`KV SET failed for ${key}: ${response.status}`);
+  }
+};
+
+const kvIncrement = async (key) => {
+  const response = await fetch(`${kvBaseUrl}/incr/${encodeURIComponent(key)}`, {
+    headers: {
+      Authorization: `Bearer ${kvToken}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`KV INCR failed for ${key}: ${response.status}`);
+  }
+
+  const payload = await response.json();
+  return Number(payload.result);
+};
+
+const getKvMetrics = async () => {
+  const [viewsRaw, updatedAtRaw] = await Promise.all([kvGet(kvViewsKey), kvGet(kvUpdatedAtKey)]);
+  return {
+    views: Number.isFinite(Number(viewsRaw)) ? Number(viewsRaw) : 0,
+    updatedAt: typeof updatedAtRaw === "string" ? updatedAtRaw : null,
+  };
+};
+
+const incrementKvMetrics = async () => {
+  const nextViews = await kvIncrement(kvViewsKey);
+  const updatedAt = new Date().toISOString();
+  await kvSet(kvUpdatedAtKey, updatedAt);
+
+  return {
+    views: Number.isFinite(nextViews) ? nextViews : 0,
+    updatedAt,
+  };
+};
+
+const readMetrics = async () => {
+  if (useMemoryFallback) {
+    return memoryMetrics;
+  }
+
+  try {
+    const fileBuffer = await fs.readFile(metricsFilePath, "utf8");
+    const parsed = JSON.parse(fileBuffer);
+    return {
+      views: Number.isFinite(parsed.views) ? parsed.views : 0,
+      updatedAt: parsed.updatedAt || null,
+    };
+  } catch (error) {
+    if (error.code === "ENOENT") {
+      return { views: 0, updatedAt: null };
+    }
+
+    useMemoryFallback = true;
+    return memoryMetrics;
+  }
+};
+
+const saveMetrics = async (metrics) => {
+  memoryMetrics = metrics;
+
+  if (useMemoryFallback) {
+    return;
+  }
+
+  try {
+    await fs.mkdir(metricsDir, { recursive: true });
+    await fs.writeFile(metricsFilePath, JSON.stringify(metrics), "utf8");
+  } catch (error) {
+    console.error("Could not persist portfolio view metrics:", error);
+    useMemoryFallback = true;
+  }
+};
+
+const getViewStats = async () => {
+  if (hasKvConfig) {
+    try {
+      const metrics = await getKvMetrics();
+      memoryMetrics = metrics;
+      return { ...metrics, storage: "kv" };
+    } catch (error) {
+      console.error("Could not read portfolio view metrics from KV:", error);
+    }
+  }
+
+  const metrics = await readMetrics();
+  memoryMetrics = metrics;
+  return { ...metrics, storage: useMemoryFallback ? "memory" : "file" };
+};
+
+const incrementViewStats = async () => {
+  if (hasKvConfig) {
+    try {
+      const metrics = await incrementKvMetrics();
+      memoryMetrics = metrics;
+      return { ...metrics, storage: "kv" };
+    } catch (error) {
+      console.error("Could not write portfolio view metrics to KV:", error);
+    }
+  }
+
+  writeQueue = writeQueue.then(async () => {
+    const current = await getViewStats();
+    const next = {
+      views: current.views + 1,
+      updatedAt: new Date().toISOString(),
+    };
+    await saveMetrics(next);
+    return { ...next, storage: useMemoryFallback ? "memory" : "file" };
+  });
+
+  return writeQueue;
+};
+
+app.get("/api/views", async (_req, res) => {
+  const metrics = await getViewStats();
+  res.json({
+    totalViews: metrics.views,
+    updatedAt: metrics.updatedAt,
+    storage: metrics.storage,
+  });
+});
+
+app.post("/api/views", async (_req, res) => {
+  const metrics = await incrementViewStats();
+  res.json({
+    totalViews: metrics.views,
+    updatedAt: metrics.updatedAt,
+    storage: metrics.storage,
+  });
+});
 
 app.get("/api/one", (req, res) => {
   console.log(req.query.name);
@@ -74,9 +244,6 @@ app.get("/api/two", (req, res) => {
   if (req.query.name === "badrequest") {
     return res.status(400).json({ error: { code: "TST1005", message: "Bad Request for this name." } });
   }
-  // if (req.query.name === 'blank1') {
-  //     return res.status(222).json({name:'yes'});
-  // }
   if (req.query.name === "abc1") {
     return res.status(422).json({
       errors: [

@@ -2,8 +2,26 @@
 
 const themeToggle = document.querySelector(".theme-toggle");
 const themeIcon = themeToggle?.querySelector("i");
+const viewCountNode = document.getElementById("portfolio-view-count");
+const ownerViewBadge = document.getElementById("owner-view-badge");
 const savedTheme = globalThis.localStorage?.getItem("portfolio-theme");
 const prefersDark = globalThis.matchMedia?.("(prefers-color-scheme: dark)")?.matches;
+const countFormatter = new Intl.NumberFormat("en-US");
+const searchParams = new URLSearchParams(globalThis.location.search);
+
+if (searchParams.get("owner") === "1") {
+  globalThis.localStorage?.setItem("portfolio-owner-view", "1");
+}
+
+if (searchParams.get("owner") === "0") {
+  globalThis.localStorage?.removeItem("portfolio-owner-view");
+}
+
+const isOwnerViewEnabled = globalThis.localStorage?.getItem("portfolio-owner-view") === "1";
+
+if (ownerViewBadge) {
+  ownerViewBadge.hidden = !isOwnerViewEnabled;
+}
 
 const applyTheme = (theme) => {
   document.documentElement.dataset.theme = theme;
@@ -19,6 +37,29 @@ const applyTheme = (theme) => {
 
 const initialTheme = savedTheme || (prefersDark ? "dark" : "light");
 applyTheme(initialTheme);
+
+const updatePortfolioViews = async () => {
+  try {
+    const response = await fetch("/api/views", { method: "POST" });
+
+    if (!response.ok) {
+      throw new Error(`Failed to update view count: ${response.status}`);
+    }
+
+    const payload = await response.json();
+    if (isOwnerViewEnabled && viewCountNode) {
+      const numericCount = Number(payload.totalViews);
+      viewCountNode.textContent = Number.isFinite(numericCount) ? countFormatter.format(numericCount) : "--";
+    }
+  } catch (error) {
+    if (isOwnerViewEnabled && viewCountNode) {
+      console.error("Unable to update portfolio views:", error);
+      viewCountNode.textContent = "--";
+    }
+  }
+};
+
+updatePortfolioViews();
 
 themeToggle?.addEventListener("click", () => {
   const current = document.documentElement.dataset.theme || "light";
