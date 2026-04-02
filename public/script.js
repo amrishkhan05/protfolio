@@ -127,7 +127,7 @@ const copyEmailToClipboard = async () => {
       }
 
       copyEmailBtn.classList.remove('is-copied');
-      copyEmailBtn.querySelector('span').textContent = 'Copy Email';
+      copyEmailBtn.querySelector('span').textContent = 'Copy';
     }, 1500);
   } catch (error) {
     console.error('Unable to copy email:', error);

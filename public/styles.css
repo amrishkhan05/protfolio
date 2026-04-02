@@ -512,9 +512,9 @@ h3 {
 .timeline-item {
   position: relative;
   display: grid;
-  grid-template-columns: var(--timeline-date-col) var(
-      --timeline-rail-col
-    ) minmax(0, 1fr);
+  grid-template-columns:
+    var(--timeline-date-col) var(--timeline-rail-col)
+    minmax(0, 1fr);
   align-items: start;
   margin-bottom: 0.58rem;
 }
@@ -801,17 +801,41 @@ h3 {
     box-shadow 180ms ease;
 }
 
-.contact-copy {
+.contact-email-card {
   display: inline-flex;
   align-items: center;
-  justify-content: flex-start;
   gap: 0.48rem;
   border: 1px solid var(--line);
   background: var(--card);
-  color: var(--text);
   border-radius: 10px;
   padding: 0.48rem 0.6rem;
-  font: inherit;
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.contact-email-card .email-link {
+  min-width: 0;
+  flex: 1;
+  font-size: 0.94rem;
+  overflow-wrap: anywhere;
+}
+
+.contact-copy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.32rem;
+  border: 1px solid rgba(35, 103, 242, 0.26);
+  background: rgba(35, 103, 242, 0.08);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 0.28rem 0.54rem;
+  margin-left: auto;
+  flex-shrink: 0;
+  font-size: 0.8rem;
+  font-weight: 600;
   cursor: pointer;
   transition:
     transform 180ms ease,
@@ -832,7 +856,19 @@ h3 {
   color: var(--primary);
 }
 
+.contact-email-card i {
+  width: 1.24rem;
+  text-align: center;
+  color: var(--primary);
+}
+
 .contact-grid a:hover {
+  transform: translateY(-2px);
+  border-color: rgba(35, 103, 242, 0.34);
+  box-shadow: var(--shadow-soft);
+}
+
+.contact-email-card:hover {
   transform: translateY(-2px);
   border-color: rgba(35, 103, 242, 0.34);
   box-shadow: var(--shadow-soft);
@@ -847,6 +883,12 @@ h3 {
 .contact-copy.is-copied {
   border-color: rgba(15, 157, 122, 0.45);
   background: rgba(15, 157, 122, 0.1);
+}
+
+.contact-copy:focus-visible,
+.contact-email-card .email-link:focus-visible {
+  outline: 2px solid rgba(35, 103, 242, 0.52);
+  outline-offset: 2px;
 }
 
 a {
@@ -1060,6 +1102,10 @@ p {
   border-color: rgba(196, 214, 255, 0.2);
 }
 
+[data-theme='dark'] .contact-email-card {
+  border-color: rgba(196, 214, 255, 0.2);
+}
+
 .owner-view-badge strong {
   color: var(--primary);
 }
@@ -1193,7 +1239,6 @@ p {
   }
 
   .timeline::before,
-  .timeline::after,
   .timeline-item::before,
   .dot {
     display: none;
