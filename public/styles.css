@@ -321,6 +321,50 @@ main .section:not(:last-of-type)::after {
     border-color 180ms ease;
 }
 
+.contact-resume-card {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.48rem;
+  border: 1px solid var(--line);
+  background: var(--card);
+  border-radius: 10px;
+  padding: 0.48rem 0.6rem;
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+.contact-resume-card i {
+  width: 1.24rem;
+  text-align: center;
+  color: var(--primary);
+}
+.contact-resume-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.34rem;
+  margin-left: auto;
+}
+.contact-mini-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(35, 103, 242, 0.26);
+  background: rgba(35, 103, 242, 0.08);
+  border-radius: 999px;
+  padding: 0.2rem 0.48rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+.contact-mini-btn:hover {
+  border-color: rgba(35, 103, 242, 0.38);
+}
+.contact-resume-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(35, 103, 242, 0.34);
+  box-shadow: var(--shadow-soft);
+}
+
 [data-theme='dark'] .theme-toggle {
   background: rgba(17, 27, 43, 0.9);
   border-color: rgba(196, 214, 255, 0.2);
@@ -826,6 +870,7 @@ h3 {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  position: relative;
   gap: 0.32rem;
   border: 1px solid rgba(35, 103, 242, 0.26);
   background: rgba(35, 103, 242, 0.08);
@@ -848,6 +893,27 @@ h3 {
   width: 1.24rem;
   text-align: center;
   color: var(--primary);
+}
+
+.contact-copy .icon-copy,
+.contact-copy .icon-check {
+  transition:
+    transform 220ms ease,
+    opacity 220ms ease,
+    color 220ms ease;
+}
+
+.contact-copy .icon-check {
+  position: absolute;
+  left: 0.56rem;
+  top: 50%;
+  opacity: 0;
+  transform: translateY(-50%) scale(0.35) rotate(-20deg);
+  color: var(--secondary);
+}
+
+.contact-copy span {
+  transition: transform 220ms ease;
 }
 
 .contact-grid a i {
@@ -883,6 +949,21 @@ h3 {
 .contact-copy.is-copied {
   border-color: rgba(15, 157, 122, 0.45);
   background: rgba(15, 157, 122, 0.1);
+}
+
+.contact-copy.is-copied .icon-copy {
+  opacity: 0;
+  transform: scale(0.4) rotate(12deg);
+}
+
+.contact-copy.is-copied .icon-check {
+  opacity: 1;
+  transform: translateY(-50%) scale(1) rotate(0deg);
+  animation: copy-tick-pop 260ms ease;
+}
+
+.contact-copy.is-copied span {
+  transform: translateX(0.1rem);
 }
 
 .contact-copy:focus-visible,
@@ -1101,6 +1182,13 @@ p {
   background: rgba(19, 29, 46, 0.9);
   border-color: rgba(196, 214, 255, 0.2);
 }
+[data-theme='dark'] .contact-resume-card,
+[data-theme='dark'] .contact-mini-btn {
+  border-color: rgba(196, 214, 255, 0.2);
+}
+[data-theme='dark'] .contact-mini-btn {
+  background: rgba(19, 29, 46, 0.9);
+}
 
 [data-theme='dark'] .contact-email-card {
   border-color: rgba(196, 214, 255, 0.2);
@@ -1173,6 +1261,18 @@ p {
   to {
     opacity: 1;
     transform: scaleX(1);
+  }
+}
+
+@keyframes copy-tick-pop {
+  0% {
+    transform: translateY(-50%) scale(0.35) rotate(-20deg);
+  }
+  60% {
+    transform: translateY(-50%) scale(1.14) rotate(6deg);
+  }
+  100% {
+    transform: translateY(-50%) scale(1) rotate(0deg);
   }
 }
 

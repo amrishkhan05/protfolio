@@ -7,6 +7,7 @@ const ownerViewBadge = document.getElementById('owner-view-badge');
 const copyEmailBtn = document.getElementById('copy-email-btn');
 const backToTopBtn = document.getElementById('back-to-top');
 const ownerMaxViewsKey = 'portfolio-owner-max-views';
+let copyResetTimer;
 const savedTheme = globalThis.localStorage?.getItem('portfolio-theme');
 const prefersDark = globalThis.matchMedia?.(
   '(prefers-color-scheme: dark)',
@@ -119,15 +120,16 @@ const copyEmailToClipboard = async () => {
   try {
     await navigator.clipboard.writeText(email);
     copyEmailBtn.classList.add('is-copied');
-    copyEmailBtn.querySelector('span').textContent = 'Copied';
+    copyEmailBtn.setAttribute('aria-label', 'Email copied');
 
-    globalThis.setTimeout(() => {
+    globalThis.clearTimeout(copyResetTimer);
+    copyResetTimer = globalThis.setTimeout(() => {
       if (!copyEmailBtn) {
         return;
       }
 
       copyEmailBtn.classList.remove('is-copied');
-      copyEmailBtn.querySelector('span').textContent = 'Copy';
+      copyEmailBtn.setAttribute('aria-label', 'Copy email address');
     }, 1500);
   } catch (error) {
     console.error('Unable to copy email:', error);
