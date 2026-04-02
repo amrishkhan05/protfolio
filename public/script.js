@@ -15,16 +15,11 @@ const prefersDark = globalThis.matchMedia?.(
 const countFormatter = new Intl.NumberFormat('en-US');
 const searchParams = new URLSearchParams(globalThis.location.search);
 
-if (searchParams.get('owner') === '1') {
-  globalThis.localStorage?.setItem('portfolio-owner-view', '1');
-}
+// Owner badge is opt-in only for the current URL: ?owner=1
+const isOwnerViewEnabled = searchParams.get('owner') === '1';
 
-if (searchParams.get('owner') === '0') {
-  globalThis.localStorage?.removeItem('portfolio-owner-view');
-}
-
-const isOwnerViewEnabled =
-  globalThis.localStorage?.getItem('portfolio-owner-view') === '1';
+// Clear legacy persisted flag from older builds.
+globalThis.localStorage?.removeItem('portfolio-owner-view');
 
 if (ownerViewBadge) {
   ownerViewBadge.hidden = !isOwnerViewEnabled;
