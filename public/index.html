@@ -7,6 +7,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SheikStack | Amrishkhan Sheik Abdullah</title>
     <meta name="theme-color" content="#2367f2" />
+    <script>
+      (function () {
+        var saved = null;
+        try { saved = localStorage.getItem('portfolio-theme'); } catch (e) {}
+        var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.dataset.theme = saved || (prefersDark ? 'dark' : 'light');
+      })();
+    </script>
     <meta
       name="description"
       content="Portfolio of Amrishkhan Sheik Abdullah, Technical Lead and Full Stack Engineer with 10+ years of experience in Angular, React, Vue, Node.js, Express, NestJS, and microservices."
