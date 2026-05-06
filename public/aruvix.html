@@ -1,0 +1,645 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aruvix | Online Developer Tools — amrishkhan.dev</title>
+    <meta name="theme-color" content="#f8f8f5" />
+    <meta name="color-scheme" content="light dark" />
+    <meta
+      name="description"
+      content="Aruvix is a browser-first developer tools workspace for JSON formatting, API requests, diff checking, data conversion, frontend utilities, and local processing."
+    />
+    <meta name="author" content="Amrishkhan Sheik Abdullah" />
+    <link rel="canonical" href="https://amrishkhan.dev/aruvix" />
+    <meta property="og:title" content="Aruvix | Online Developer Tools" />
+    <meta
+      property="og:description"
+      content="A private browser workspace for JSON formatting, API requests, diff checking, data conversion, frontend utilities, and local processing."
+    />
+    <meta property="og:url" content="https://amrishkhan.dev/aruvix" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://amrishkhan.dev/favicon.svg" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Aruvix | Online Developer Tools" />
+    <meta
+      name="twitter:description"
+      content="A browser-first developer tools workspace for JSON formatting, API requests, diff checking, converters, and frontend utilities."
+    />
+    <meta name="twitter:image" content="https://amrishkhan.dev/favicon.svg" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Aruvix",
+        "url": "https://www.aruvix.com/",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Web",
+        "description": "Aruvix is a browser-first developer tools workspace for JSON formatting, API requests, diff checking, data conversion, frontend utilities, and local processing.",
+        "creator": {
+          "@type": "Person",
+          "name": "Amrishkhan Sheik Abdullah",
+          "url": "https://amrishkhan.dev/"
+        },
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      }
+    </script>
+    <script>
+      (() => {
+        const storageKey = 'portfolio-theme';
+        const readStoredTheme = () => {
+          try {
+            return globalThis.localStorage?.getItem(storageKey);
+          } catch (_error) {
+            return null;
+          }
+        };
+        const prefersDark = globalThis.matchMedia?.(
+          '(prefers-color-scheme: dark)',
+        )?.matches;
+        const theme = readStoredTheme() || (prefersDark ? 'dark' : 'light');
+        document.documentElement.dataset.theme = theme;
+      })();
+    </script>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="bg-shape bg-shape-1"></div>
+    <div class="bg-shape bg-shape-2"></div>
+
+    <header class="hero section reveal" style="min-height: auto; padding-bottom: 0;">
+      <nav class="top-nav">
+        <a class="brand" href="/" aria-label="amrishkhan.dev home">amrishkhan.dev</a>
+        <div class="nav-links" aria-label="Primary">
+          <a href="/#aruvix" class="is-active">Aruvix</a>
+          <a href="/#experience">Experience</a>
+          <a href="/#blogs">Writing</a>
+          <a href="/#contact">Contact</a>
+        </div>
+        <div class="nav-actions">
+          <button
+            class="theme-toggle"
+            type="button"
+            aria-label="Switch color theme"
+            aria-pressed="false"
+          >
+            <i class="fa-solid fa-moon" aria-hidden="true"></i>
+          </button>
+          <a class="btn ghost" href="/#contact">Get in Touch</a>
+          <a
+            class="btn support-link"
+            href="https://ko-fi.com/amrishkhansheik"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <i class="fa-solid fa-mug-hot" aria-hidden="true"></i>
+            Support
+          </a>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+
+      <section class="section reveal aruvix-page-hero">
+        <div class="aruvix-hero-grid">
+          <div>
+            <p class="eyebrow">Dubai, UAE • Built and launched product</p>
+            <h1 class="aruvix-page-title">Aruvix</h1>
+            <p class="lead">
+              A private developer workspace for formatting JSON, visualizing
+              structures, sending API requests, comparing payloads, running
+              quick dev utilities, and converting data without leaving your
+              browser.
+            </p>
+            <div class="hero-actions">
+              <a
+                class="btn primary"
+                href="https://www.aruvix.com/"
+                target="_blank"
+                rel="noreferrer"
+              >Open Aruvix</a>
+              <a class="btn secondary" href="/">
+                <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+                Back to Portfolio
+              </a>
+            </div>
+          </div>
+
+          <aside class="aruvix-hero-card" aria-label="Aruvix summary">
+            <p class="aruvix-card-label">Product focus</p>
+            <h2>Structured data, simplified.</h2>
+            <p>
+              Aruvix turns everyday debugging tasks into one clean workflow:
+              paste data, inspect it, transform it, compare it, and move on.
+            </p>
+            <div class="aruvix-metric-grid">
+              <span><strong>Local</strong> processing</span>
+              <span><strong>Zero</strong> sign-up</span>
+              <span><strong>Web</strong> workspace</span>
+              <span><strong>Dev</strong> utilities</span>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="section reveal" id="overview">
+        <p class="section-kicker">Product overview</p>
+        <h2 class="aruvix-section-heading">One focused place for daily developer utilities</h2>
+        <div class="aruvix-content-grid">
+          <article class="aruvix-story aruvix-story-page">
+            <h3>What Aruvix is</h3>
+            <p>
+              Aruvix is a browser-first toolset for developers who regularly
+              work with APIs, JSON payloads, logs, configuration files, and
+              structured data. It brings common tasks into a single interface
+              so developers do not need to jump across random formatter,
+              converter, diff, and request tools.
+            </p>
+            <p>
+              The product is intentionally lightweight. You can open it, use
+              the exact tool you need, and leave without creating an account or
+              setting up a project. The goal is speed, privacy, and low mental
+              overhead.
+            </p>
+          </article>
+
+          <article class="aruvix-story aruvix-story-page">
+            <h3>Who it helps</h3>
+            <p>
+              Aruvix is useful for frontend engineers validating API responses,
+              backend engineers testing endpoints, QA engineers comparing
+              payload changes, support engineers reading production logs, and
+              students learning how structured data works.
+            </p>
+            <p>
+              It is especially useful when data is sensitive. Because core
+              processing happens locally in the browser, developers can inspect
+              payloads without sending them to a third-party processing server.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section reveal" id="why">
+        <p class="section-kicker">Origin story</p>
+        <h2 class="aruvix-section-heading">Why I built Aruvix</h2>
+        <div class="aruvix-story aruvix-story-page aruvix-wide-copy">
+          <p>
+            In daily engineering work, small workflow breaks add up. A JSON
+            payload arrives from an API. A response needs formatting. Two
+            versions of a request body need comparison. A nested object needs
+            visual inspection. A CSV needs converting. Each of these tasks is
+            simple, but every context switch steals attention.
+          </p>
+          <p>
+            I built Aruvix to remove that friction. Instead of spreading
+            routine debugging work across disconnected tools, Aruvix gives
+            developers a unified workspace where the most common structured
+            data tasks are available immediately.
+          </p>
+          <p>
+            The design principle is straightforward: no sign-up, no noisy
+            onboarding, no unnecessary server round trips for local operations,
+            and no interface clutter. The product should feel like a sharp
+            engineering instrument that opens quickly and gets out of the way.
+          </p>
+        </div>
+      </section>
+
+      <section class="section reveal" id="tools">
+        <p class="section-kicker">Toolset</p>
+        <h2 class="aruvix-section-heading">What you can do with Aruvix</h2>
+        <div class="aruvix-tool-list" aria-label="Aruvix detailed tools">
+          <article>
+            <i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>
+            <div>
+              <h3>JSON Formatter and Validator</h3>
+              <p>
+                Paste raw JSON and turn it into readable, indented, validated
+                output. It helps reveal malformed structures, missing commas,
+                invalid nesting, and hard-to-scan response bodies.
+              </p>
+              <ul>
+                <li>Format compact JSON into readable structures.</li>
+                <li>Validate syntax before sharing payloads or debugging APIs.</li>
+                <li>Inspect deeply nested objects with less visual noise.</li>
+              </ul>
+            </div>
+          </article>
+
+          <article>
+            <i class="fa-solid fa-diagram-project" aria-hidden="true"></i>
+            <div>
+              <h3>JSON Visualizer</h3>
+              <p>
+                Convert raw structured data into a visual representation so
+                large objects, arrays, and nested relationships are easier to
+                understand.
+              </p>
+              <ul>
+                <li>See object hierarchy without manually tracing braces.</li>
+                <li>Understand payload shape before mapping it into UI or APIs.</li>
+                <li>Review complex responses faster during debugging.</li>
+              </ul>
+            </div>
+          </article>
+
+          <article>
+            <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+            <div>
+              <h3>API Client</h3>
+              <p>
+                Send requests, inspect responses, and test endpoint behavior
+                from the same environment where you format and analyze data.
+              </p>
+              <ul>
+                <li>Use a focused request workspace for common API checks.</li>
+                <li>Inspect response bodies without copying into another formatter.</li>
+                <li>Speed up endpoint debugging during feature development.</li>
+              </ul>
+            </div>
+          </article>
+
+          <article>
+            <i class="fa-solid fa-code-compare" aria-hidden="true"></i>
+            <div>
+              <h3>Diff Checker</h3>
+              <p>
+                Compare two text blocks, code snippets, JSON payloads, or data
+                snapshots to find exactly what changed.
+              </p>
+              <ul>
+                <li>Spot response changes between API versions.</li>
+                <li>Compare expected and actual payloads during QA.</li>
+                <li>Review config changes before release.</li>
+              </ul>
+            </div>
+          </article>
+
+          <article>
+            <i class="fa-solid fa-repeat" aria-hidden="true"></i>
+            <div>
+              <h3>Data Conversion</h3>
+              <p>
+                Convert between developer-friendly data formats when moving
+                between APIs, configs, spreadsheets, documentation, and test
+                fixtures.
+              </p>
+              <ul>
+                <li>Transform data without leaving the current workflow.</li>
+                <li>Prepare cleaner samples for tickets, docs, or test cases.</li>
+                <li>Reduce repetitive copy-paste between conversion sites.</li>
+              </ul>
+            </div>
+          </article>
+
+          <article>
+            <i class="fa-solid fa-screwdriver-wrench" aria-hidden="true"></i>
+            <div>
+              <h3>Developer Tools</h3>
+              <p>
+                Use small utilities for everyday debugging and data handling
+                tasks. Aruvix keeps these helper tools close to the structured
+                data workflow instead of scattering them across tabs.
+              </p>
+              <ul>
+                <li>Run quick inspections while debugging payloads.</li>
+                <li>Keep utility work in one clean workspace.</li>
+                <li>Use simple tools without account setup or project setup.</li>
+              </ul>
+            </div>
+          </article>
+
+          <article>
+            <i class="fa-solid fa-language" aria-hidden="true"></i>
+            <div>
+              <h3>Code Translator</h3>
+              <p>
+                Translate common frontend code between JavaScript,
+                TypeScript, CSS, Tailwind, HTML, SVG, and JSX workflows
+                without opening a heavier development tool.
+              </p>
+              <ul>
+                <li>Convert small snippets while reviewing or prototyping.</li>
+                <li>Clean up frontend code examples before sharing them.</li>
+                <li>Move between related web formats with less manual editing.</li>
+              </ul>
+            </div>
+          </article>
+
+          <article>
+            <i class="fa-solid fa-palette" aria-hidden="true"></i>
+            <div>
+              <h3>CSS and Frontend Tools</h3>
+              <p>
+                Inspect, generate, and clean up frontend assets such as
+                colors, CSS utilities, SVG, design tokens, gradients, and
+                layout helpers.
+              </p>
+              <ul>
+                <li>Use color and CSS helpers during UI implementation.</li>
+                <li>Optimize SVG and frontend snippets before committing them.</li>
+                <li>Generate practical CSS output for repeated interface tasks.</li>
+              </ul>
+            </div>
+          </article>
+
+          <article>
+            <i class="fa-solid fa-vial-circle-check" aria-hidden="true"></i>
+            <div>
+              <h3>QA and Testing Tools</h3>
+              <p>
+                Generate test data, API assertions, bug report details, and
+                testing helpers for the moments where developers and QA teams
+                need clean examples fast.
+              </p>
+              <ul>
+                <li>Create sample data for forms, APIs, and edge cases.</li>
+                <li>Generate assertions from JSON responses.</li>
+                <li>Prepare clearer bug reports and test cases.</li>
+              </ul>
+            </div>
+          </article>
+
+          <article>
+            <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
+            <div>
+              <h3>Recently Added Utilities</h3>
+              <p>
+                Aruvix continues to grow with focused tools such as CSS
+                Variables Extractor, SVG Optimizer, and API Assertion
+                Generator.
+              </p>
+              <ul>
+                <li>Extract CSS custom properties from existing stylesheets.</li>
+                <li>Clean and minify SVG code for production use.</li>
+                <li>Turn API responses into practical test assertions.</li>
+              </ul>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section reveal" id="workflow">
+        <p class="section-kicker">Developer workflows</p>
+        <h2 class="aruvix-section-heading">Built around real engineering moments</h2>
+        <div class="aruvix-workflow-grid">
+          <article>
+            <span>01</span>
+            <h3>Debug an API response</h3>
+            <p>
+              Send or paste a response, format it, inspect nested fields, and
+              compare it against the expected payload.
+            </p>
+          </article>
+          <article>
+            <span>02</span>
+            <h3>Review a breaking change</h3>
+            <p>
+              Diff old and new payloads to identify renamed fields, removed
+              keys, type changes, and structural drift.
+            </p>
+          </article>
+          <article>
+            <span>03</span>
+            <h3>Prepare clean examples</h3>
+            <p>
+              Format and convert data samples before adding them to docs,
+              tickets, pull requests, or automated tests.
+            </p>
+          </article>
+          <article>
+            <span>04</span>
+            <h3>Work with sensitive data</h3>
+            <p>
+              Keep local processing local when inspecting payloads that should
+              not be uploaded to unknown external services.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section reveal" id="principles">
+        <p class="section-kicker">Design principles</p>
+        <h2 class="aruvix-section-heading">Built differently</h2>
+        <div class="aruvix-proof aruvix-proof-page">
+          <span>
+            <strong>Private by design</strong>
+            <span>Core formatting, validation, search, comparison, and conversion work happens locally in your browser.</span>
+          </span>
+          <span>
+            <strong>API requests by choice</strong>
+            <span>The API Client sends requests only when you press send, and only to the endpoint you choose.</span>
+          </span>
+          <span>
+            <strong>No sign-up required</strong>
+            <span>Open the URL and use the tools immediately. No email gate, no trial wall, no setup ceremony.</span>
+          </span>
+          <span>
+            <strong>One unified experience</strong>
+            <span>Format, visualize, compare, convert, and inspect data without moving between unrelated tools.</span>
+          </span>
+          <span>
+            <strong>Web tools workspace</strong>
+            <span>JSON tools, API checks, diff comparison, converters, and frontend utilities live in one browser-first product.</span>
+          </span>
+          <span>
+            <strong>Developer focused</strong>
+            <span>The interface favors speed, keyboard-friendly actions, readable output, and practical debugging tasks.</span>
+          </span>
+        </div>
+      </section>
+
+      <section class="section reveal" id="build">
+        <p class="section-kicker">Product build</p>
+        <h2 class="aruvix-section-heading">What I owned while building it</h2>
+        <div class="aruvix-build-grid">
+          <article>
+            <h3>Product direction</h3>
+            <p>
+              Defined the product around high-frequency developer jobs:
+              formatting, validating, visualizing, comparing, converting, and
+              testing data.
+            </p>
+          </article>
+          <article>
+            <h3>User experience</h3>
+            <p>
+              Designed a low-friction workflow where each tool is easy to find,
+              fast to open, and focused on the job at hand.
+            </p>
+          </article>
+          <article>
+            <h3>Privacy model</h3>
+            <p>
+              Prioritized local browser execution for data operations so
+              developers can use the product with confidence on real payloads.
+            </p>
+          </article>
+          <article>
+            <h3>Web toolset</h3>
+            <p>
+              Launched a focused browser workspace that keeps high-frequency
+              developer tools available without account setup or app setup.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section reveal" id="web-tools">
+        <div class="aruvix-web-tools-panel">
+          <div>
+            <p class="section-kicker">Web tools workspace</p>
+            <h2 class="aruvix-section-heading">Open Aruvix in the browser and use focused developer utilities</h2>
+            <p>
+              Aruvix is currently available as an online workspace for daily
+              development tasks: formatting JSON, checking API responses,
+              comparing payloads, converting data, and using frontend helpers
+              from one private, no-sign-up interface.
+            </p>
+          </div>
+          <div class="aruvix-web-tools-actions">
+            <a
+              class="btn primary"
+              href="https://www.aruvix.com/"
+              target="_blank"
+              rel="noreferrer"
+            >Open Aruvix</a>
+            <a class="btn secondary" href="#tools">Explore tools</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section reveal">
+        <div class="aruvix-cta-band">
+          <div>
+            <p>Try Aruvix for your next API or JSON debugging task.</p>
+            <span>
+              Private local processing, no sign-up, and the tools developers
+              reach for every day.
+            </span>
+          </div>
+          <div class="hero-actions">
+            <a
+              class="btn primary"
+              href="https://www.aruvix.com/"
+              target="_blank"
+              rel="noreferrer"
+            >Open Aruvix</a>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <footer class="section reveal footer">
+      <p>
+        Made by <a href="/">Amrishkhan Sheik Abdullah</a> — Technical Lead &amp; Full Stack Engineer
+      </p>
+    </footer>
+
+    <button
+      class="back-to-top"
+      id="back-to-top"
+      type="button"
+      aria-label="Back to top"
+    >
+      <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
+    </button>
+
+    <script src="https://storage.ko-fi.com/cdn/widget/Widget_2.js"></script>
+    <script>
+      const themeToggle = document.querySelector('.theme-toggle');
+      const themeIcon = themeToggle?.querySelector('i');
+      const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+      const backToTopBtn = document.getElementById('back-to-top');
+      const themeStorageKey = 'portfolio-theme';
+      const lightThemeColor = '#f8f8f5';
+      const darkThemeColor = '#0a0f1a';
+      const kofiWidgetId = 'L3L71XQ4TR';
+      const kofiWidgetLabel = 'Support me on Ko-fi';
+      const kofiWidgetColors = {
+        light: '#2b2d30',
+        dark: '#41c9a2',
+      };
+
+      const safeStorageGet = (key) => {
+        try { return globalThis.localStorage?.getItem(key) || null; }
+        catch (_) { return null; }
+      };
+      const safeStorageSet = (key, value) => {
+        try { globalThis.localStorage?.setItem(key, value); }
+        catch (_) {}
+      };
+
+      const applyTheme = (theme) => {
+        document.documentElement.dataset.theme = theme;
+        const isDark = theme === 'dark';
+        themeColorMeta?.setAttribute('content', isDark ? darkThemeColor : lightThemeColor);
+        themeToggle?.setAttribute('aria-pressed', String(isDark));
+        themeToggle?.setAttribute('aria-label', isDark ? 'Switch to light theme' : 'Switch to dark theme');
+        if (themeIcon) themeIcon.className = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+      };
+
+      const drawKofiWidget = () => {
+        if (!globalThis.kofiwidget2) {
+          return;
+        }
+
+        const theme = document.documentElement.dataset.theme || 'light';
+        globalThis.kofiwidget2.init(
+          kofiWidgetLabel,
+          kofiWidgetColors[theme] || kofiWidgetColors.light,
+          kofiWidgetId,
+        );
+        globalThis.kofiwidget2.draw();
+      };
+
+      const prefersDark = globalThis.matchMedia?.('(prefers-color-scheme: dark)')?.matches;
+      applyTheme(safeStorageGet(themeStorageKey) || (prefersDark ? 'dark' : 'light'));
+      drawKofiWidget();
+
+      themeToggle?.addEventListener('click', () => {
+        const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+        applyTheme(next);
+        safeStorageSet(themeStorageKey, next);
+      });
+
+      window.addEventListener('scroll', () => {
+        backToTopBtn?.classList.toggle('is-visible', window.scrollY > 300);
+      }, { passive: true });
+
+      backToTopBtn?.addEventListener('click', () =>
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      );
+
+      const observer = new IntersectionObserver(
+        (entries) => entries.forEach((e) => {
+          if (e.isIntersecting) e.target.style.animationPlayState = 'running';
+        }),
+        { threshold: 0.12 }
+      );
+      document.querySelectorAll('.reveal').forEach((node) => {
+        node.style.animationPlayState = 'paused';
+        observer.observe(node);
+      });
+    </script>
+  </body>
+</html>

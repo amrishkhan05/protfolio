@@ -1,12 +1,13 @@
 <!-- @format -->
 
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SheikStack | Amrishkhan Sheik Abdullah</title>
-    <meta name="theme-color" content="#2367f2" />
+    <title>amrishkhan.dev | Amrishkhan Sheik Abdullah</title>
+    <meta name="theme-color" content="#f8f8f5" />
+    <meta name="color-scheme" content="light dark" />
     <script>
       (function () {
         var saved = null;
@@ -19,27 +20,92 @@
       name="description"
       content="Portfolio of Amrishkhan Sheik Abdullah, Technical Lead and Full Stack Engineer with 10+ years of experience in Angular, React, Vue, Node.js, Express, NestJS, and microservices."
     />
+    <meta name="author" content="Amrishkhan Sheik Abdullah" />
+    <link rel="canonical" href="https://amrishkhan.dev/" />
     <meta
       property="og:title"
-      content="SheikStack | Amrishkhan Sheik Abdullah"
+      content="amrishkhan.dev | Amrishkhan Sheik Abdullah"
     />
     <meta
       property="og:description"
       content="Technical Lead and Full Stack Engineer with 10+ years of experience building scalable products across aviation, real estate, and enterprise platforms."
     />
+    <meta property="og:url" content="https://amrishkhan.dev/" />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="/favicon.svg" />
+    <meta property="og:image" content="https://amrishkhan.dev/favicon.svg" />
     <meta name="twitter:card" content="summary" />
     <meta
       name="twitter:title"
-      content="SheikStack | Amrishkhan Sheik Abdullah"
+      content="amrishkhan.dev | Amrishkhan Sheik Abdullah"
     />
     <meta
       name="twitter:description"
       content="Technical Lead and Full Stack Engineer with 10+ years of experience building scalable products across aviation, real estate, and enterprise platforms."
     />
-    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-    <link rel="shortcut icon" href="favicon.svg" />
+    <meta name="twitter:image" content="https://amrishkhan.dev/favicon.svg" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Person",
+            "@id": "https://amrishkhan.dev/#person",
+            "name": "Amrishkhan Sheik Abdullah",
+            "url": "https://amrishkhan.dev/",
+            "jobTitle": "Technical Lead and Full Stack Engineer",
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": "Dubai",
+              "addressCountry": "AE"
+            },
+            "sameAs": [
+              "https://www.linkedin.com/in/amrishkhan",
+              "https://github.com/amrishkhan05",
+              "https://www.npmjs.com/package/sql-select-query-generator"
+            ],
+            "knowsAbout": [
+              "Angular",
+              "React",
+              "Vue.js",
+              "Node.js",
+              "NestJS",
+              "Microservices",
+              "API design",
+              "Payment integrations"
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://amrishkhan.dev/#website",
+            "name": "amrishkhan.dev",
+            "url": "https://amrishkhan.dev/",
+            "author": {
+              "@id": "https://amrishkhan.dev/#person"
+            },
+            "description": "Portfolio of Amrishkhan Sheik Abdullah, Technical Lead and Full Stack Engineer."
+          }
+        ]
+      }
+    </script>
+    <script>
+      (() => {
+        const storageKey = 'portfolio-theme';
+        const readStoredTheme = () => {
+          try {
+            return globalThis.localStorage?.getItem(storageKey);
+          } catch (_error) {
+            return null;
+          }
+        };
+        const prefersDark = globalThis.matchMedia?.(
+          '(prefers-color-scheme: dark)',
+        )?.matches;
+        const theme = readStoredTheme() || (prefersDark ? 'dark' : 'light');
+        document.documentElement.dataset.theme = theme;
+      })();
+    </script>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -54,20 +120,23 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css"
     />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
-    <a class="skip-link" href="#summary">Skip to main content</a>
+    <a class="skip-link" href="/#summary">Skip to main content</a>
     <div class="scroll-progress" aria-hidden="true"></div>
     <div class="bg-shape bg-shape-1"></div>
     <div class="bg-shape bg-shape-2"></div>
     <header class="hero section reveal">
       <nav class="top-nav">
-        <span class="brand">SheikStack</span>
+        <a class="brand" href="/" aria-label="amrishkhan.dev home"
+          >amrishkhan.dev</a
+        >
         <div class="nav-links" aria-label="Primary">
-          <a href="#experience">Experience</a>
-          <a href="#blogs">Writing</a>
-          <a href="#contact">Contact</a>
+          <a href="/#aruvix">Aruvix</a>
+          <a href="/#experience">Experience</a>
+          <a href="/#blogs">Writing</a>
+          <a href="/#contact">Contact</a>
         </div>
         <div class="nav-actions">
           <button
@@ -78,47 +147,74 @@
           >
             <i class="fa-solid fa-moon" aria-hidden="true"></i>
           </button>
-          <a class="btn ghost" href="#contact">Hire Me</a>
+          <a class="btn ghost" href="/#contact">Get in Touch</a>
+          <a
+            class="btn support-link"
+            href="https://ko-fi.com/amrishkhansheik"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <i class="fa-solid fa-mug-hot" aria-hidden="true"></i>
+            Support
+          </a>
         </div>
       </nav>
 
-      <div class="hero-content">
-        <p class="eyebrow">
-          SheikStack • Full Stack by Amrishkhan • Dubai, UAE
-        </p>
-        <h1>Amrishkhan Sheik Abdullah</h1>
-        <h2>Technical Lead | Full Stack Engineer</h2>
-        <p class="lead">
-          Full-stack engineer with 10+ years of experience building scalable
-          digital products across aviation, real estate, and enterprise
-          platforms.
-        </p>
-        <div class="hero-stats" aria-label="Career highlights">
-          <span><strong>10+</strong> Years Building Products</span>
-          <span><strong>95%+</strong> Test Coverage Projects</span>
-          <span><strong>1</strong> Published npm Package</span>
-        </div>
-        <div class="hero-actions">
-          <a class="btn primary" href="#experience">View Experience</a>
-          <a
-            class="btn secondary"
-            href="mailto:amrishkhansheikabdullah@gmail.com"
-            >Email Me</a
-          >
+      <div class="hero-layout hero-layout--solo">
+        <div class="hero-content">
+          <p class="eyebrow">Dubai, UAE • Product-minded engineering lead</p>
+          <h1>Amrishkhan Sheik Abdullah</h1>
+          <h2>Technical Lead | Full Stack Engineer | Creator of Aruvix</h2>
+          <p class="lead">
+            I build dependable web platforms, backend systems, and developer
+            tools. I created Aruvix, and my work is shaped by release quality,
+            maintainability, and measurable product value.
+          </p>
+          <div class="hero-stats" aria-label="Career highlights">
+            <span><strong>10+</strong> Years Building Products</span>
+            <span><strong>95%+</strong> Test Coverage Projects</span>
+            <span><strong>Aruvix</strong> Creator and Builder</span>
+          </div>
+          <div class="hero-actions">
+            <a class="btn primary" href="/aruvix">Explore Aruvix</a>
+            <a class="btn secondary" href="/#experience">View Experience</a>
+          </div>
         </div>
       </div>
     </header>
 
-    <main>
+    <main id="home-content">
       <section class="section reveal" id="summary">
         <h3>Profile</h3>
         <p>
           I specialize in frontend and backend architecture, API design,
           microservices, payment integrations, database engineering, and
-          delivery leadership. I enjoy building reliable systems with strong
-          developer standards, high test coverage, and measurable business
-          impact.
+          delivery leadership. I created Aruvix and enjoy building reliable
+          systems with strong developer standards, high test coverage, and
+          measurable business impact.
         </p>
+      </section>
+
+      <section class="section reveal product-section" id="aruvix">
+        <div class="section-heading-row">
+          <div>
+            <p class="section-kicker">Built and launched product</p>
+            <h3>Aruvix</h3>
+          </div>
+          <div class="section-actions">
+            <a class="btn primary" href="/aruvix">Learn More</a>
+          </div>
+        </div>
+
+        <div class="aruvix-home-blurb">
+          <p>
+            I built Aruvix because I kept switching between tabs just to format
+            JSON, inspect a request, or diff two payloads. Developers everywhere
+            were losing the same minutes every day. Aruvix brings those everyday
+            tools into one private, no-sign-up browser workspace - built by a
+            developer, for developers.
+          </p>
+        </div>
       </section>
 
       <section class="section reveal" id="highlights">
@@ -343,8 +439,11 @@
           I write practical engineering guides that simplify complex concepts
           and improve developer workflows.
         </p>
-        <div class="blog-grid">
-          <article class="blog-card">
+        <div class="blog-grid" id="blog-grid" aria-live="polite">
+          <a
+            class="blog-card"
+            href="/blog/unlocking-the-power-of-the-browser-console-a-developers-guide-4n7k"
+          >
             <h4>
               Unlocking the Power of the Browser Console: A Developer's Guide
             </h4>
@@ -352,8 +451,11 @@
             <div class="blog-tags">
               <span>Debugging</span><span>Browser Tools</span>
             </div>
-          </article>
-          <article class="blog-card">
+          </a>
+          <a
+            class="blog-card"
+            href="/blog/demystifying-solid-5-principles-for-building-robust-and-maintainable-software-2c9j"
+          >
             <h4>
               Demystifying SOLID: 5 Principles for Building Robust and
               Maintainable Software
@@ -362,8 +464,11 @@
             <div class="blog-tags">
               <span>Architecture</span><span>Clean Code</span>
             </div>
-          </article>
-          <article class="blog-card">
+          </a>
+          <a
+            class="blog-card"
+            href="/blog/github-code-setup-choosing-your-workflow-https-ssh-terminal-desktop-7op"
+          >
             <h4>
               GitHub Code Setup: Choosing Your Workflow (HTTPS, SSH, Terminal,
               and Desktop)
@@ -372,15 +477,21 @@
             <div class="blog-tags">
               <span>GitHub</span><span>Developer Setup</span>
             </div>
-          </article>
-          <article class="blog-card">
+          </a>
+          <a
+            class="blog-card"
+            href="/blog/level-up-your-workflow-mastering-bulk-actions-in-postman-2489"
+          >
             <h4>Level Up Your Workflow: Mastering Bulk Actions in Postman</h4>
             <p class="blog-meta">Published: Oct 8, 2025</p>
             <div class="blog-tags">
               <span>Postman</span><span>Productivity</span>
             </div>
-          </article>
-          <article class="blog-card">
+          </a>
+          <a
+            class="blog-card"
+            href="/blog/unraveling-the-javascript-event-loop-a-deep-dive-for-developers-50fg"
+          >
             <h4>
               Unraveling the JavaScript Event Loop: A Deep Dive for Developers
             </h4>
@@ -388,8 +499,11 @@
             <div class="blog-tags">
               <span>JavaScript</span><span>Runtime Internals</span>
             </div>
-          </article>
-          <article class="blog-card">
+          </a>
+          <a
+            class="blog-card"
+            href="/blog/a-developers-guide-to-api-types-architectures-use-cases-and-code-examples-3kbm"
+          >
             <h4>
               A Developer's Guide to API Types: Architectures, Use Cases, and
               Code Examples
@@ -398,8 +512,11 @@
             <div class="blog-tags">
               <span>APIs</span><span>System Design</span>
             </div>
-          </article>
-          <article class="blog-card">
+          </a>
+          <a
+            class="blog-card"
+            href="/blog/npm-vs-yarn-vs-pnpm-a-developers-guide-to-choosing-the-right-package-manager-285f"
+          >
             <h4>
               npm vs. Yarn vs. pnpm: A Developer's Guide to Choosing the Right
               Package Manager
@@ -408,8 +525,11 @@
             <div class="blog-tags">
               <span>Package Management</span><span>Node.js</span>
             </div>
-          </article>
-          <article class="blog-card">
+          </a>
+          <a
+            class="blog-card"
+            href="/blog/the-postman-alternative-guide-which-api-client-is-right-for-you-in-2025-2p0b"
+          >
             <h4>
               The Postman Alternative Guide: Which API Client is Right for You
               in 2025?
@@ -418,7 +538,7 @@
             <div class="blog-tags">
               <span>API Tooling</span><span>Developer Experience</span>
             </div>
-          </article>
+          </a>
         </div>
       </section>
 
@@ -488,8 +608,32 @@
       </section>
     </main>
 
+    <main class="blog-detail-shell" id="blog-detail" hidden>
+      <article class="section blog-detail-card" aria-live="polite">
+        <a class="blog-back-link" href="/#blogs">
+          <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+          Writing
+        </a>
+        <div class="blog-detail-status" id="blog-detail-status">Loading...</div>
+        <div class="blog-detail-content" id="blog-detail-content" hidden>
+          <p class="eyebrow" id="blog-detail-eyebrow">Tech Writing</p>
+          <h1 id="blog-detail-title"></h1>
+          <p class="blog-meta" id="blog-detail-meta"></p>
+          <img
+            class="blog-cover"
+            id="blog-detail-cover"
+            alt=""
+            loading="lazy"
+            hidden
+          />
+          <div class="blog-tags" id="blog-detail-tags"></div>
+          <div class="blog-body" id="blog-detail-body"></div>
+        </div>
+      </article>
+    </main>
+
     <footer class="section reveal footer">
-      <p>Open to freelance and full-time opportunities.</p>
+      <p>Get in touch to discuss engineering, architecture, or collaboration.</p>
     </footer>
 
     <aside
@@ -509,6 +653,7 @@
       <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
     </button>
 
-    <script src="script.js"></script>
+    <script src="https://storage.ko-fi.com/cdn/widget/Widget_2.js"></script>
+    <script src="/script.js"></script>
   </body>
 </html>
