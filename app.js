@@ -261,7 +261,7 @@ const replaceSeoHead = (html, seoTags) => {
     );
 
   return withoutStaticSeo.replace(
-    /(<meta name="color-scheme" content="light dark" \/>\n)/,
+    /(<meta\s+name="color-scheme"\s+content="[^"]+"\s*\/>\n)/,
     `$1${seoTags}`,
   );
 };

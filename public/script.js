@@ -1,8 +1,11 @@
 /** @format */
 
-const themeToggle = document.querySelector('.theme-toggle');
-const themeIcon = themeToggle?.querySelector('i');
+const themeToggles = Array.from(document.querySelectorAll('.theme-toggle'));
+const themeToggle = themeToggles[0] || null;
+const menuToggle = document.querySelector('.menu-toggle');
+const mobileMenu = document.getElementById('mobile-menu');
 const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+const colorSchemeMeta = document.querySelector('meta[name="color-scheme"]');
 const viewCountNode = document.getElementById('portfolio-view-count');
 const ownerViewBadge = document.getElementById('owner-view-badge');
 const copyEmailBtn = document.getElementById('copy-email-btn');
@@ -136,22 +139,28 @@ if (isOwnerViewEnabled && viewCountNode) {
 }
 
 const applyTheme = (theme) => {
+  const scheme = theme === 'dark' ? 'dark' : 'only light';
   document.documentElement.dataset.theme = theme;
+  document.documentElement.style.colorScheme = scheme;
   const isDark = theme === 'dark';
   themeColorMeta?.setAttribute(
     'content',
     isDark ? darkThemeColor : lightThemeColor,
   );
+  colorSchemeMeta?.setAttribute('content', scheme);
 
-  themeToggle?.setAttribute('aria-pressed', String(isDark));
-  themeToggle?.setAttribute(
-    'aria-label',
-    isDark ? 'Switch to light theme' : 'Switch to dark theme',
-  );
+  themeToggles.forEach((toggle) => {
+    toggle.setAttribute('aria-pressed', String(isDark));
+    toggle.setAttribute(
+      'aria-label',
+      isDark ? 'Switch to light theme' : 'Switch to dark theme',
+    );
 
-  if (themeIcon) {
-    themeIcon.className = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
-  }
+    const icon = toggle.querySelector('i');
+    if (icon) {
+      icon.className = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+    }
+  });
 };
 
 const savedTheme = safeStorageGet(themeStorageKey);
@@ -164,11 +173,11 @@ const drawKofiWidget = () => {
   }
 
   const theme = document.documentElement.dataset.theme || 'light';
-  globalThis.kofiwidget2.init(
-    kofiWidgetLabel,
-    kofiWidgetColors[theme] || kofiWidgetColors.light,
-    kofiWidgetId,
-  );
+  // globalThis.kofiwidget2.init(
+  //   kofiWidgetLabel,
+  //   kofiWidgetColors[theme] || kofiWidgetColors.light,
+  //   kofiWidgetId,
+  // );
   globalThis.kofiwidget2.draw();
 };
 
@@ -224,12 +233,38 @@ const copyEmailToClipboard = async () => {
 
 copyEmailBtn?.addEventListener('click', copyEmailToClipboard);
 
-themeToggle?.addEventListener('click', () => {
-  const current = document.documentElement.dataset.theme || 'light';
-  const next = current === 'dark' ? 'light' : 'dark';
+themeToggles.forEach((toggle) => {
+  toggle.addEventListener('click', () => {
+    const current = document.documentElement.dataset.theme || 'light';
+    const next = current === 'dark' ? 'light' : 'dark';
 
-  applyTheme(next);
-  safeStorageSet(themeStorageKey, next);
+    applyTheme(next);
+    safeStorageSet(themeStorageKey, next);
+  });
+});
+
+const setMobileMenuOpen = (isOpen) => {
+  if (!menuToggle || !mobileMenu) {
+    return;
+  }
+
+  mobileMenu.hidden = !isOpen;
+  menuToggle.setAttribute('aria-expanded', String(isOpen));
+  menuToggle.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
+
+  const icon = menuToggle.querySelector('i');
+  if (icon) {
+    icon.className = isOpen ? 'fa-solid fa-xmark' : 'fa-solid fa-bars';
+  }
+};
+
+menuToggle?.addEventListener('click', () => {
+  const isOpen = menuToggle.getAttribute('aria-expanded') === 'true';
+  setMobileMenuOpen(!isOpen);
+});
+
+mobileMenu?.querySelectorAll('a').forEach((link) => {
+  link.addEventListener('click', () => setMobileMenuOpen(false));
 });
 
 const renderBlogCard = (blog) => {
