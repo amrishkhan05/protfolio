@@ -3130,7 +3130,7 @@ body.is-blog-view {
 
 .aruvix-hero-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.58fr);
+  grid-template-columns: minmax(0, 1fr) minmax(520px, 0.58fr);
   align-items: center;
   gap: clamp(1rem, 4vw, 2.4rem);
 }
