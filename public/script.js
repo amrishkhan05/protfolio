@@ -22,7 +22,7 @@ const themeStorageKey = 'portfolio-theme';
 const lightThemeColor = '#f8f8f5';
 const darkThemeColor = '#0a0f1a';
 const kofiWidgetId = 'L3L71XQ4TR';
-const kofiWidgetLabel = 'Support me on Ko-fi';
+const kofiWidgetLabel = 'Buy me a coffee on Ko-fi';
 const kofiWidgetColors = {
   light: '#2b2d30',
   dark: '#41c9a2',

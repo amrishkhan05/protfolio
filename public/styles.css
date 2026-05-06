@@ -1595,11 +1595,11 @@ body::after {
 
 .section {
   width: min(1120px, 92%);
-  padding: 1.25rem 0;
+  padding: 0.95rem 0;
 }
 
 main .section:not(:last-of-type)::after {
-  bottom: -0.4rem;
+  bottom: -0.22rem;
   background: linear-gradient(
     90deg,
     transparent,
@@ -1610,7 +1610,7 @@ main .section:not(:last-of-type)::after {
 }
 
 .hero {
-  min-height: 76vh;
+  min-height: 58vh;
   align-items: start;
   padding-top: 0.8rem;
 }
@@ -1649,7 +1649,7 @@ main .section:not(:last-of-type)::after {
   grid-template-columns: minmax(0, 1.02fr) minmax(340px, 0.78fr);
   align-items: center;
   gap: clamp(1rem, 4vw, 3rem);
-  padding: 4.5rem 0 1.4rem;
+  padding: 2.45rem 0 0.2rem;
 }
 
 .hero-layout--solo {
@@ -1702,6 +1702,121 @@ main .section:not(:last-of-type)::after {
 
 .hero-actions {
   margin-top: 1rem;
+}
+
+.hero-workbench {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background:
+    linear-gradient(135deg, rgba(35, 103, 242, 0.1), transparent 44%),
+    var(--card-strong);
+  box-shadow: var(--shadow-soft);
+  padding: 1rem;
+}
+
+.hero-workbench::after {
+  content: '';
+  position: absolute;
+  width: 190px;
+  height: 190px;
+  right: -72px;
+  top: -76px;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(15, 157, 122, 0.2), transparent 66%);
+}
+
+.hero-workbench-label {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  margin: 0;
+  border: 1px solid rgba(35, 103, 242, 0.24);
+  border-radius: 8px;
+  padding: 0.16rem 0.5rem;
+  color: var(--primary);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hero-workbench h3 {
+  position: relative;
+  z-index: 1;
+  margin: 0.58rem 0 0;
+  font-size: clamp(1.35rem, 2.7vw, 2rem);
+  line-height: 1.08;
+}
+
+.hero-workbench-flow {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.42rem;
+  margin-top: 0.9rem;
+}
+
+.hero-workbench-flow span {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0.28rem 0.5rem;
+  background: rgba(248, 250, 253, 0.72);
+  color: var(--text);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.hero-workbench-flow i {
+  color: var(--primary);
+  font-size: 0.72rem;
+}
+
+.hero-workbench-note {
+  position: relative;
+  z-index: 1;
+  margin-top: 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.62);
+  padding: 0.72rem;
+}
+
+.hero-workbench-note p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.hero-workbench-tools {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.38rem;
+  margin-top: 0.72rem;
+}
+
+.hero-workbench-tools span {
+  border: 1px solid rgba(35, 103, 242, 0.2);
+  border-radius: 9px;
+  background: rgba(35, 103, 242, 0.08);
+  color: var(--primary);
+  padding: 0.16rem 0.46rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+[data-theme='dark'] .hero-workbench-flow span {
+  background: rgba(13, 21, 34, 0.62);
+}
+
+[data-theme='dark'] .hero-workbench-note {
+  background: rgba(13, 21, 34, 0.58);
 }
 
 .btn {
@@ -1890,7 +2005,7 @@ main .section:not(:last-of-type)::after {
   }
 
   .hero-layout {
-    padding-top: 2.2rem;
+    padding-top: 1.8rem;
   }
 
   .hero-content h1 {
