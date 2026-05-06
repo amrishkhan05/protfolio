@@ -318,6 +318,170 @@ const showBlogStatus = (message) => {
   blogDetailStatus.textContent = message;
 };
 
+const slugifyHeading = (text) =>
+  String(text)
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '');
+
+let tocObserver = null;
+
+const generateToc = (bodyEl) => {
+  const tocNav = document.getElementById('blog-toc-nav');
+  const tocEl = document.getElementById('blog-toc');
+  if (!tocNav || !bodyEl || !tocEl) return;
+
+  const headings = Array.from(bodyEl.querySelectorAll('h2, h3'));
+  if (headings.length < 2) {
+    tocEl.style.display = 'none';
+    return;
+  }
+
+  const usedIds = new Set();
+  headings.forEach((h) => {
+    if (!h.id) {
+      let base = slugifyHeading(h.textContent || '') || 'section';
+      let id = base;
+      let n = 1;
+      while (usedIds.has(id)) id = `${base}-${n++}`;
+      usedIds.add(id);
+      h.id = id;
+    } else {
+      usedIds.add(h.id);
+    }
+  });
+
+  tocNav.innerHTML = headings
+    .map((h) => {
+      const isH3 = h.tagName === 'H3';
+      return `<a href="#${h.id}" class="${isH3 ? 'toc-h3' : ''}" data-toc-id="${h.id}">${escapeHtml(h.textContent?.trim() || '')}</a>`;
+    })
+    .join('');
+
+  tocNav.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const target = document.getElementById(link.dataset.tocId || '');
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  if (tocObserver) tocObserver.disconnect();
+
+  const allLinks = Array.from(tocNav.querySelectorAll('a'));
+  tocObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const id = entry.target.id;
+        allLinks.forEach((link) => {
+          link.classList.toggle('toc-active', link.dataset.tocId === id);
+        });
+      });
+    },
+    { rootMargin: '-52px 0px -68% 0px', threshold: 0 },
+  );
+
+  headings.forEach((h) => tocObserver.observe(h));
+};
+
+const cleanupArticleImages = (bodyEl) => {
+  if (!bodyEl) return;
+
+  [
+    '.image-btn',
+    'button[aria-label="Expand"]',
+    'button[aria-label="Fit to screen"]',
+    '.js-full-screen-action',
+    '.ltag__image__comments',
+  ].forEach((sel) => bodyEl.querySelectorAll(sel).forEach((el) => el.remove()));
+
+  bodyEl.querySelectorAll('.article-body-image-wrapper').forEach((wrapper) => {
+    const img = wrapper.querySelector('img');
+    if (img && wrapper.parentNode) wrapper.parentNode.replaceChild(img, wrapper);
+  });
+};
+
+const addCodeCopyButtons = (bodyEl) => {
+  if (!bodyEl) return;
+
+  bodyEl.querySelectorAll('pre').forEach((pre) => {
+    if (pre.querySelector('.blog-copy-btn')) return;
+
+    const btn = document.createElement('button');
+    btn.className = 'blog-copy-btn';
+    btn.type = 'button';
+    btn.setAttribute('aria-label', 'Copy code');
+    btn.innerHTML = '<i class="fa-regular fa-copy" aria-hidden="true"></i>';
+
+    let timer;
+    btn.addEventListener('click', async () => {
+      const text = pre.querySelector('code')?.textContent ?? pre.textContent ?? '';
+      try {
+        await navigator.clipboard.writeText(text);
+        btn.innerHTML = '<i class="fa-solid fa-check" aria-hidden="true"></i>';
+        btn.classList.add('is-copied');
+        btn.setAttribute('aria-label', 'Copied!');
+        clearTimeout(timer);
+        timer = globalThis.setTimeout(() => {
+          btn.innerHTML = '<i class="fa-regular fa-copy" aria-hidden="true"></i>';
+          btn.classList.remove('is-copied');
+          btn.setAttribute('aria-label', 'Copy code');
+        }, 1500);
+      } catch (_err) {}
+    });
+
+    pre.appendChild(btn);
+  });
+};
+
+const getTagOverlap = (a, b) => {
+  const set = new Set((a || []).map((t) => String(t).toLowerCase()));
+  return (b || []).filter((t) => set.has(String(t).toLowerCase())).length;
+};
+
+const loadRelatedArticles = async (currentSlug, currentTags) => {
+  const listEl = document.getElementById('blog-related-list');
+  if (!listEl) return;
+
+  try {
+    const res = await fetch('/api/blogs');
+    if (!res.ok) throw new Error('fetch failed');
+    const payload = await res.json();
+
+    const others = (payload.blogs || []).filter((b) => {
+      const slug = b.devSlug || b.localSlug || '';
+      return slug !== currentSlug && !b.url?.endsWith(`/${currentSlug}`);
+    });
+
+    others.sort((a, b) => {
+      const diff = getTagOverlap(currentTags, b.tags) - getTagOverlap(currentTags, a.tags);
+      return diff !== 0 ? diff : new Date(b.publishedAt) - new Date(a.publishedAt);
+    });
+
+    const top = others.slice(0, 5);
+    if (top.length === 0) {
+      listEl.innerHTML = '';
+      return;
+    }
+
+    listEl.innerHTML = top
+      .map(
+        (b) => `
+        <a class="blog-related-card" href="${escapeHtml(b.url)}">
+          <h4>${escapeHtml(b.title)}</h4>
+          <p>${escapeHtml(formatPublishedDate(b.publishedAt))}${b.readingTimeMinutes ? ` · ${escapeHtml(String(b.readingTimeMinutes))} min` : ''}</p>
+        </a>`,
+      )
+      .join('');
+  } catch (_err) {
+    const listEl2 = document.getElementById('blog-related-list');
+    if (listEl2) listEl2.innerHTML = '';
+  }
+};
+
 const renderBlogDetail = async () => {
   if (!blogSlug || !blogDetail) {
     renderBlogList();
@@ -381,6 +545,11 @@ const renderBlogDetail = async () => {
         article.message || 'This article is temporarily unavailable.',
       )}</p>`;
     }
+
+    cleanupArticleImages(blogDetailBody);
+    addCodeCopyButtons(blogDetailBody);
+    generateToc(blogDetailBody);
+    loadRelatedArticles(blogSlug, tags);
 
     blogDetailStatus.hidden = true;
     blogDetailContent.hidden = false;

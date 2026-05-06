@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node app.js)",
+      "Bash(curl -s http://localhost:3333/blog/npm-vs-yarn-vs-pnpm-a-developers-guide-to-choosing-the-right-package-manager-285f)",
+      "Bash(curl -s http://localhost:3333/)",
+      "Bash(PORT=3444 node app.js)",
+      "Bash(curl -s http://localhost:3444/blog/npm-vs-yarn-vs-pnpm-a-developers-guide-to-choosing-the-right-package-manager-285f)"
+    ]
+  }
+}
