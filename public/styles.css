@@ -319,6 +319,7 @@ main .section:not(:last-of-type)::after {
   align-items: center;
   gap: 0.36rem;
   justify-self: end;
+  min-width: max-content;
 }
 
 .mobile-controls,
@@ -1697,7 +1698,7 @@ main .section:not(:last-of-type)::after {
 
 .top-nav {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) auto max-content;
   gap: 1rem;
   border-radius: 16px;
   padding: 0.56rem 0.68rem;
@@ -2015,6 +2016,7 @@ main .section:not(:last-of-type)::after {
   gap: 0.44rem;
   min-height: 2.45rem;
   padding: 0.58rem 0.86rem;
+  white-space: nowrap;
 }
 
 .btn.primary {
@@ -2187,6 +2189,30 @@ main .section:not(:last-of-type)::after {
   color: var(--muted);
 }
 
+@media (max-width: 1080px) {
+  .top-nav {
+    gap: 0.52rem;
+    padding: 0.5rem 0.56rem;
+  }
+
+  .brand-logo {
+    width: clamp(8.7rem, 15vw, 9.5rem);
+  }
+
+  .nav-links a {
+    padding: 0.3rem 0.46rem;
+  }
+
+  .nav-actions {
+    gap: 0.28rem;
+  }
+
+  .btn {
+    gap: 0.36rem;
+    padding: 0.52rem 0.64rem;
+  }
+}
+
 @media (max-width: 980px) {
   .hero-layout,
   .aruvix-showcase {
@@ -2213,6 +2239,94 @@ main .section:not(:last-of-type)::after {
 
   .contact-email-card {
     grid-column: auto;
+  }
+}
+
+@media (max-width: 900px) {
+  .top-nav {
+    display: grid;
+    grid-template-columns: 1fr;
+    justify-content: stretch;
+    gap: 0.38rem;
+    border-radius: 14px;
+    padding: 0.46rem;
+  }
+
+  .nav-row {
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .brand {
+    max-width: 100%;
+    justify-content: flex-start;
+  }
+
+  .brand-logo {
+    width: clamp(8.25rem, 28vw, 9.6rem);
+  }
+
+  .nav-links {
+    order: 2;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0;
+    width: 100%;
+    overflow-x: auto;
+    justify-content: stretch;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .nav-links a {
+    display: flex;
+    justify-content: center;
+    min-width: 0;
+    padding: 0.34rem 0.16rem;
+    white-space: nowrap;
+    text-align: center;
+    font-size: clamp(0.7rem, 1.75vw, 0.78rem);
+  }
+
+  .nav-actions {
+    display: none;
+  }
+
+  .mobile-controls {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.34rem;
+    flex: 0 0 auto;
+  }
+
+  .theme-toggle {
+    width: 2.2rem;
+    height: 2.2rem;
+  }
+
+  .mobile-menu {
+    order: 3;
+    display: grid;
+    gap: 0.48rem;
+    border-top: 1px solid var(--line);
+    padding-top: 0.54rem;
+  }
+
+  .mobile-menu[hidden] {
+    display: none;
+  }
+
+  .mobile-menu a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.46rem;
+    min-height: 2.42rem;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    color: var(--text);
+    background: var(--card-strong);
+    font-size: 0.86rem;
+    font-weight: 700;
   }
 }
 
