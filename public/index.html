@@ -399,50 +399,44 @@
       </section>
     </main>
 
-    <main class="blog-detail-shell" id="blog-detail" hidden aria-live="polite">
-      <div class="blog-topbar">
-        <div class="blog-topbar-inner">
+    <main class="blog-detail-shell" id="blog-detail" hidden>
+      <div class="blog-detail-layout">
+        <aside class="blog-toc" id="blog-toc" aria-label="Article table of contents" hidden>
+          <div class="blog-sidebar-panel">
+            <p class="blog-sidebar-kicker">On this page</p>
+            <nav id="blog-toc-list"></nav>
+          </div>
+        </aside>
+
+        <article class="blog-article" aria-live="polite">
           <a class="blog-back-link" href="/#blogs">
             <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
             Writing
           </a>
-        </div>
-      </div>
-
-      <div class="blog-detail-status" id="blog-detail-status">Loading...</div>
-
-      <div class="blog-detail-content" id="blog-detail-content" hidden>
-        <div class="blog-detail-hero">
-          <div class="blog-detail-hero-inner">
-            <p class="eyebrow" id="blog-detail-eyebrow">Tech Writing</p>
-            <h1 id="blog-detail-title"></h1>
-            <div class="blog-detail-meta-row">
-              <p class="blog-meta" id="blog-detail-meta"></p>
+          <div class="blog-detail-status" id="blog-detail-status">Loading...</div>
+          <div class="blog-detail-content" id="blog-detail-content" hidden>
+            <header class="blog-hero">
+              <p class="eyebrow" id="blog-detail-eyebrow">Tech Writing</p>
+              <h1 id="blog-detail-title"></h1>
+              <p class="blog-summary" id="blog-detail-summary"></p>
+              <div class="blog-meta-row" id="blog-detail-meta"></div>
               <div class="blog-tags" id="blog-detail-tags"></div>
-            </div>
-            <img class="blog-cover" id="blog-detail-cover" alt="" loading="lazy" hidden />
-          </div>
-        </div>
-
-        <div class="blog-detail-layout">
-          <aside class="blog-toc" id="blog-toc" aria-label="Table of contents">
-            <div class="blog-toc-inner">
-              <p class="blog-toc-label">On this page</p>
-              <nav id="blog-toc-nav" aria-label="Article sections"></nav>
-            </div>
-          </aside>
-
-          <div class="blog-article-col">
+              <img class="blog-cover" id="blog-detail-cover" alt="" loading="lazy" decoding="async" hidden />
+            </header>
             <div class="blog-body" id="blog-detail-body"></div>
           </div>
+        </article>
 
-          <aside class="blog-related" id="blog-related" aria-label="More articles">
-            <div id="blog-related-inner">
-              <p class="blog-related-title">More Writing</p>
-              <div id="blog-related-list"><div class="blog-related-loading">Loading articles&hellip;</div></div>
-            </div>
-          </aside>
-        </div>
+        <aside class="blog-related" id="blog-related" aria-label="Related articles and tools" hidden>
+          <div class="blog-sidebar-panel">
+            <p class="blog-sidebar-kicker">Keep reading</p>
+            <div id="blog-related-list"></div>
+          </div>
+          <div class="blog-sidebar-panel blog-tools-panel" id="blog-tools-panel" hidden>
+            <p class="blog-sidebar-kicker">Useful tools</p>
+            <div id="blog-tool-list"></div>
+          </div>
+        </aside>
       </div>
     </main>
 

@@ -17,9 +17,16 @@ const blogDetailStatus = document.getElementById('blog-detail-status');
 const blogDetailContent = document.getElementById('blog-detail-content');
 const blogDetailTitle = document.getElementById('blog-detail-title');
 const blogDetailMeta = document.getElementById('blog-detail-meta');
+const blogDetailSummary = document.getElementById('blog-detail-summary');
 const blogDetailCover = document.getElementById('blog-detail-cover');
 const blogDetailTags = document.getElementById('blog-detail-tags');
 const blogDetailBody = document.getElementById('blog-detail-body');
+const blogToc = document.getElementById('blog-toc');
+const blogTocList = document.getElementById('blog-toc-list');
+const blogRelated = document.getElementById('blog-related');
+const blogRelatedList = document.getElementById('blog-related-list');
+const blogToolsPanel = document.getElementById('blog-tools-panel');
+const blogToolList = document.getElementById('blog-tool-list');
 const ownerMaxViewsKey = 'portfolio-owner-max-views';
 const themeStorageKey = 'portfolio-theme';
 const lightThemeColor = '#f8f8f5';
@@ -31,6 +38,7 @@ const kofiWidgetColors = {
   dark: '#41c9a2',
 };
 let copyResetTimer;
+let activeHeadingObserver;
 const prefersDark = globalThis.matchMedia?.(
   '(prefers-color-scheme: dark)',
 )?.matches;
@@ -87,6 +95,50 @@ const escapeHtml = (value) =>
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
+
+const slugifyText = (value) => {
+  const slug = String(value || '')
+    .trim()
+    .toLowerCase()
+    .replace(/&[a-z0-9#]+;/gi, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+
+  return slug || 'section';
+};
+
+const createCopyButton = (label) => {
+  const button = document.createElement('button');
+  button.className = 'copy-code-button';
+  button.type = 'button';
+  button.setAttribute('aria-label', label);
+  button.title = 'Copy';
+  button.innerHTML =
+    '<i class="fa-regular fa-copy icon-copy" aria-hidden="true"></i><i class="fa-solid fa-check icon-check" aria-hidden="true"></i>';
+  return button;
+};
+
+const writeClipboardText = async (text) => {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch (_error) {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.setAttribute('readonly', '');
+    textarea.style.position = 'fixed';
+    textarea.style.left = '-9999px';
+    textarea.style.top = '0';
+    document.body.append(textarea);
+    textarea.select();
+
+    try {
+      return document.execCommand('copy');
+    } finally {
+      textarea.remove();
+    }
+  }
+};
 
 // Owner badge is opt-in only for the current URL: ?owner=1
 const isOwnerViewEnabled = searchParams.get('owner') === '1';
@@ -465,6 +517,50 @@ const formatCodeLanguage = (value) => {
 const getCodeBlockText = (pre) =>
   pre.querySelector('code')?.textContent || pre.textContent || '';
 
+const enhanceBlogTables = () => {
+  blogDetailBody?.querySelectorAll('table').forEach((table) => {
+    if (table.parentElement?.classList.contains('blog-table-wrap')) {
+      return;
+    }
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'blog-table-wrap';
+    table.parentNode.insertBefore(wrapper, table);
+    wrapper.append(table);
+  });
+};
+
+const cleanBlogMedia = () => {
+  if (!blogDetailBody) {
+    return;
+  }
+
+  blogDetailBody
+    .querySelectorAll(
+      '.highlight__panel, .js-actions-panel, .js-fullscreen-code-action, .image-viewer, .image-overlay, .image-controls, .expand-button, .fit-button, .fullscreen-button, .js-fullsize-image, [data-image-viewer], [data-lightbox]',
+    )
+    .forEach((node) => node.remove());
+
+  blogDetailBody.querySelectorAll('.article-body-image-wrapper').forEach((node) => {
+    node.removeAttribute('class');
+    node.removeAttribute('data-image-viewer');
+    node.removeAttribute('data-lightbox');
+  });
+
+  blogDetailBody.querySelectorAll('img').forEach((image) => {
+    if (/^(enter|exit) fullscreen mode$/i.test(image.alt || '')) {
+      image.remove();
+      return;
+    }
+
+    image.loading = 'lazy';
+    image.decoding = 'async';
+    image.removeAttribute('data-src');
+    image.removeAttribute('data-pin-media');
+    image.classList.remove('js-fullsize-image');
+  });
+};
+
 const enhanceBlogCodeBlocks = () => {
   if (!blogDetailBody) {
     return;
@@ -482,25 +578,192 @@ const enhanceBlogCodeBlocks = () => {
     const wrapper = document.createElement('div');
     const toolbar = document.createElement('div');
     const label = document.createElement('span');
-    const button = document.createElement('button');
+    const button = createCopyButton(`Copy ${language.toLowerCase()} snippet`);
     const codeId = `blog-code-${blogSlug || 'article'}-${index + 1}`;
 
     wrapper.className = 'blog-code-block';
     toolbar.className = 'blog-code-toolbar';
     label.className = 'blog-code-language';
     label.textContent = language;
-    button.className = 'copy-code-button';
-    button.type = 'button';
     button.dataset.codeTarget = codeId;
-    button.setAttribute('aria-label', `Copy ${language.toLowerCase()} snippet`);
-    button.innerHTML =
-      '<i class="fa-regular fa-copy" aria-hidden="true"></i><span>Copy</span>';
     pre.id = pre.id || codeId;
 
     toolbar.append(label, button);
     pre.parentNode.insertBefore(wrapper, pre);
     wrapper.append(toolbar, pre);
   });
+};
+
+const buildBlogToc = () => {
+  if (!blogDetailBody || !blogToc || !blogTocList) {
+    return;
+  }
+
+  activeHeadingObserver?.disconnect();
+  const usedIds = new Set();
+  const headings = Array.from(blogDetailBody.querySelectorAll('h2, h3')).filter(
+    (heading) => heading.textContent.trim(),
+  );
+
+  headings.forEach((heading) => {
+    const baseId = heading.id || slugifyText(heading.textContent);
+    let nextId = baseId;
+    let suffix = 2;
+
+    while (usedIds.has(nextId) || document.getElementById(nextId)) {
+      if (heading.id === nextId) {
+        break;
+      }
+      nextId = `${baseId}-${suffix}`;
+      suffix += 1;
+    }
+
+    heading.id = nextId;
+    usedIds.add(nextId);
+  });
+
+  if (!headings.length) {
+    blogToc.hidden = true;
+    blogTocList.innerHTML = '';
+    return;
+  }
+
+  blogTocList.innerHTML = headings
+    .map((heading) => {
+      const level = heading.tagName.toLowerCase() === 'h3' ? 'h3' : 'h2';
+      return `<a class="blog-toc-link is-${level}" href="#${escapeHtml(
+        heading.id,
+      )}" data-heading-id="${escapeHtml(heading.id)}">${escapeHtml(
+        heading.textContent.trim(),
+      )}</a>`;
+    })
+    .join('');
+  blogToc.hidden = false;
+
+  const links = Array.from(blogTocList.querySelectorAll('.blog-toc-link'));
+  const setActiveLink = (id) => {
+    links.forEach((link) => {
+      link.classList.toggle('is-active', link.dataset.headingId === id);
+    });
+  };
+
+  activeHeadingObserver = new IntersectionObserver(
+    (entries) => {
+      const visible = entries
+        .filter((entry) => entry.isIntersecting)
+        .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+
+      if (visible[0]?.target.id) {
+        setActiveLink(visible[0].target.id);
+      }
+    },
+    { rootMargin: '-18% 0px -68% 0px', threshold: [0, 1] },
+  );
+
+  headings.forEach((heading) => activeHeadingObserver.observe(heading));
+  setActiveLink(headings[0].id);
+};
+
+const renderRelatedArticles = async (currentArticle) => {
+  if (!blogRelated || !blogRelatedList) {
+    return;
+  }
+
+  try {
+    const response = await fetch('/api/blogs');
+    if (!response.ok) {
+      throw new Error(`Failed to load related blogs: ${response.status}`);
+    }
+
+    const payload = await response.json();
+    const currentTags = new Set(
+      (Array.isArray(currentArticle.tags) ? currentArticle.tags : []).map((tag) =>
+        String(tag).toLowerCase(),
+      ),
+    );
+    const related = (Array.isArray(payload.blogs) ? payload.blogs : [])
+      .filter(
+        (blog) =>
+          blog.localSlug !== currentArticle.localSlug &&
+          blog.devSlug !== currentArticle.devSlug &&
+          blog.url !== currentArticle.url,
+      )
+      .map((blog) => {
+        const score = (Array.isArray(blog.tags) ? blog.tags : []).reduce(
+          (total, tag) => total + (currentTags.has(String(tag).toLowerCase()) ? 1 : 0),
+          0,
+        );
+        return { ...blog, score };
+      })
+      .sort(
+        (a, b) =>
+          b.score - a.score ||
+          new Date(b.publishedAt || 0).getTime() -
+            new Date(a.publishedAt || 0).getTime(),
+      )
+      .slice(0, 4);
+
+    if (!related.length) {
+      blogRelated.hidden = true;
+      return;
+    }
+
+    blogRelatedList.innerHTML = related
+      .map(
+        (blog) => `<a class="blog-related-card" href="${escapeHtml(blog.url)}">
+          <span>${escapeHtml(formatPublishedDate(blog.publishedAt).replace('Published: ', ''))}</span>
+          <strong>${escapeHtml(blog.title)}</strong>
+        </a>`,
+      )
+      .join('');
+    blogRelated.hidden = false;
+  } catch (error) {
+    console.error('Unable to load related DEV articles:', error);
+    blogRelated.hidden = true;
+  }
+};
+
+const renderRelatedTools = (article) => {
+  if (!blogToolsPanel || !blogToolList) {
+    return;
+  }
+
+  const text = `${article.title || ''} ${article.description || ''} ${(
+    article.tags || []
+  ).join(' ')} ${blogDetailBody?.textContent || ''}`.toLowerCase();
+  const tools = [
+    {
+      name: 'JSON Formatter',
+      href: '/aruvix.html#json-formatter',
+      keywords: ['json', 'api', 'payload', 'response'],
+    },
+    {
+      name: 'API Tester',
+      href: '/aruvix.html#api-tester',
+      keywords: ['api', 'postman', 'http', 'request', 'endpoint'],
+    },
+    {
+      name: 'Curl Converter',
+      href: '/aruvix.html#curl-converter',
+      keywords: ['curl', 'terminal', 'http', 'request'],
+    },
+  ].filter((tool) => tool.keywords.some((keyword) => text.includes(keyword)));
+
+  if (!tools.length) {
+    blogToolsPanel.hidden = true;
+    blogToolList.innerHTML = '';
+    return;
+  }
+
+  blogToolList.innerHTML = tools
+    .map(
+      (tool) => `<a class="blog-tool-link" href="${escapeHtml(tool.href)}">
+        <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+        <span>${escapeHtml(tool.name)}</span>
+      </a>`,
+    )
+    .join('');
+  blogToolsPanel.hidden = false;
 };
 
 blogDetailBody?.addEventListener('click', async (event) => {
@@ -519,20 +782,28 @@ blogDetailBody?.addEventListener('click', async (event) => {
   }
 
   try {
-    await navigator.clipboard.writeText(getCodeBlockText(pre));
+    const didCopy = await writeClipboardText(getCodeBlockText(pre));
+
+    if (!didCopy) {
+      throw new Error('Clipboard write was rejected.');
+    }
+
     button.classList.add('is-copied');
-    button.querySelector('span').textContent = 'Copied';
+    button.title = 'Copied';
+    button.setAttribute('aria-label', 'Code snippet copied');
 
     globalThis.setTimeout(() => {
       button.classList.remove('is-copied');
-      button.querySelector('span').textContent = 'Copy';
+      button.title = 'Copy';
+      button.setAttribute('aria-label', 'Copy code snippet');
     }, 1400);
   } catch (error) {
-    console.error('Unable to copy code snippet:', error);
-    button.querySelector('span').textContent = 'Failed';
+    button.title = 'Copy failed';
+    button.setAttribute('aria-label', 'Copy failed');
 
     globalThis.setTimeout(() => {
-      button.querySelector('span').textContent = 'Copy';
+      button.title = 'Copy';
+      button.setAttribute('aria-label', 'Copy code snippet');
     }, 1400);
   }
 });
@@ -569,14 +840,21 @@ const renderBlogDetail = async () => {
 
     document.title = `${article.title} | amrishkhan.dev`;
     blogDetailTitle.textContent = article.title;
-    blogDetailMeta.textContent = [
+    if (blogDetailSummary) {
+      blogDetailSummary.textContent =
+        article.description ||
+        'Practical engineering notes, examples, and implementation details.';
+    }
+    blogDetailMeta.innerHTML = [
       formatPublishedDate(article.publishedAt),
       article.readingTimeMinutes
         ? `${article.readingTimeMinutes} min read`
         : null,
+      'Amrishkhan Sheik Abdullah',
     ]
       .filter(Boolean)
-      .join(' • ');
+      .map((item) => `<span>${escapeHtml(item)}</span>`)
+      .join('');
     blogDetailTags.innerHTML = tags
       .map((tag) => `<span>${escapeHtml(tag)}</span>`)
       .join('');
@@ -601,13 +879,15 @@ const renderBlogDetail = async () => {
       )}</p>`;
     }
 
-    cleanupArticleImages(blogDetailBody);
+    cleanBlogMedia();
+    enhanceBlogTables();
     enhanceBlogCodeBlocks();
-    generateToc(blogDetailBody);
-    loadRelatedArticles(blogSlug, tags);
-
+    buildBlogToc();
+    renderRelatedTools(article);
+    renderRelatedArticles(article);
     blogDetailStatus.hidden = true;
     blogDetailContent.hidden = false;
+    updateScrollProgress();
   } catch (error) {
     console.error('Unable to load DEV blog article:', error);
     showBlogStatus('This article is temporarily unavailable.');
