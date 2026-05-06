@@ -404,39 +404,6 @@ const cleanupArticleImages = (bodyEl) => {
   });
 };
 
-const addCodeCopyButtons = (bodyEl) => {
-  if (!bodyEl) return;
-
-  bodyEl.querySelectorAll('pre').forEach((pre) => {
-    if (pre.querySelector('.blog-copy-btn')) return;
-
-    const btn = document.createElement('button');
-    btn.className = 'blog-copy-btn';
-    btn.type = 'button';
-    btn.setAttribute('aria-label', 'Copy code');
-    btn.innerHTML = '<i class="fa-regular fa-copy" aria-hidden="true"></i>';
-
-    let timer;
-    btn.addEventListener('click', async () => {
-      const text = pre.querySelector('code')?.textContent ?? pre.textContent ?? '';
-      try {
-        await navigator.clipboard.writeText(text);
-        btn.innerHTML = '<i class="fa-solid fa-check" aria-hidden="true"></i>';
-        btn.classList.add('is-copied');
-        btn.setAttribute('aria-label', 'Copied!');
-        clearTimeout(timer);
-        timer = globalThis.setTimeout(() => {
-          btn.innerHTML = '<i class="fa-regular fa-copy" aria-hidden="true"></i>';
-          btn.classList.remove('is-copied');
-          btn.setAttribute('aria-label', 'Copy code');
-        }, 1500);
-      } catch (_err) {}
-    });
-
-    pre.appendChild(btn);
-  });
-};
-
 const getTagOverlap = (a, b) => {
   const set = new Set((a || []).map((t) => String(t).toLowerCase()));
   return (b || []).filter((t) => set.has(String(t).toLowerCase())).length;
@@ -481,6 +448,94 @@ const loadRelatedArticles = async (currentSlug, currentTags) => {
     if (listEl2) listEl2.innerHTML = '';
   }
 };
+
+const formatCodeLanguage = (value) => {
+  const raw = String(value || '')
+    .split(/\s+/)
+    .find((name) => /^(language-|lang-)/.test(name));
+
+  if (!raw) {
+    return 'Code';
+  }
+
+  const language = raw.replace(/^(language-|lang-)/, '');
+  return language ? language.toUpperCase() : 'Code';
+};
+
+const getCodeBlockText = (pre) =>
+  pre.querySelector('code')?.textContent || pre.textContent || '';
+
+const enhanceBlogCodeBlocks = () => {
+  if (!blogDetailBody) {
+    return;
+  }
+
+  blogDetailBody.querySelectorAll('pre').forEach((pre, index) => {
+    if (pre.closest('.blog-code-block')) {
+      return;
+    }
+
+    const code = pre.querySelector('code');
+    const language = formatCodeLanguage(
+      `${pre.className || ''} ${code?.className || ''}`,
+    );
+    const wrapper = document.createElement('div');
+    const toolbar = document.createElement('div');
+    const label = document.createElement('span');
+    const button = document.createElement('button');
+    const codeId = `blog-code-${blogSlug || 'article'}-${index + 1}`;
+
+    wrapper.className = 'blog-code-block';
+    toolbar.className = 'blog-code-toolbar';
+    label.className = 'blog-code-language';
+    label.textContent = language;
+    button.className = 'copy-code-button';
+    button.type = 'button';
+    button.dataset.codeTarget = codeId;
+    button.setAttribute('aria-label', `Copy ${language.toLowerCase()} snippet`);
+    button.innerHTML =
+      '<i class="fa-regular fa-copy" aria-hidden="true"></i><span>Copy</span>';
+    pre.id = pre.id || codeId;
+
+    toolbar.append(label, button);
+    pre.parentNode.insertBefore(wrapper, pre);
+    wrapper.append(toolbar, pre);
+  });
+};
+
+blogDetailBody?.addEventListener('click', async (event) => {
+  const target = event.target;
+  const button =
+    target instanceof Element ? target.closest('.copy-code-button') : null;
+
+  if (!button) {
+    return;
+  }
+
+  const pre = button.closest('.blog-code-block')?.querySelector('pre');
+
+  if (!pre) {
+    return;
+  }
+
+  try {
+    await navigator.clipboard.writeText(getCodeBlockText(pre));
+    button.classList.add('is-copied');
+    button.querySelector('span').textContent = 'Copied';
+
+    globalThis.setTimeout(() => {
+      button.classList.remove('is-copied');
+      button.querySelector('span').textContent = 'Copy';
+    }, 1400);
+  } catch (error) {
+    console.error('Unable to copy code snippet:', error);
+    button.querySelector('span').textContent = 'Failed';
+
+    globalThis.setTimeout(() => {
+      button.querySelector('span').textContent = 'Copy';
+    }, 1400);
+  }
+});
 
 const renderBlogDetail = async () => {
   if (!blogSlug || !blogDetail) {
@@ -547,7 +602,7 @@ const renderBlogDetail = async () => {
     }
 
     cleanupArticleImages(blogDetailBody);
-    addCodeCopyButtons(blogDetailBody);
+    enhanceBlogCodeBlocks();
     generateToc(blogDetailBody);
     loadRelatedArticles(blogSlug, tags);
 
