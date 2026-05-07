@@ -78,7 +78,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" />
-    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/styles.css?v=20260507-blog-api" />
   </head>
   <body>
     <a class="skip-link" href="/#summary">Skip to main content</a>
@@ -325,46 +325,16 @@
         <h3>Tech Writing</h3>
         <p class="section-lead">I write practical engineering guides that simplify complex concepts and improve developer workflows.</p>
         <div class="blog-grid" id="blog-grid" aria-live="polite">
-          <a class="blog-card" href="/blog/unlocking-the-power-of-the-browser-console-a-developers-guide-4n7k">
-            <h4>Unlocking the Power of the Browser Console: A Developer's Guide</h4>
-            <p class="blog-meta">Published: Oct 17, 2025</p>
-            <div class="blog-tags"><span>Debugging</span><span>Browser Tools</span></div>
-          </a>
-          <a class="blog-card" href="/blog/demystifying-solid-5-principles-for-building-robust-and-maintainable-software-2c9j">
-            <h4>Demystifying SOLID: 5 Principles for Building Robust and Maintainable Software</h4>
-            <p class="blog-meta">Published: Oct 14, 2025</p>
-            <div class="blog-tags"><span>Architecture</span><span>Clean Code</span></div>
-          </a>
-          <a class="blog-card" href="/blog/github-code-setup-choosing-your-workflow-https-ssh-terminal-desktop-7op">
-            <h4>GitHub Code Setup: Choosing Your Workflow (HTTPS, SSH, Terminal, and Desktop)</h4>
-            <p class="blog-meta">Published: Oct 8, 2025</p>
-            <div class="blog-tags"><span>GitHub</span><span>Developer Setup</span></div>
-          </a>
-          <a class="blog-card" href="/blog/level-up-your-workflow-mastering-bulk-actions-in-postman-2489">
-            <h4>Level Up Your Workflow: Mastering Bulk Actions in Postman</h4>
-            <p class="blog-meta">Published: Oct 8, 2025</p>
-            <div class="blog-tags"><span>Postman</span><span>Productivity</span></div>
-          </a>
-          <a class="blog-card" href="/blog/unraveling-the-javascript-event-loop-a-deep-dive-for-developers-50fg">
-            <h4>Unraveling the JavaScript Event Loop: A Deep Dive for Developers</h4>
-            <p class="blog-meta">Published: Oct 7, 2025</p>
-            <div class="blog-tags"><span>JavaScript</span><span>Runtime Internals</span></div>
-          </a>
-          <a class="blog-card" href="/blog/a-developers-guide-to-api-types-architectures-use-cases-and-code-examples-3kbm">
-            <h4>A Developer's Guide to API Types: Architectures, Use Cases, and Code Examples</h4>
-            <p class="blog-meta">Published: Oct 6, 2025</p>
-            <div class="blog-tags"><span>APIs</span><span>System Design</span></div>
-          </a>
-          <a class="blog-card" href="/blog/npm-vs-yarn-vs-pnpm-a-developers-guide-to-choosing-the-right-package-manager-285f">
-            <h4>npm vs. Yarn vs. pnpm: A Developer's Guide to Choosing the Right Package Manager</h4>
-            <p class="blog-meta">Published: Oct 6, 2025</p>
-            <div class="blog-tags"><span>Package Management</span><span>Node.js</span></div>
-          </a>
-          <a class="blog-card" href="/blog/the-postman-alternative-guide-which-api-client-is-right-for-you-in-2025-2p0b">
-            <h4>The Postman Alternative Guide: Which API Client is Right for You in 2025?</h4>
-            <p class="blog-meta">Published: Oct 6, 2025</p>
-            <div class="blog-tags"><span>API Tooling</span><span>Developer Experience</span></div>
-          </a>
+          <p class="blog-list-status">Loading latest articles...</p>
+        </div>
+        <div class="blog-pagination" id="blog-pagination" hidden>
+          <button class="blog-page-btn" id="blog-prev-page" type="button" aria-label="Previous articles">
+            <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+          </button>
+          <span class="blog-page-status" id="blog-page-status" aria-live="polite"></span>
+          <button class="blog-page-btn" id="blog-next-page" type="button" aria-label="Next articles">
+            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+          </button>
         </div>
       </section>
 
@@ -450,6 +420,6 @@
     </button>
 
     <script src="https://storage.ko-fi.com/cdn/widget/Widget_2.js"></script>
-    <script src="/script.js"></script>
+    <script src="/script.js?v=20260507-blog-pagination"></script>
   </body>
 </html>

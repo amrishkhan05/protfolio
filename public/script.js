@@ -12,6 +12,10 @@ const copyEmailBtn = document.getElementById('copy-email-btn');
 const backToTopBtn = document.getElementById('back-to-top');
 const homeContent = document.getElementById('home-content');
 const blogGrid = document.getElementById('blog-grid');
+const blogPagination = document.getElementById('blog-pagination');
+const blogPrevPage = document.getElementById('blog-prev-page');
+const blogNextPage = document.getElementById('blog-next-page');
+const blogPageStatus = document.getElementById('blog-page-status');
 const blogDetail = document.getElementById('blog-detail');
 const blogDetailStatus = document.getElementById('blog-detail-status');
 const blogDetailContent = document.getElementById('blog-detail-content');
@@ -45,6 +49,10 @@ const prefersDark = globalThis.matchMedia?.(
 const countFormatter = new Intl.NumberFormat('en-US');
 const searchParams = new URLSearchParams(globalThis.location.search);
 const blogSlug = globalThis.location.pathname.match(/^\/blog\/([^/]+)\/?$/)?.[1];
+const devArticlesUrl = 'https://dev.to/api/articles?username=amrishkhan05';
+const blogsPerPage = 6;
+let blogListItems = [];
+let currentBlogPage = 1;
 
 const safeStorageGet = (key) => {
   try {
@@ -105,6 +113,51 @@ const slugifyText = (value) => {
     .replace(/^-+|-+$/g, '');
 
   return slug || 'section';
+};
+
+const normalizeDevArticle = (article) => {
+  const title = article?.title || 'Untitled article';
+  const devSlug = article?.slug || slugifyText(title);
+  const tags =
+    Array.isArray(article?.tag_list) && article.tag_list.length
+      ? article.tag_list
+      : typeof article?.tags === 'string' && article.tags.trim()
+        ? article.tags
+            .split(',')
+            .map((tag) => tag.trim())
+            .filter(Boolean)
+        : [];
+
+  return {
+    title,
+    localSlug: slugifyText(title),
+    devSlug,
+    description: article?.description || '',
+    publishedAt:
+      article?.published_at || article?.published_timestamp || article?.created_at || null,
+    tags,
+    readingTimeMinutes: article?.reading_time_minutes || null,
+    coverImage: article?.cover_image || article?.social_image || null,
+    url: `/blog/${devSlug}`,
+    devUrl: article?.url || null,
+    source: 'dev',
+  };
+};
+
+const fetchDevArticles = async () => {
+  const res = await fetch(devArticlesUrl, { cache: 'no-store' });
+
+  if (!res.ok) {
+    throw new Error(`Failed to load DEV articles: ${res.status}`);
+  }
+
+  const articles = await res.json();
+
+  if (!Array.isArray(articles)) {
+    throw new Error('DEV articles response was not an array.');
+  }
+
+  return articles.map(normalizeDevArticle);
 };
 
 const createCopyButton = (label) => {
@@ -320,7 +373,7 @@ mobileMenu?.querySelectorAll('a').forEach((link) => {
 });
 
 const renderBlogCard = (blog) => {
-  const tags = Array.isArray(blog.tags) ? blog.tags : [];
+  const tags = Array.isArray(blog.tags) ? blog.tags.slice(0, 4) : [];
 
   return `
     <a class="blog-card" href="${escapeHtml(blog.url)}">
@@ -337,29 +390,71 @@ const renderBlogCard = (blog) => {
   `;
 };
 
+const renderBlogPage = () => {
+  if (!blogGrid) {
+    return;
+  }
+
+  const totalPages = Math.max(1, Math.ceil(blogListItems.length / blogsPerPage));
+  currentBlogPage = Math.min(Math.max(currentBlogPage, 1), totalPages);
+
+  const startIndex = (currentBlogPage - 1) * blogsPerPage;
+  const pageBlogs = blogListItems.slice(startIndex, startIndex + blogsPerPage);
+
+  blogGrid.innerHTML = pageBlogs.map(renderBlogCard).join('');
+
+  if (!blogPagination || !blogPrevPage || !blogNextPage || !blogPageStatus) {
+    return;
+  }
+
+  const shouldShowPagination = totalPages > 1;
+  blogPagination.hidden = !shouldShowPagination;
+
+  if (!shouldShowPagination) {
+    return;
+  }
+
+  blogPrevPage.disabled = currentBlogPage === 1;
+  blogNextPage.disabled = currentBlogPage === totalPages;
+  blogPageStatus.textContent = `Page ${currentBlogPage} of ${totalPages}`;
+};
+
 const renderBlogList = async () => {
   if (!blogGrid || blogSlug) {
     return;
   }
 
   try {
-    const response = await fetch('/api/blogs');
+    const blogs = await fetchDevArticles();
 
-    if (!response.ok) {
-      throw new Error(`Failed to load blogs: ${response.status}`);
-    }
-
-    const payload = await response.json();
-
-    if (!Array.isArray(payload.blogs) || payload.blogs.length === 0) {
+    if (!blogs.length) {
+      blogGrid.innerHTML =
+        '<p class="blog-list-status">No articles are available right now.</p>';
       return;
     }
 
-    blogGrid.innerHTML = payload.blogs.map(renderBlogCard).join('');
+    blogListItems = blogs;
+    currentBlogPage = 1;
+    renderBlogPage();
   } catch (error) {
     console.error('Unable to load DEV blog list:', error);
+    blogGrid.innerHTML =
+      '<p class="blog-list-status">Articles are temporarily unavailable.</p>';
+    if (blogPagination) {
+      blogPagination.hidden = true;
+    }
   }
 };
+
+blogPrevPage?.addEventListener('click', () => {
+  currentBlogPage -= 1;
+  renderBlogPage();
+});
+
+blogNextPage?.addEventListener('click', () => {
+  currentBlogPage += 1;
+  renderBlogPage();
+});
 
 const showBlogStatus = (message) => {
   if (!blogDetailStatus) {
@@ -466,11 +561,9 @@ const loadRelatedArticles = async (currentSlug, currentTags) => {
   if (!listEl) return;
 
   try {
-    const res = await fetch('/api/blogs');
-    if (!res.ok) throw new Error('fetch failed');
-    const payload = await res.json();
+    const blogs = await fetchDevArticles();
 
-    const others = (payload.blogs || []).filter((b) => {
+    const others = blogs.filter((b) => {
       const slug = b.devSlug || b.localSlug || '';
       return slug !== currentSlug && !b.url?.endsWith(`/${currentSlug}`);
     });
@@ -670,18 +763,13 @@ const renderRelatedArticles = async (currentArticle) => {
   }
 
   try {
-    const response = await fetch('/api/blogs');
-    if (!response.ok) {
-      throw new Error(`Failed to load related blogs: ${response.status}`);
-    }
-
-    const payload = await response.json();
+    const blogs = await fetchDevArticles();
     const currentTags = new Set(
       (Array.isArray(currentArticle.tags) ? currentArticle.tags : []).map((tag) =>
         String(tag).toLowerCase(),
       ),
     );
-    const related = (Array.isArray(payload.blogs) ? payload.blogs : [])
+    const related = blogs
       .filter(
         (blog) =>
           blog.localSlug !== currentArticle.localSlug &&
@@ -824,7 +912,9 @@ const renderBlogDetail = async () => {
   showBlogStatus('Loading...');
 
   try {
-    const response = await fetch(`/api/blogs/${encodeURIComponent(blogSlug)}`);
+    const response = await fetch(`/api/blogs/${encodeURIComponent(blogSlug)}`, {
+      cache: 'no-store',
+    });
 
     if (response.status === 404) {
       showBlogStatus('Article not found.');

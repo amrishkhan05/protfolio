@@ -784,6 +784,55 @@ h3 {
   gap: 0.62rem;
 }
 
+.blog-list-status {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.blog-pagination {
+  margin-top: 0.78rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.56rem;
+}
+
+.blog-page-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 2.15rem;
+  height: 2.15rem;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--card-strong);
+  color: var(--text);
+  cursor: pointer;
+  transition:
+    border-color 180ms ease,
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.blog-page-btn:hover:not(:disabled),
+.blog-page-btn:focus-visible {
+  border-color: rgba(35, 103, 242, 0.38);
+  color: var(--primary);
+  transform: translateY(-1px);
+}
+
+.blog-page-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.46;
+}
+
+.blog-page-status {
+  min-width: 6.8rem;
+  color: var(--muted);
+  font-size: 0.84rem;
+  text-align: center;
+}
+
 .blog-card {
   display: block;
   color: var(--text);
@@ -3806,7 +3855,7 @@ body.is-blog-view .hero {
 .blog-body table {
   width: 100%;
   border-collapse: collapse;
-  margin: 1.6rem 0;
+  /* margin: 1.6rem 0; */
   font-size: 0.93rem;
   display: block;
   overflow-x: auto;
@@ -3888,10 +3937,10 @@ body.is-blog-view .hero {
   overflow-x: auto;
   white-space: pre;
   border: 1px solid var(--line);
-  border-radius: 12px;
+  /* border-radius: 12px; */
   padding: 1.2rem 1.4rem;
   background: rgba(20, 27, 43, 0.05);
-  margin: 1.4rem 0;
+  /* margin: 1.4rem 0; */
   line-height: 1.65;
 }
 

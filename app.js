@@ -17,88 +17,13 @@ const devUsername = process.env.DEV_USERNAME || 'amrishkhan05';
 const devApiBaseUrl = 'https://dev.to/api';
 const devApiHeaders = {
   Accept: 'application/json',
+  'Cache-Control': 'no-cache',
+  Pragma: 'no-cache',
   'User-Agent': 'amrishkhan.dev portfolio',
 };
 const siteUrl = 'https://amrishkhan.dev';
 const siteImageUrl = `${siteUrl}/favicon.svg`;
 const personId = `${siteUrl}/#person`;
-const mappedBlogPosts = [
-  {
-    title: "Unlocking the Power of the Browser Console: A Developer's Guide",
-    devSlug: 'unlocking-the-power-of-the-browser-console-a-developers-guide-4n7k',
-    description:
-      'A practical guide to using the browser console for debugging, inspection, and faster frontend development.',
-    publishedAt: '2025-10-17T00:00:00Z',
-    tags: ['Debugging', 'Browser Tools'],
-  },
-  {
-    title:
-      'Demystifying SOLID: 5 Principles for Building Robust and Maintainable Software',
-    devSlug:
-      'demystifying-solid-5-principles-for-building-robust-and-maintainable-software-2c9j',
-    description:
-      'A clear breakdown of SOLID principles for building maintainable, robust software systems.',
-    publishedAt: '2025-10-14T00:00:00Z',
-    tags: ['Architecture', 'Clean Code'],
-  },
-  {
-    title:
-      'GitHub Code Setup: Choosing Your Workflow (HTTPS, SSH, Terminal, and Desktop)',
-    devSlug:
-      'github-code-setup-choosing-your-workflow-https-ssh-terminal-desktop-7op',
-    description:
-      'A developer guide to choosing a GitHub setup workflow across HTTPS, SSH, terminal, and GitHub Desktop.',
-    publishedAt: '2025-10-08T00:00:00Z',
-    tags: ['GitHub', 'Developer Setup'],
-  },
-  {
-    title: 'Level Up Your Workflow: Mastering Bulk Actions in Postman',
-    devSlug: 'level-up-your-workflow-mastering-bulk-actions-in-postman-2489',
-    description:
-      'A focused Postman workflow guide for using bulk actions to speed up API testing and development.',
-    publishedAt: '2025-10-08T00:00:00Z',
-    tags: ['Postman', 'Productivity'],
-  },
-  {
-    title:
-      'Unraveling the JavaScript Event Loop: A Deep Dive for Developers',
-    devSlug: 'unraveling-the-javascript-event-loop-a-deep-dive-for-developers-50fg',
-    description:
-      'A developer-focused explanation of the JavaScript event loop, async behavior, and runtime execution.',
-    publishedAt: '2025-10-07T00:00:00Z',
-    tags: ['JavaScript', 'Runtime Internals'],
-  },
-  {
-    title:
-      "A Developer's Guide to API Types: Architectures, Use Cases, and Code Examples",
-    devSlug:
-      'a-developers-guide-to-api-types-architectures-use-cases-and-code-examples-3kbm',
-    description:
-      'A practical guide to API types, architecture choices, common use cases, and implementation examples.',
-    publishedAt: '2025-10-06T00:00:00Z',
-    tags: ['APIs', 'System Design'],
-  },
-  {
-    title:
-      "npm vs. Yarn vs. pnpm: A Developer's Guide to Choosing the Right Package Manager",
-    devSlug:
-      'npm-vs-yarn-vs-pnpm-a-developers-guide-to-choosing-the-right-package-manager-285f',
-    description:
-      'A comparison of npm, Yarn, and pnpm to help developers choose the right JavaScript package manager.',
-    publishedAt: '2025-10-06T00:00:00Z',
-    tags: ['Package Management', 'Node.js'],
-  },
-  {
-    title:
-      'The Postman Alternative Guide: Which API Client is Right for You in 2025?',
-    devSlug:
-      'the-postman-alternative-guide-which-api-client-is-right-for-you-in-2025-2p0b',
-    description:
-      'A 2025 guide to Postman alternatives and API clients for different developer workflows.',
-    publishedAt: '2025-10-06T00:00:00Z',
-    tags: ['API Tooling', 'Developer Experience'],
-  },
-];
 
 const metricsDir = process.env.VERCEL
   ? path.join(os.tmpdir(), 'amrishkhan-dev-metrics')
@@ -117,41 +42,38 @@ const slugify = (value) =>
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '');
 
-const normalizeTitle = (value) =>
-  String(value)
-    .toLowerCase()
-    .replace(/&/g, 'and')
-    .replace(/[^a-z0-9]+/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-
-const normalizeDevArticle = (article, fallback) => {
-  const title = article?.title || fallback.title;
-  const devSlug = article?.slug || fallback.devSlug || null;
+const normalizeDevArticle = (article) => {
+  const title = article?.title || 'Untitled article';
+  const devSlug = article?.slug || slugify(title);
   const publishedAt =
-    article?.published_at || article?.published_timestamp || fallback.publishedAt;
+    article?.published_at ||
+    article?.published_timestamp ||
+    article?.created_at ||
+    null;
   const tags =
     Array.isArray(article?.tag_list) && article.tag_list.length
       ? article.tag_list
-      : fallback.tags;
+      : typeof article?.tags === 'string' && article.tags.trim()
+        ? article.tags
+            .split(',')
+            .map((tag) => tag.trim())
+            .filter(Boolean)
+        : [];
 
   return {
     title,
-    localSlug: slugify(fallback.title),
+    localSlug: slugify(title),
     devSlug,
-    description: article?.description || fallback.description || '',
+    description: article?.description || '',
     publishedAt,
     tags,
     readingTimeMinutes: article?.reading_time_minutes || null,
     coverImage: article?.cover_image || article?.social_image || null,
-    url: `/blog/${devSlug || slugify(fallback.title)}`,
+    url: `/blog/${devSlug}`,
     devUrl: article?.url || null,
-    source: article ? 'dev' : 'fallback',
+    source: 'dev',
   };
 };
-
-const getMappedFallbackBlogs = () =>
-  mappedBlogPosts.map((post) => normalizeDevArticle(null, post));
 
 const fetchDevJson = async (url) => {
   const controller = new AbortController();
@@ -159,6 +81,7 @@ const fetchDevJson = async (url) => {
 
   try {
     const response = await fetch(url, {
+      cache: 'no-store',
       headers: devApiHeaders,
       signal: controller.signal,
     });
@@ -183,19 +106,8 @@ const fetchMappedDevBlogs = async () => {
     throw new Error('DEV API returned an invalid article list.');
   }
 
-  const articlesByTitle = new Map(
-    articles.map((article) => [normalizeTitle(article.title), article]),
-  );
-
-  return mappedBlogPosts.map((post) =>
-    normalizeDevArticle(articlesByTitle.get(normalizeTitle(post.title)), post),
-  );
+  return articles.map(normalizeDevArticle);
 };
-
-const findMappedBlog = (slug) =>
-  mappedBlogPosts.find(
-    (post) => slugify(post.title) === slug || post.devSlug === slug,
-  );
 
 const escapeHtml = (value) =>
   String(value)
@@ -295,20 +207,16 @@ const getPersonJsonLd = () => ({
 });
 
 const getBlogArticleForSeo = async (slug) => {
-  const fallback = findMappedBlog(slug);
-
-  if (!fallback) {
-    return null;
-  }
-
   try {
     const blogs = await fetchMappedDevBlogs();
-    return blogs.find(
-      (article) => article.localSlug === slug || article.devSlug === slug,
-    ) || normalizeDevArticle(null, fallback);
+    return (
+      blogs.find(
+        (article) => article.localSlug === slug || article.devSlug === slug,
+      ) || null
+    );
   } catch (error) {
     console.error(`Could not read DEV article SEO data for ${slug}:`, error);
-    return normalizeDevArticle(null, fallback);
+    return null;
   }
 };
 
@@ -534,7 +442,9 @@ app.post('/api/views', async (_req, res) => {
 });
 
 app.get('/api/blogs', async (_req, res) => {
-  res.set('Cache-Control', 'public, max-age=300, stale-while-revalidate=1800');
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.set('Pragma', 'no-cache');
+  res.set('Expires', '0');
 
   try {
     const blogs = await fetchMappedDevBlogs();
@@ -543,45 +453,25 @@ app.get('/api/blogs', async (_req, res) => {
     console.error('Could not read DEV articles:', error);
     res.status(200).json({
       username: devUsername,
-      source: 'fallback',
+      source: 'dev',
       warning: 'DEV articles are temporarily unavailable.',
-      blogs: getMappedFallbackBlogs(),
+      blogs: [],
     });
   }
 });
 
 app.get('/api/blogs/:slug', async (req, res) => {
-  const fallback = findMappedBlog(req.params.slug);
-
-  if (!fallback) {
-    return res.status(404).json({ error: 'Blog post not found.' });
-  }
-
-  res.set('Cache-Control', 'public, max-age=300, stale-while-revalidate=1800');
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.set('Pragma', 'no-cache');
+  res.set('Expires', '0');
 
   try {
-    const blogs = await fetchMappedDevBlogs();
-    const mappedArticle = blogs.find(
-      (article) =>
-        article.localSlug === req.params.slug ||
-        article.devSlug === req.params.slug,
-    );
-
-    if (!mappedArticle?.devSlug) {
-      return res.status(200).json({
-        ...normalizeDevArticle(null, fallback),
-        bodyHtml: '',
-        bodyMarkdown: '',
-        unavailable: true,
-        message: 'This article is not available from DEV yet.',
-      });
-    }
-
     const article = await fetchDevJson(
       `${devApiBaseUrl}/articles/${encodeURIComponent(
         devUsername,
-      )}/${encodeURIComponent(mappedArticle.devSlug)}`,
+      )}/${encodeURIComponent(req.params.slug)}`,
     );
+    const mappedArticle = normalizeDevArticle(article);
 
     res.json({
       ...mappedArticle,
@@ -602,12 +492,8 @@ app.get('/api/blogs/:slug', async (req, res) => {
     });
   } catch (error) {
     console.error(`Could not read DEV article ${req.params.slug}:`, error);
-    res.status(200).json({
-      ...normalizeDevArticle(null, fallback),
-      bodyHtml: '',
-      bodyMarkdown: '',
-      unavailable: true,
-      message: 'This article is temporarily unavailable.',
+    res.status(503).json({
+      error: 'This article is temporarily unavailable.',
     });
   }
 });
@@ -621,11 +507,19 @@ Sitemap: ${siteUrl}/sitemap.xml
 `);
 });
 
-app.get('/sitemap.xml', (_req, res) => {
+app.get('/sitemap.xml', async (_req, res) => {
+  let blogs = [];
+
+  try {
+    blogs = await fetchMappedDevBlogs();
+  } catch (error) {
+    console.error('Could not read DEV articles for sitemap:', error);
+  }
+
   const urls = [
     { loc: `${siteUrl}/`, priority: '1.0' },
     { loc: `${siteUrl}/aruvix`, priority: '0.9' },
-    ...getMappedFallbackBlogs().map((blog) => ({
+    ...blogs.map((blog) => ({
       loc: absoluteUrl(blog.url),
       lastmod: blog.publishedAt,
       priority: '0.7',
