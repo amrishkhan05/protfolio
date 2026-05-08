@@ -1276,6 +1276,10 @@ body.is-blog-view .hero {
   padding-bottom: 0;
 }
 
+body.is-blog-view .hero-layout {
+  display: none;
+}
+
 body.is-blog-view .hero-content,
 body.is-blog-view .bg-shape {
   display: none;
