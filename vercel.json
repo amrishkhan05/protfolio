@@ -11,5 +11,41 @@
       "src": "/(.*)",
       "dest": "/api/index.js"
     }
+  ],
+  "headers": [
+    {
+      "source": "/api/blogs(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "private, no-store, no-cache, max-age=0, must-revalidate, proxy-revalidate"
+        },
+        {
+          "key": "CDN-Cache-Control",
+          "value": "no-store"
+        },
+        {
+          "key": "Vercel-CDN-Cache-Control",
+          "value": "no-store"
+        }
+      ]
+    },
+    {
+      "source": "/blog/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "private, no-store, no-cache, max-age=0, must-revalidate, proxy-revalidate"
+        },
+        {
+          "key": "CDN-Cache-Control",
+          "value": "no-store"
+        },
+        {
+          "key": "Vercel-CDN-Cache-Control",
+          "value": "no-store"
+        }
+      ]
+    }
   ]
 }

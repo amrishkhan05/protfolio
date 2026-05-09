@@ -49,7 +49,7 @@ const prefersDark = globalThis.matchMedia?.(
 const countFormatter = new Intl.NumberFormat('en-US');
 const searchParams = new URLSearchParams(globalThis.location.search);
 const blogSlug = globalThis.location.pathname.match(/^\/blog\/([^/]+)\/?$/)?.[1];
-const devArticlesUrl = 'https://dev.to/api/articles?username=amrishkhan05';
+const devArticlesUrl = '/api/blogs';
 const blogsPerPage = 6;
 let blogListItems = [];
 let currentBlogPage = 1;
@@ -115,49 +115,79 @@ const slugifyText = (value) => {
   return slug || 'section';
 };
 
-const normalizeDevArticle = (article) => {
-  const title = article?.title || 'Untitled article';
-  const devSlug = article?.slug || slugifyText(title);
-  const tags =
-    Array.isArray(article?.tag_list) && article.tag_list.length
-      ? article.tag_list
-      : typeof article?.tags === 'string' && article.tags.trim()
-        ? article.tags
-            .split(',')
-            .map((tag) => tag.trim())
-            .filter(Boolean)
-        : [];
+const fetchFreshJson = async (path, params = {}) => {
+  const url = new URL(path, globalThis.location.origin);
 
-  return {
-    title,
-    localSlug: slugifyText(title),
-    devSlug,
-    description: article?.description || '',
-    publishedAt:
-      article?.published_at || article?.published_timestamp || article?.created_at || null,
-    tags,
-    readingTimeMinutes: article?.reading_time_minutes || null,
-    coverImage: article?.cover_image || article?.social_image || null,
-    url: `/blog/${devSlug}`,
-    devUrl: article?.url || null,
-    source: 'dev',
-  };
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== '') {
+      url.searchParams.set(key, String(value));
+    }
+  });
+
+  url.searchParams.set('_ts', Date.now().toString());
+
+  const res = await fetch(url.toString(), {
+    cache: 'no-store',
+    headers: {
+      Accept: 'application/json',
+      'Cache-Control': 'no-cache',
+      Pragma: 'no-cache',
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error(`Failed to load ${path}: ${res.status}`);
+  }
+
+  return res.json();
 };
 
 const fetchDevArticles = async () => {
-  const res = await fetch(devArticlesUrl, { cache: 'no-store' });
+  const payload = await fetchFreshJson(devArticlesUrl, {
+    per_page: 100,
+    all: 1,
+  });
 
-  if (!res.ok) {
-    throw new Error(`Failed to load DEV articles: ${res.status}`);
+  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
+    throw new Error('DEV articles response was malformed.');
   }
 
-  const articles = await res.json();
+  const articles = payload.blogs;
 
   if (!Array.isArray(articles)) {
-    throw new Error('DEV articles response was not an array.');
+    throw new Error('DEV articles payload did not contain an article array.');
   }
 
-  return articles.map(normalizeDevArticle);
+  const validArticles = articles.filter((article) => {
+    const isValid =
+      article &&
+      typeof article === 'object' &&
+      typeof article.title === 'string' &&
+      typeof article.url === 'string';
+
+    if (!isValid) {
+      console.warn('Skipping malformed DEV article payload:', article);
+    }
+
+    return isValid;
+  });
+
+  const apiCount = Number(payload.count ?? payload.renderedCount ?? articles.length);
+
+  if (Number.isFinite(apiCount) && apiCount !== validArticles.length) {
+    console.warn(
+      `DEV API result count (${apiCount}) differs from usable rendered count (${validArticles.length}).`,
+    );
+  }
+
+  console.info(
+    `DEV articles loaded: api=${Number.isFinite(apiCount) ? apiCount : 'unknown'}, rendered=${validArticles.length}, fetchedAt=${payload.fetchedAt || 'unknown'}`,
+  );
+
+  return {
+    articles: validArticles,
+    meta: payload,
+  };
 };
 
 const createCopyButton = (label) => {
@@ -403,6 +433,13 @@ const renderBlogPage = () => {
 
   blogGrid.innerHTML = pageBlogs.map(renderBlogCard).join('');
 
+  const renderedCards = blogGrid.querySelectorAll('.blog-card').length;
+  if (renderedCards !== pageBlogs.length) {
+    console.warn(
+      `Rendered blog card count (${renderedCards}) differs from current page item count (${pageBlogs.length}).`,
+    );
+  }
+
   if (!blogPagination || !blogPrevPage || !blogNextPage || !blogPageStatus) {
     return;
   }
@@ -425,7 +462,14 @@ const renderBlogList = async () => {
   }
 
   try {
-    const blogs = await fetchDevArticles();
+    blogGrid.innerHTML =
+      '<p class="blog-list-status">Loading latest articles...</p>';
+    if (blogPagination) {
+      blogPagination.hidden = true;
+    }
+
+    const { articles: blogs, meta } = await fetchDevArticles();
+    const apiCount = Number(meta.count ?? meta.renderedCount ?? blogs.length);
 
     if (!blogs.length) {
       blogGrid.innerHTML =
@@ -434,6 +478,12 @@ const renderBlogList = async () => {
     }
 
     blogListItems = blogs;
+    if (Number.isFinite(apiCount) && apiCount !== blogListItems.length) {
+      console.warn(
+        `DEV API result count (${apiCount}) differs from list render count (${blogListItems.length}).`,
+      );
+    }
+
     currentBlogPage = 1;
     renderBlogPage();
   } catch (error) {
@@ -561,7 +611,7 @@ const loadRelatedArticles = async (currentSlug, currentTags) => {
   if (!listEl) return;
 
   try {
-    const blogs = await fetchDevArticles();
+    const { articles: blogs } = await fetchDevArticles();
 
     const others = blogs.filter((b) => {
       const slug = b.devSlug || b.localSlug || '';
@@ -763,7 +813,7 @@ const renderRelatedArticles = async (currentArticle) => {
   }
 
   try {
-    const blogs = await fetchDevArticles();
+    const { articles: blogs } = await fetchDevArticles();
     const currentTags = new Set(
       (Array.isArray(currentArticle.tags) ? currentArticle.tags : []).map((tag) =>
         String(tag).toLowerCase(),
@@ -912,20 +962,14 @@ const renderBlogDetail = async () => {
   showBlogStatus('Loading...');
 
   try {
-    const response = await fetch(`/api/blogs/${encodeURIComponent(blogSlug)}`, {
-      cache: 'no-store',
-    });
+    const article = await fetchFreshJson(
+      `/api/blogs/${encodeURIComponent(blogSlug)}`,
+    );
 
-    if (response.status === 404) {
-      showBlogStatus('Article not found.');
-      return;
+    if (!article || typeof article !== 'object' || Array.isArray(article)) {
+      throw new Error('Blog article response was malformed.');
     }
 
-    if (!response.ok) {
-      throw new Error(`Failed to load blog: ${response.status}`);
-    }
-
-    const article = await response.json();
     const tags = Array.isArray(article.tags) ? article.tags : [];
 
     document.title = `${article.title} | amrishkhan.dev`;

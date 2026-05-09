@@ -15,9 +15,11 @@ const kvViewsKey = 'amrishkhan.dev:portfolio:views';
 const kvUpdatedAtKey = 'amrishkhan.dev:portfolio:updatedAt';
 const devUsername = process.env.DEV_USERNAME || 'amrishkhan05';
 const devApiBaseUrl = 'https://dev.to/api';
+const devArticlesPerPage = 100;
+const devMaxArticlePages = 10;
 const devApiHeaders = {
   Accept: 'application/json',
-  'Cache-Control': 'no-cache',
+  'Cache-Control': 'no-store, no-cache, must-revalidate',
   Pragma: 'no-cache',
   'User-Agent': 'amrishkhan.dev portfolio',
 };
@@ -33,7 +35,30 @@ let memoryMetrics = { views: 0, updatedAt: null };
 let useMemoryFallback = false;
 let writeQueue = Promise.resolve();
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.set('etag', false);
+
+const noStoreHeaderValue =
+  'private, no-store, no-cache, max-age=0, must-revalidate, proxy-revalidate';
+
+const setNoStoreHeaders = (res) => {
+  res.set('Cache-Control', noStoreHeaderValue);
+  res.set('CDN-Cache-Control', 'no-store');
+  res.set('Vercel-CDN-Cache-Control', 'no-store');
+  res.set('Surrogate-Control', 'no-store');
+  res.set('Pragma', 'no-cache');
+  res.set('Expires', '0');
+  res.set('X-Accel-Expires', '0');
+};
+
+app.use(
+  express.static(path.join(__dirname, 'public'), {
+    etag: false,
+    lastModified: false,
+    setHeaders: (res) => {
+      setNoStoreHeaders(res);
+    },
+  }),
+);
 
 const slugify = (value) =>
   String(value)
@@ -42,14 +67,31 @@ const slugify = (value) =>
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '');
 
+const isRecord = (value) =>
+  value !== null && typeof value === 'object' && !Array.isArray(value);
+
+const toValidDateTime = (value) => {
+  if (!value) {
+    return null;
+  }
+
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? null : value;
+};
+
 const normalizeDevArticle = (article) => {
+  if (!isRecord(article)) {
+    return null;
+  }
+
   const title = article?.title || 'Untitled article';
   const devSlug = article?.slug || slugify(title);
-  const publishedAt =
+  const publishedAt = toValidDateTime(
     article?.published_at ||
-    article?.published_timestamp ||
-    article?.created_at ||
-    null;
+      article?.published_timestamp ||
+      article?.created_at ||
+      null,
+  );
   const tags =
     Array.isArray(article?.tag_list) && article.tag_list.length
       ? article.tag_list
@@ -61,6 +103,7 @@ const normalizeDevArticle = (article) => {
         : [];
 
   return {
+    id: article?.id || `${devSlug}:${publishedAt || title}`,
     title,
     localSlug: slugify(title),
     devSlug,
@@ -75,38 +118,159 @@ const normalizeDevArticle = (article) => {
   };
 };
 
-const fetchDevJson = async (url) => {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 7000);
+const getArticleDedupeKey = (article) =>
+  String(article?.id || article?.devUrl || article?.devSlug || article?.localSlug);
 
-  try {
-    const response = await fetch(url, {
-      cache: 'no-store',
-      headers: devApiHeaders,
-      signal: controller.signal,
-    });
+const sortNewestFirst = (a, b) =>
+  new Date(b.publishedAt || 0).getTime() - new Date(a.publishedAt || 0).getTime();
 
-    if (!response.ok) {
-      throw new Error(`DEV API request failed: ${response.status}`);
+const dedupeArticles = (articles) => {
+  const seen = new Set();
+
+  return articles.filter((article) => {
+    const key = getArticleDedupeKey(article);
+
+    if (!key || seen.has(key)) {
+      return false;
     }
 
-    return response.json();
-  } finally {
-    clearTimeout(timeout);
-  }
+    seen.add(key);
+    return true;
+  });
 };
 
-const fetchMappedDevBlogs = async () => {
-  const url = `${devApiBaseUrl}/articles?username=${encodeURIComponent(
-    devUsername,
-  )}&per_page=100`;
+const parsePositiveInt = (value, fallback, max = Number.MAX_SAFE_INTEGER) => {
+  const parsed = Number.parseInt(value, 10);
+
+  if (!Number.isFinite(parsed) || parsed < 1) {
+    return fallback;
+  }
+
+  return Math.min(parsed, max);
+};
+
+const buildFreshDevUrl = (pathname, params = {}) => {
+  const pathSuffix = String(pathname).startsWith('/')
+    ? String(pathname)
+    : `/${pathname}`;
+  const url = new URL(`${devApiBaseUrl}${pathSuffix}`);
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== '') {
+      url.searchParams.set(key, String(value));
+    }
+  });
+
+  url.searchParams.set('_ts', Date.now().toString());
+  return url.toString();
+};
+
+const fetchDevJson = async (url) => {
+  const attempts = 2;
+  let lastError;
+
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 12000);
+
+    try {
+      const response = await fetch(url, {
+        cache: 'no-store',
+        headers: devApiHeaders,
+        signal: controller.signal,
+      });
+
+      if (!response.ok) {
+        throw new Error(`DEV API request failed: ${response.status}`);
+      }
+
+      return response.json();
+    } catch (error) {
+      lastError = error;
+
+      if (attempt < attempts) {
+        await new Promise((resolve) => setTimeout(resolve, 350 * attempt));
+      }
+    } finally {
+      clearTimeout(timeout);
+    }
+  }
+
+  throw lastError;
+};
+
+const fetchDevArticlePage = async ({ page = 1, perPage = devArticlesPerPage } = {}) => {
+  const url = buildFreshDevUrl('/articles', {
+    username: devUsername,
+    per_page: perPage,
+    page,
+  });
   const articles = await fetchDevJson(url);
 
   if (!Array.isArray(articles)) {
-    throw new Error('DEV API returned an invalid article list.');
+    throw new Error(`DEV API returned an invalid article list for page ${page}.`);
   }
 
-  return articles.map(normalizeDevArticle);
+  return articles;
+};
+
+const fetchMappedDevBlogs = async ({
+  page = 1,
+  perPage = devArticlesPerPage,
+  fetchAll = true,
+} = {}) => {
+  const safePage = parsePositiveInt(page, 1);
+  const safePerPage = parsePositiveInt(perPage, devArticlesPerPage, devArticlesPerPage);
+  const rawArticles = [];
+
+  if (fetchAll) {
+    for (let nextPage = 1; nextPage <= devMaxArticlePages; nextPage += 1) {
+      const pageArticles = await fetchDevArticlePage({
+        page: nextPage,
+        perPage: safePerPage,
+      });
+      rawArticles.push(...pageArticles);
+
+      if (pageArticles.length < safePerPage) {
+        break;
+      }
+    }
+  } else {
+    rawArticles.push(
+      ...(await fetchDevArticlePage({ page: safePage, perPage: safePerPage })),
+    );
+  }
+
+  const normalizedArticles = rawArticles
+    .map(normalizeDevArticle)
+    .filter(Boolean)
+    .sort(sortNewestFirst);
+  const blogs = dedupeArticles(normalizedArticles);
+
+  if (blogs.length !== normalizedArticles.length) {
+    console.warn(
+      `DEV article dedupe removed ${normalizedArticles.length - blogs.length} duplicate item(s).`,
+    );
+  }
+
+  console.log(
+    `DEV articles fetched: raw=${rawArticles.length}, normalized=${normalizedArticles.length}, rendered=${blogs.length}, page=${safePage}, perPage=${safePerPage}, fetchAll=${fetchAll}`,
+  );
+
+  return {
+    blogs,
+    meta: {
+      username: devUsername,
+      source: 'dev',
+      rawCount: rawArticles.length,
+      normalizedCount: normalizedArticles.length,
+      renderedCount: blogs.length,
+      page: safePage,
+      perPage: safePerPage,
+      fetchedAt: new Date().toISOString(),
+      cache: 'no-store',
+    },
+  };
 };
 
 const escapeHtml = (value) =>
@@ -208,7 +372,7 @@ const getPersonJsonLd = () => ({
 
 const getBlogArticleForSeo = async (slug) => {
   try {
-    const blogs = await fetchMappedDevBlogs();
+    const { blogs } = await fetchMappedDevBlogs();
     return (
       blogs.find(
         (article) => article.localSlug === slug || article.devSlug === slug,
@@ -412,12 +576,7 @@ const incrementViewStats = async () => {
 };
 
 app.get('/api/views', async (_req, res) => {
-  res.set(
-    'Cache-Control',
-    'no-store, no-cache, must-revalidate, proxy-revalidate',
-  );
-  res.set('Pragma', 'no-cache');
-  res.set('Expires', '0');
+  setNoStoreHeaders(res);
   const metrics = await getViewStats();
   res.json({
     totalViews: metrics.views,
@@ -427,12 +586,7 @@ app.get('/api/views', async (_req, res) => {
 });
 
 app.post('/api/views', async (_req, res) => {
-  res.set(
-    'Cache-Control',
-    'no-store, no-cache, must-revalidate, proxy-revalidate',
-  );
-  res.set('Pragma', 'no-cache');
-  res.set('Expires', '0');
+  setNoStoreHeaders(res);
   const metrics = await incrementViewStats();
   res.json({
     totalViews: metrics.views,
@@ -441,19 +595,32 @@ app.post('/api/views', async (_req, res) => {
   });
 });
 
-app.get('/api/blogs', async (_req, res) => {
-  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-  res.set('Pragma', 'no-cache');
-  res.set('Expires', '0');
+app.get('/api/blogs', async (req, res) => {
+  setNoStoreHeaders(res);
 
   try {
-    const blogs = await fetchMappedDevBlogs();
-    res.json({ username: devUsername, source: 'dev', blogs });
+    const result = await fetchMappedDevBlogs({
+      page: req.query.page,
+      perPage: req.query.per_page,
+      fetchAll: req.query.all !== '0',
+    });
+
+    res.json({
+      ...result.meta,
+      count: result.blogs.length,
+      blogs: result.blogs,
+    });
   } catch (error) {
     console.error('Could not read DEV articles:', error);
     res.status(200).json({
       username: devUsername,
       source: 'dev',
+      count: 0,
+      rawCount: 0,
+      normalizedCount: 0,
+      renderedCount: 0,
+      fetchedAt: new Date().toISOString(),
+      cache: 'no-store',
       warning: 'DEV articles are temporarily unavailable.',
       blogs: [],
     });
@@ -461,17 +628,26 @@ app.get('/api/blogs', async (_req, res) => {
 });
 
 app.get('/api/blogs/:slug', async (req, res) => {
-  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-  res.set('Pragma', 'no-cache');
-  res.set('Expires', '0');
+  setNoStoreHeaders(res);
 
   try {
     const article = await fetchDevJson(
-      `${devApiBaseUrl}/articles/${encodeURIComponent(
-        devUsername,
-      )}/${encodeURIComponent(req.params.slug)}`,
+      buildFreshDevUrl(
+        `/articles/${encodeURIComponent(devUsername)}/${encodeURIComponent(
+          req.params.slug,
+        )}`,
+      ),
     );
+
+    if (!isRecord(article)) {
+      throw new Error('DEV API returned a malformed article payload.');
+    }
+
     const mappedArticle = normalizeDevArticle(article);
+
+    if (!mappedArticle) {
+      throw new Error('DEV API returned an article that could not be normalized.');
+    }
 
     res.json({
       ...mappedArticle,
@@ -509,9 +685,10 @@ Sitemap: ${siteUrl}/sitemap.xml
 
 app.get('/sitemap.xml', async (_req, res) => {
   let blogs = [];
+  setNoStoreHeaders(res);
 
   try {
-    blogs = await fetchMappedDevBlogs();
+    blogs = (await fetchMappedDevBlogs()).blogs;
   } catch (error) {
     console.error('Could not read DEV articles for sitemap:', error);
   }
@@ -547,6 +724,7 @@ ${urls
 });
 
 app.get('/blog/:slug', async (req, res) => {
+  setNoStoreHeaders(res);
   const article = await getBlogArticleForSeo(req.params.slug);
 
   if (!article) {
@@ -555,7 +733,6 @@ app.get('/blog/:slug', async (req, res) => {
       .sendFile(path.join(__dirname, 'public', 'index.html'));
   }
 
-  res.set('Cache-Control', 'public, max-age=300, stale-while-revalidate=1800');
   res.send(await renderBlogPage(article));
 });
 
