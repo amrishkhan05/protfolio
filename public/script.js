@@ -50,9 +50,12 @@ const countFormatter = new Intl.NumberFormat('en-US');
 const searchParams = new URLSearchParams(globalThis.location.search);
 const blogSlug = globalThis.location.pathname.match(/^\/blog\/([^/]+)\/?$/)?.[1];
 const devArticlesUrl = '/api/blogs';
-const blogsPerPage = 6;
+const blogRowsPerPage = 2;
+const mobileBlogRowsPerPage = 4;
 let blogListItems = [];
 let currentBlogPage = 1;
+let currentBlogsPerPage = 6;
+let blogResizeTimer;
 
 const safeStorageGet = (key) => {
   try {
@@ -420,16 +423,53 @@ const renderBlogCard = (blog) => {
   `;
 };
 
-const renderBlogPage = () => {
+const getBlogGridColumnCount = () => {
+  if (!blogGrid) {
+    return 1;
+  }
+
+  const columns = globalThis
+    .getComputedStyle(blogGrid)
+    .gridTemplateColumns.trim();
+
+  if (!columns || columns === 'none') {
+    return 1;
+  }
+
+  return columns.split(/\s+/).length || 1;
+};
+
+const getBlogsPerPage = () => {
+  const columns = getBlogGridColumnCount();
+  const rows = columns === 1 ? mobileBlogRowsPerPage : blogRowsPerPage;
+
+  return Math.max(1, columns * rows);
+};
+
+const renderBlogPage = ({ preserveFirstBlog = false } = {}) => {
   if (!blogGrid) {
     return;
   }
 
-  const totalPages = Math.max(1, Math.ceil(blogListItems.length / blogsPerPage));
+  const previousStartIndex = (currentBlogPage - 1) * currentBlogsPerPage;
+  currentBlogsPerPage = getBlogsPerPage();
+
+  const totalPages = Math.max(
+    1,
+    Math.ceil(blogListItems.length / currentBlogsPerPage),
+  );
+
+  if (preserveFirstBlog) {
+    currentBlogPage = Math.floor(previousStartIndex / currentBlogsPerPage) + 1;
+  }
+
   currentBlogPage = Math.min(Math.max(currentBlogPage, 1), totalPages);
 
-  const startIndex = (currentBlogPage - 1) * blogsPerPage;
-  const pageBlogs = blogListItems.slice(startIndex, startIndex + blogsPerPage);
+  const startIndex = (currentBlogPage - 1) * currentBlogsPerPage;
+  const pageBlogs = blogListItems.slice(
+    startIndex,
+    startIndex + currentBlogsPerPage,
+  );
 
   blogGrid.innerHTML = pageBlogs.map(renderBlogCard).join('');
 
@@ -505,6 +545,30 @@ blogNextPage?.addEventListener('click', () => {
   currentBlogPage += 1;
   renderBlogPage();
 });
+
+const syncBlogPageSize = () => {
+  if (!blogGrid || !blogListItems.length || blogSlug) {
+    return;
+  }
+
+  const nextBlogsPerPage = getBlogsPerPage();
+
+  if (nextBlogsPerPage === currentBlogsPerPage) {
+    return;
+  }
+
+  globalThis.clearTimeout(blogResizeTimer);
+  blogResizeTimer = globalThis.setTimeout(() => {
+    renderBlogPage({ preserveFirstBlog: true });
+  }, 120);
+};
+
+if (blogGrid && 'ResizeObserver' in globalThis) {
+  const blogGridObserver = new ResizeObserver(syncBlogPageSize);
+  blogGridObserver.observe(blogGrid);
+} else {
+  globalThis.addEventListener('resize', syncBlogPageSize);
+}
 
 const showBlogStatus = (message) => {
   if (!blogDetailStatus) {
