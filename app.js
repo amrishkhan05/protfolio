@@ -22,6 +22,7 @@ const devApiHeaders = {
   'Cache-Control': 'no-store, no-cache, must-revalidate',
   Pragma: 'no-cache',
   'User-Agent': 'amrishkhan.dev portfolio',
+  'Accept-Encoding': 'identity',
 };
 const siteUrl = 'https://amrishkhan.dev';
 const siteImageUrl = `${siteUrl}/favicon.svg`;
@@ -88,18 +89,18 @@ const normalizeDevArticle = (article) => {
   const devSlug = article?.slug || slugify(title);
   const publishedAt = toValidDateTime(
     article?.published_at ||
-      article?.published_timestamp ||
-      article?.created_at ||
-      null,
+    article?.published_timestamp ||
+    article?.created_at ||
+    null,
   );
   const tags =
     Array.isArray(article?.tag_list) && article.tag_list.length
       ? article.tag_list
       : typeof article?.tags === 'string' && article.tags.trim()
         ? article.tags
-            .split(',')
-            .map((tag) => tag.trim())
-            .filter(Boolean)
+          .split(',')
+          .map((tag) => tag.trim())
+          .filter(Boolean)
         : [];
 
   return {
@@ -205,6 +206,7 @@ const fetchDevArticlePage = async ({ page = 1, perPage = devArticlesPerPage } = 
     per_page: perPage,
     page,
   });
+  console.log("dev", url);
   const articles = await fetchDevJson(url);
 
   if (!Array.isArray(articles)) {
@@ -705,17 +707,17 @@ app.get('/sitemap.xml', async (_req, res) => {
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls
-  .map((url) => {
-    const lastmod = url.lastmod
-      ? `\n    <lastmod>${escapeXml(url.lastmod.slice(0, 10))}</lastmod>`
-      : '';
+      .map((url) => {
+        const lastmod = url.lastmod
+          ? `\n    <lastmod>${escapeXml(url.lastmod.slice(0, 10))}</lastmod>`
+          : '';
 
-    return `  <url>
+        return `  <url>
     <loc>${escapeXml(url.loc)}</loc>${lastmod}
     <priority>${escapeXml(url.priority)}</priority>
   </url>`;
-  })
-  .join('\n')}
+      })
+      .join('\n')}
 </urlset>
 `;
 

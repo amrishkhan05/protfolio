@@ -411,11 +411,10 @@ const renderBlogCard = (blog) => {
   return `
     <a class="blog-card" href="${escapeHtml(blog.url)}">
       <h4>${escapeHtml(blog.title)}</h4>
-      <p class="blog-meta">${escapeHtml(formatPublishedDate(blog.publishedAt))}${
-        blog.readingTimeMinutes
-          ? ` • ${escapeHtml(blog.readingTimeMinutes)} min read`
-          : ''
-      }</p>
+      <p class="blog-meta">${escapeHtml(formatPublishedDate(blog.publishedAt))}${blog.readingTimeMinutes
+      ? ` • ${escapeHtml(blog.readingTimeMinutes)} min read`
+      : ''
+    }</p>
       <div class="blog-tags">
         ${tags.map((tag) => `<span>${escapeHtml(tag)}</span>`).join('')}
       </div>
@@ -901,7 +900,7 @@ const renderRelatedArticles = async (currentArticle) => {
         (a, b) =>
           b.score - a.score ||
           new Date(b.publishedAt || 0).getTime() -
-            new Date(a.publishedAt || 0).getTime(),
+          new Date(a.publishedAt || 0).getTime(),
       )
       .slice(0, 4);
 
