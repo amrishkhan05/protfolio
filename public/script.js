@@ -1,55 +1,53 @@
 /** @format */
 
-const themeToggles = Array.from(document.querySelectorAll('.theme-toggle'));
+const themeToggles = Array.from(document.querySelectorAll(".theme-toggle"));
 const themeToggle = themeToggles[0] || null;
-const menuToggle = document.querySelector('.menu-toggle');
-const mobileMenu = document.getElementById('mobile-menu');
+const menuToggle = document.querySelector(".menu-toggle");
+const mobileMenu = document.getElementById("mobile-menu");
 const themeColorMeta = document.querySelector('meta[name="theme-color"]');
 const colorSchemeMeta = document.querySelector('meta[name="color-scheme"]');
-const viewCountNode = document.getElementById('portfolio-view-count');
-const ownerViewBadge = document.getElementById('owner-view-badge');
-const copyEmailBtn = document.getElementById('copy-email-btn');
-const backToTopBtn = document.getElementById('back-to-top');
-const homeContent = document.getElementById('home-content');
-const blogGrid = document.getElementById('blog-grid');
-const blogPagination = document.getElementById('blog-pagination');
-const blogPrevPage = document.getElementById('blog-prev-page');
-const blogNextPage = document.getElementById('blog-next-page');
-const blogPageStatus = document.getElementById('blog-page-status');
-const blogDetail = document.getElementById('blog-detail');
-const blogDetailStatus = document.getElementById('blog-detail-status');
-const blogDetailContent = document.getElementById('blog-detail-content');
-const blogDetailTitle = document.getElementById('blog-detail-title');
-const blogDetailMeta = document.getElementById('blog-detail-meta');
-const blogDetailSummary = document.getElementById('blog-detail-summary');
-const blogDetailCover = document.getElementById('blog-detail-cover');
-const blogDetailTags = document.getElementById('blog-detail-tags');
-const blogDetailBody = document.getElementById('blog-detail-body');
-const blogToc = document.getElementById('blog-toc');
-const blogTocList = document.getElementById('blog-toc-list');
-const blogRelated = document.getElementById('blog-related');
-const blogRelatedList = document.getElementById('blog-related-list');
-const blogToolsPanel = document.getElementById('blog-tools-panel');
-const blogToolList = document.getElementById('blog-tool-list');
-const ownerMaxViewsKey = 'portfolio-owner-max-views';
-const themeStorageKey = 'portfolio-theme';
-const lightThemeColor = '#f8f8f5';
-const darkThemeColor = '#0a0f1a';
-const kofiWidgetId = 'L3L71XQ4TR';
-const kofiWidgetLabel = 'Buy me a coffee on Ko-fi';
+const viewCountNode = document.getElementById("portfolio-view-count");
+const ownerViewBadge = document.getElementById("owner-view-badge");
+const copyEmailBtn = document.getElementById("copy-email-btn");
+const backToTopBtn = document.getElementById("back-to-top");
+const homeContent = document.getElementById("home-content");
+const blogGrid = document.getElementById("blog-grid");
+const blogPagination = document.getElementById("blog-pagination");
+const blogPrevPage = document.getElementById("blog-prev-page");
+const blogNextPage = document.getElementById("blog-next-page");
+const blogPageStatus = document.getElementById("blog-page-status");
+const blogDetail = document.getElementById("blog-detail");
+const blogDetailStatus = document.getElementById("blog-detail-status");
+const blogDetailContent = document.getElementById("blog-detail-content");
+const blogDetailTitle = document.getElementById("blog-detail-title");
+const blogDetailMeta = document.getElementById("blog-detail-meta");
+const blogDetailSummary = document.getElementById("blog-detail-summary");
+const blogDetailCover = document.getElementById("blog-detail-cover");
+const blogDetailTags = document.getElementById("blog-detail-tags");
+const blogDetailBody = document.getElementById("blog-detail-body");
+const blogToc = document.getElementById("blog-toc");
+const blogTocList = document.getElementById("blog-toc-list");
+const blogRelated = document.getElementById("blog-related");
+const blogRelatedList = document.getElementById("blog-related-list");
+const blogToolsPanel = document.getElementById("blog-tools-panel");
+const blogToolList = document.getElementById("blog-tool-list");
+const ownerMaxViewsKey = "portfolio-owner-max-views";
+const themeStorageKey = "portfolio-theme";
+const lightThemeColor = "#f8f8f5";
+const darkThemeColor = "#0a0f1a";
+const kofiWidgetId = "L3L71XQ4TR";
+const kofiWidgetLabel = "Buy me a coffee on Ko-fi";
 const kofiWidgetColors = {
-  light: '#2b2d30',
-  dark: '#41c9a2',
+  light: "#2b2d30",
+  dark: "#41c9a2",
 };
 let copyResetTimer;
 let activeHeadingObserver;
-const prefersDark = globalThis.matchMedia?.(
-  '(prefers-color-scheme: dark)',
-)?.matches;
-const countFormatter = new Intl.NumberFormat('en-US');
+const prefersDark = globalThis.matchMedia?.("(prefers-color-scheme: dark)")?.matches;
+const countFormatter = new Intl.NumberFormat("en-US");
 const searchParams = new URLSearchParams(globalThis.location.search);
 const blogSlug = globalThis.location.pathname.match(/^\/blog\/([^/]+)\/?$/)?.[1];
-const devArticlesUrl = '/api/blogs';
+const devArticlesUrl = "/api/blogs";
 const blogRowsPerPage = 2;
 const mobileBlogRowsPerPage = 4;
 let blogListItems = [];
@@ -83,58 +81,52 @@ const safeStorageRemove = (key) => {
 
 const formatPublishedDate = (value) => {
   if (!value) {
-    return 'Published date unavailable';
+    return "Published date unavailable";
   }
 
   const date = new Date(value);
 
   if (Number.isNaN(date.getTime())) {
-    return 'Published date unavailable';
+    return "Published date unavailable";
   }
 
-  return `Published: ${date.toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
+  return `Published: ${date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
   })}`;
 };
 
-const escapeHtml = (value) =>
-  String(value)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
+const escapeHtml = (value) => String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 
 const slugifyText = (value) => {
-  const slug = String(value || '')
+  const slug = String(value || "")
     .trim()
     .toLowerCase()
-    .replace(/&[a-z0-9#]+;/gi, '')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
+    .replace(/&[a-z0-9#]+;/gi, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 
-  return slug || 'section';
+  return slug || "section";
 };
 
 const fetchFreshJson = async (path, params = {}) => {
   const url = new URL(path, globalThis.location.origin);
 
   Object.entries(params).forEach(([key, value]) => {
-    if (value !== undefined && value !== null && value !== '') {
+    if (value !== undefined && value !== null && value !== "") {
       url.searchParams.set(key, String(value));
     }
   });
 
-  url.searchParams.set('_ts', Date.now().toString());
+  url.searchParams.set("_ts", Date.now().toString());
 
   const res = await fetch(url.toString(), {
-    cache: 'no-store',
+    cache: "no-store",
     headers: {
-      Accept: 'application/json',
-      'Cache-Control': 'no-cache',
-      Pragma: 'no-cache',
+      Accept: "application/json",
+      "Cache-Control": "no-cache",
+      Pragma: "no-cache",
     },
   });
 
@@ -147,60 +139,31 @@ const fetchFreshJson = async (path, params = {}) => {
 
 const fetchDevArticles = async () => {
   const payload = await fetchFreshJson(devArticlesUrl, {
-    per_page: 100,
+    per_page: 1000,
     all: 1,
   });
 
-  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
-    throw new Error('DEV articles response was malformed.');
+  if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
+    throw new Error("DEV articles response was malformed.");
   }
 
-  const articles = payload.blogs;
+  const articles = Array.isArray(payload.blogs) ? payload.blogs : [];
 
-  if (!Array.isArray(articles)) {
-    throw new Error('DEV articles payload did not contain an article array.');
-  }
-
-  const validArticles = articles.filter((article) => {
-    const isValid =
-      article &&
-      typeof article === 'object' &&
-      typeof article.title === 'string' &&
-      typeof article.url === 'string';
-
-    if (!isValid) {
-      console.warn('Skipping malformed DEV article payload:', article);
-    }
-
-    return isValid;
-  });
-
-  const apiCount = Number(payload.count ?? payload.renderedCount ?? articles.length);
-
-  if (Number.isFinite(apiCount) && apiCount !== validArticles.length) {
-    console.warn(
-      `DEV API result count (${apiCount}) differs from usable rendered count (${validArticles.length}).`,
-    );
-  }
-
-  console.info(
-    `DEV articles loaded: api=${Number.isFinite(apiCount) ? apiCount : 'unknown'}, rendered=${validArticles.length}, fetchedAt=${payload.fetchedAt || 'unknown'}`,
-  );
+  console.info(`DEV articles loaded: ${articles.length}`);
 
   return {
-    articles: validArticles,
-    meta: payload,
+    articles,
+    meta: { count: articles.length },
   };
 };
 
 const createCopyButton = (label) => {
-  const button = document.createElement('button');
-  button.className = 'copy-code-button';
-  button.type = 'button';
-  button.setAttribute('aria-label', label);
-  button.title = 'Copy';
-  button.innerHTML =
-    '<i class="fa-regular fa-copy icon-copy" aria-hidden="true"></i><i class="fa-solid fa-check icon-check" aria-hidden="true"></i>';
+  const button = document.createElement("button");
+  button.className = "copy-code-button";
+  button.type = "button";
+  button.setAttribute("aria-label", label);
+  button.title = "Copy";
+  button.innerHTML = '<i class="fa-regular fa-copy icon-copy" aria-hidden="true"></i><i class="fa-solid fa-check icon-check" aria-hidden="true"></i>';
   return button;
 };
 
@@ -209,17 +172,17 @@ const writeClipboardText = async (text) => {
     await navigator.clipboard.writeText(text);
     return true;
   } catch (_error) {
-    const textarea = document.createElement('textarea');
+    const textarea = document.createElement("textarea");
     textarea.value = text;
-    textarea.setAttribute('readonly', '');
-    textarea.style.position = 'fixed';
-    textarea.style.left = '-9999px';
-    textarea.style.top = '0';
+    textarea.setAttribute("readonly", "");
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    textarea.style.top = "0";
     document.body.append(textarea);
     textarea.select();
 
     try {
-      return document.execCommand('copy');
+      return document.execCommand("copy");
     } finally {
       textarea.remove();
     }
@@ -227,10 +190,10 @@ const writeClipboardText = async (text) => {
 };
 
 // Owner badge is opt-in only for the current URL: ?owner=1
-const isOwnerViewEnabled = searchParams.get('owner') === '1';
+const isOwnerViewEnabled = searchParams.get("owner") === "1";
 
 // Clear legacy persisted flag from older builds.
-safeStorageRemove('portfolio-owner-view');
+safeStorageRemove("portfolio-owner-view");
 
 if (ownerViewBadge) {
   ownerViewBadge.hidden = !isOwnerViewEnabled;
@@ -254,8 +217,7 @@ const renderOwnerCount = (value) => {
     return;
   }
 
-  viewCountNode.textContent =
-    value === null ? '--' : countFormatter.format(value);
+  viewCountNode.textContent = value === null ? "--" : countFormatter.format(value);
 };
 
 const applyStableOwnerCount = (incomingCount) => {
@@ -265,8 +227,7 @@ const applyStableOwnerCount = (incomingCount) => {
   }
 
   const previousMax = readOwnerMaxViews();
-  const stableCount =
-    previousMax === null ? incomingCount : Math.max(previousMax, incomingCount);
+  const stableCount = previousMax === null ? incomingCount : Math.max(previousMax, incomingCount);
   writeOwnerMaxViews(stableCount);
   renderOwnerCount(stableCount);
 };
@@ -277,32 +238,26 @@ if (isOwnerViewEnabled && viewCountNode) {
 }
 
 const applyTheme = (theme) => {
-  const scheme = theme === 'dark' ? 'dark' : 'only light';
+  const scheme = theme === "dark" ? "dark" : "only light";
   document.documentElement.dataset.theme = theme;
   document.documentElement.style.colorScheme = scheme;
-  const isDark = theme === 'dark';
-  themeColorMeta?.setAttribute(
-    'content',
-    isDark ? darkThemeColor : lightThemeColor,
-  );
-  colorSchemeMeta?.setAttribute('content', scheme);
+  const isDark = theme === "dark";
+  themeColorMeta?.setAttribute("content", isDark ? darkThemeColor : lightThemeColor);
+  colorSchemeMeta?.setAttribute("content", scheme);
 
   themeToggles.forEach((toggle) => {
-    toggle.setAttribute('aria-pressed', String(isDark));
-    toggle.setAttribute(
-      'aria-label',
-      isDark ? 'Switch to light theme' : 'Switch to dark theme',
-    );
+    toggle.setAttribute("aria-pressed", String(isDark));
+    toggle.setAttribute("aria-label", isDark ? "Switch to light theme" : "Switch to dark theme");
 
-    const icon = toggle.querySelector('i');
+    const icon = toggle.querySelector("i");
     if (icon) {
-      icon.className = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+      icon.className = isDark ? "fa-solid fa-sun" : "fa-solid fa-moon";
     }
   });
 };
 
 const savedTheme = safeStorageGet(themeStorageKey);
-const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light');
+const initialTheme = savedTheme || (prefersDark ? "dark" : "light");
 applyTheme(initialTheme);
 
 const drawKofiWidget = () => {
@@ -310,7 +265,7 @@ const drawKofiWidget = () => {
     return;
   }
 
-  const theme = document.documentElement.dataset.theme || 'light';
+  const theme = document.documentElement.dataset.theme || "light";
   // globalThis.kofiwidget2.init(
   //   kofiWidgetLabel,
   //   kofiWidgetColors[theme] || kofiWidgetColors.light,
@@ -323,7 +278,7 @@ drawKofiWidget();
 
 const updatePortfolioViews = async () => {
   try {
-    const response = await fetch('/api/views', { method: 'POST' });
+    const response = await fetch("/api/views", { method: "POST" });
 
     if (!response.ok) {
       throw new Error(`Failed to update view count: ${response.status}`);
@@ -336,7 +291,7 @@ const updatePortfolioViews = async () => {
       return;
     }
 
-    console.error('Unable to update portfolio views:', error);
+    console.error("Unable to update portfolio views:", error);
     renderOwnerCount(readOwnerMaxViews());
   }
 };
@@ -352,8 +307,8 @@ const copyEmailToClipboard = async () => {
 
   try {
     await navigator.clipboard.writeText(email);
-    copyEmailBtn.classList.add('is-copied');
-    copyEmailBtn.setAttribute('aria-label', 'Email copied');
+    copyEmailBtn.classList.add("is-copied");
+    copyEmailBtn.setAttribute("aria-label", "Email copied");
 
     globalThis.clearTimeout(copyResetTimer);
     copyResetTimer = globalThis.setTimeout(() => {
@@ -361,20 +316,20 @@ const copyEmailToClipboard = async () => {
         return;
       }
 
-      copyEmailBtn.classList.remove('is-copied');
-      copyEmailBtn.setAttribute('aria-label', 'Copy email address');
+      copyEmailBtn.classList.remove("is-copied");
+      copyEmailBtn.setAttribute("aria-label", "Copy email address");
     }, 1500);
   } catch (error) {
-    console.error('Unable to copy email:', error);
+    console.error("Unable to copy email:", error);
   }
 };
 
-copyEmailBtn?.addEventListener('click', copyEmailToClipboard);
+copyEmailBtn?.addEventListener("click", copyEmailToClipboard);
 
 themeToggles.forEach((toggle) => {
-  toggle.addEventListener('click', () => {
-    const current = document.documentElement.dataset.theme || 'light';
-    const next = current === 'dark' ? 'light' : 'dark';
+  toggle.addEventListener("click", () => {
+    const current = document.documentElement.dataset.theme || "light";
+    const next = current === "dark" ? "light" : "dark";
 
     applyTheme(next);
     safeStorageSet(themeStorageKey, next);
@@ -387,22 +342,22 @@ const setMobileMenuOpen = (isOpen) => {
   }
 
   mobileMenu.hidden = !isOpen;
-  menuToggle.setAttribute('aria-expanded', String(isOpen));
-  menuToggle.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
+  menuToggle.setAttribute("aria-expanded", String(isOpen));
+  menuToggle.setAttribute("aria-label", isOpen ? "Close menu" : "Open menu");
 
-  const icon = menuToggle.querySelector('i');
+  const icon = menuToggle.querySelector("i");
   if (icon) {
-    icon.className = isOpen ? 'fa-solid fa-xmark' : 'fa-solid fa-bars';
+    icon.className = isOpen ? "fa-solid fa-xmark" : "fa-solid fa-bars";
   }
 };
 
-menuToggle?.addEventListener('click', () => {
-  const isOpen = menuToggle.getAttribute('aria-expanded') === 'true';
+menuToggle?.addEventListener("click", () => {
+  const isOpen = menuToggle.getAttribute("aria-expanded") === "true";
   setMobileMenuOpen(!isOpen);
 });
 
-mobileMenu?.querySelectorAll('a').forEach((link) => {
-  link.addEventListener('click', () => setMobileMenuOpen(false));
+mobileMenu?.querySelectorAll("a").forEach((link) => {
+  link.addEventListener("click", () => setMobileMenuOpen(false));
 });
 
 const renderBlogCard = (blog) => {
@@ -411,12 +366,9 @@ const renderBlogCard = (blog) => {
   return `
     <a class="blog-card" href="${escapeHtml(blog.url)}">
       <h4>${escapeHtml(blog.title)}</h4>
-      <p class="blog-meta">${escapeHtml(formatPublishedDate(blog.publishedAt))}${blog.readingTimeMinutes
-      ? ` • ${escapeHtml(blog.readingTimeMinutes)} min read`
-      : ''
-    }</p>
+      <p class="blog-meta">${escapeHtml(formatPublishedDate(blog.publishedAt))}${blog.readingTimeMinutes ? ` • ${escapeHtml(blog.readingTimeMinutes)} min read` : ""}</p>
       <div class="blog-tags">
-        ${tags.map((tag) => `<span>${escapeHtml(tag)}</span>`).join('')}
+        ${tags.map((tag) => `<span>${escapeHtml(tag)}</span>`).join("")}
       </div>
     </a>
   `;
@@ -427,11 +379,9 @@ const getBlogGridColumnCount = () => {
     return 1;
   }
 
-  const columns = globalThis
-    .getComputedStyle(blogGrid)
-    .gridTemplateColumns.trim();
+  const columns = globalThis.getComputedStyle(blogGrid).gridTemplateColumns.trim();
 
-  if (!columns || columns === 'none') {
+  if (!columns || columns === "none") {
     return 1;
   }
 
@@ -453,10 +403,7 @@ const renderBlogPage = ({ preserveFirstBlog = false } = {}) => {
   const previousStartIndex = (currentBlogPage - 1) * currentBlogsPerPage;
   currentBlogsPerPage = getBlogsPerPage();
 
-  const totalPages = Math.max(
-    1,
-    Math.ceil(blogListItems.length / currentBlogsPerPage),
-  );
+  const totalPages = Math.max(1, Math.ceil(blogListItems.length / currentBlogsPerPage));
 
   if (preserveFirstBlog) {
     currentBlogPage = Math.floor(previousStartIndex / currentBlogsPerPage) + 1;
@@ -465,18 +412,13 @@ const renderBlogPage = ({ preserveFirstBlog = false } = {}) => {
   currentBlogPage = Math.min(Math.max(currentBlogPage, 1), totalPages);
 
   const startIndex = (currentBlogPage - 1) * currentBlogsPerPage;
-  const pageBlogs = blogListItems.slice(
-    startIndex,
-    startIndex + currentBlogsPerPage,
-  );
+  const pageBlogs = blogListItems.slice(startIndex, startIndex + currentBlogsPerPage);
 
-  blogGrid.innerHTML = pageBlogs.map(renderBlogCard).join('');
+  blogGrid.innerHTML = pageBlogs.map(renderBlogCard).join("");
 
-  const renderedCards = blogGrid.querySelectorAll('.blog-card').length;
+  const renderedCards = blogGrid.querySelectorAll(".blog-card").length;
   if (renderedCards !== pageBlogs.length) {
-    console.warn(
-      `Rendered blog card count (${renderedCards}) differs from current page item count (${pageBlogs.length}).`,
-    );
+    console.warn(`Rendered blog card count (${renderedCards}) differs from current page item count (${pageBlogs.length}).`);
   }
 
   if (!blogPagination || !blogPrevPage || !blogNextPage || !blogPageStatus) {
@@ -501,46 +443,36 @@ const renderBlogList = async () => {
   }
 
   try {
-    blogGrid.innerHTML =
-      '<p class="blog-list-status">Loading latest articles...</p>';
+    blogGrid.innerHTML = '<p class="blog-list-status">Loading latest articles...</p>';
     if (blogPagination) {
       blogPagination.hidden = true;
     }
 
-    const { articles: blogs, meta } = await fetchDevArticles();
-    const apiCount = Number(meta.count ?? meta.renderedCount ?? blogs.length);
+    const { articles: blogs } = await fetchDevArticles();
 
     if (!blogs.length) {
-      blogGrid.innerHTML =
-        '<p class="blog-list-status">No articles are available right now.</p>';
+      blogGrid.innerHTML = '<p class="blog-list-status">No articles are available right now.</p>';
       return;
     }
 
     blogListItems = blogs;
-    if (Number.isFinite(apiCount) && apiCount !== blogListItems.length) {
-      console.warn(
-        `DEV API result count (${apiCount}) differs from list render count (${blogListItems.length}).`,
-      );
-    }
-
     currentBlogPage = 1;
     renderBlogPage();
   } catch (error) {
-    console.error('Unable to load DEV blog list:', error);
-    blogGrid.innerHTML =
-      '<p class="blog-list-status">Articles are temporarily unavailable.</p>';
+    console.error("Unable to load DEV blog list:", error);
+    blogGrid.innerHTML = '<p class="blog-list-status">Articles are temporarily unavailable.</p>';
     if (blogPagination) {
       blogPagination.hidden = true;
     }
   }
 };
 
-blogPrevPage?.addEventListener('click', () => {
+blogPrevPage?.addEventListener("click", () => {
   currentBlogPage -= 1;
   renderBlogPage();
 });
 
-blogNextPage?.addEventListener('click', () => {
+blogNextPage?.addEventListener("click", () => {
   currentBlogPage += 1;
   renderBlogPage();
 });
@@ -562,11 +494,11 @@ const syncBlogPageSize = () => {
   }, 120);
 };
 
-if (blogGrid && 'ResizeObserver' in globalThis) {
+if (blogGrid && "ResizeObserver" in globalThis) {
   const blogGridObserver = new ResizeObserver(syncBlogPageSize);
   blogGridObserver.observe(blogGrid);
 } else {
-  globalThis.addEventListener('resize', syncBlogPageSize);
+  globalThis.addEventListener("resize", syncBlogPageSize);
 }
 
 const showBlogStatus = (message) => {
@@ -581,28 +513,28 @@ const showBlogStatus = (message) => {
 const slugifyHeading = (text) =>
   String(text)
     .toLowerCase()
-    .replace(/[^\w\s-]/g, '')
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-')
-    .replace(/^-+|-+$/g, '');
+    .replace(/[^\w\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-+|-+$/g, "");
 
 let tocObserver = null;
 
 const generateToc = (bodyEl) => {
-  const tocNav = document.getElementById('blog-toc-nav');
-  const tocEl = document.getElementById('blog-toc');
+  const tocNav = document.getElementById("blog-toc-nav");
+  const tocEl = document.getElementById("blog-toc");
   if (!tocNav || !bodyEl || !tocEl) return;
 
-  const headings = Array.from(bodyEl.querySelectorAll('h2, h3'));
+  const headings = Array.from(bodyEl.querySelectorAll("h2, h3"));
   if (headings.length < 2) {
-    tocEl.style.display = 'none';
+    tocEl.style.display = "none";
     return;
   }
 
   const usedIds = new Set();
   headings.forEach((h) => {
     if (!h.id) {
-      let base = slugifyHeading(h.textContent || '') || 'section';
+      let base = slugifyHeading(h.textContent || "") || "section";
       let id = base;
       let n = 1;
       while (usedIds.has(id)) id = `${base}-${n++}`;
@@ -615,33 +547,33 @@ const generateToc = (bodyEl) => {
 
   tocNav.innerHTML = headings
     .map((h) => {
-      const isH3 = h.tagName === 'H3';
-      return `<a href="#${h.id}" class="${isH3 ? 'toc-h3' : ''}" data-toc-id="${h.id}">${escapeHtml(h.textContent?.trim() || '')}</a>`;
+      const isH3 = h.tagName === "H3";
+      return `<a href="#${h.id}" class="${isH3 ? "toc-h3" : ""}" data-toc-id="${h.id}">${escapeHtml(h.textContent?.trim() || "")}</a>`;
     })
-    .join('');
+    .join("");
 
-  tocNav.querySelectorAll('a').forEach((link) => {
-    link.addEventListener('click', (e) => {
+  tocNav.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", (e) => {
       e.preventDefault();
-      const target = document.getElementById(link.dataset.tocId || '');
-      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const target = document.getElementById(link.dataset.tocId || "");
+      if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   });
 
   if (tocObserver) tocObserver.disconnect();
 
-  const allLinks = Array.from(tocNav.querySelectorAll('a'));
+  const allLinks = Array.from(tocNav.querySelectorAll("a"));
   tocObserver = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
         if (!entry.isIntersecting) return;
         const id = entry.target.id;
         allLinks.forEach((link) => {
-          link.classList.toggle('toc-active', link.dataset.tocId === id);
+          link.classList.toggle("toc-active", link.dataset.tocId === id);
         });
       });
     },
-    { rootMargin: '-52px 0px -68% 0px', threshold: 0 },
+    { rootMargin: "-52px 0px -68% 0px", threshold: 0 },
   );
 
   headings.forEach((h) => tocObserver.observe(h));
@@ -650,16 +582,12 @@ const generateToc = (bodyEl) => {
 const cleanupArticleImages = (bodyEl) => {
   if (!bodyEl) return;
 
-  [
-    '.image-btn',
-    'button[aria-label="Expand"]',
-    'button[aria-label="Fit to screen"]',
-    '.js-full-screen-action',
-    '.ltag__image__comments',
-  ].forEach((sel) => bodyEl.querySelectorAll(sel).forEach((el) => el.remove()));
+  [".image-btn", 'button[aria-label="Expand"]', 'button[aria-label="Fit to screen"]', ".js-full-screen-action", ".ltag__image__comments"].forEach((sel) =>
+    bodyEl.querySelectorAll(sel).forEach((el) => el.remove()),
+  );
 
-  bodyEl.querySelectorAll('.article-body-image-wrapper').forEach((wrapper) => {
-    const img = wrapper.querySelector('img');
+  bodyEl.querySelectorAll(".article-body-image-wrapper").forEach((wrapper) => {
+    const img = wrapper.querySelector("img");
     if (img && wrapper.parentNode) wrapper.parentNode.replaceChild(img, wrapper);
   });
 };
@@ -670,14 +598,14 @@ const getTagOverlap = (a, b) => {
 };
 
 const loadRelatedArticles = async (currentSlug, currentTags) => {
-  const listEl = document.getElementById('blog-related-list');
+  const listEl = document.getElementById("blog-related-list");
   if (!listEl) return;
 
   try {
     const { articles: blogs } = await fetchDevArticles();
 
     const others = blogs.filter((b) => {
-      const slug = b.devSlug || b.localSlug || '';
+      const slug = b.devSlug || b.localSlug || "";
       return slug !== currentSlug && !b.url?.endsWith(`/${currentSlug}`);
     });
 
@@ -688,7 +616,7 @@ const loadRelatedArticles = async (currentSlug, currentTags) => {
 
     const top = others.slice(0, 5);
     if (top.length === 0) {
-      listEl.innerHTML = '';
+      listEl.innerHTML = "";
       return;
     }
 
@@ -697,40 +625,39 @@ const loadRelatedArticles = async (currentSlug, currentTags) => {
         (b) => `
         <a class="blog-related-card" href="${escapeHtml(b.url)}">
           <h4>${escapeHtml(b.title)}</h4>
-          <p>${escapeHtml(formatPublishedDate(b.publishedAt))}${b.readingTimeMinutes ? ` · ${escapeHtml(String(b.readingTimeMinutes))} min` : ''}</p>
+          <p>${escapeHtml(formatPublishedDate(b.publishedAt))}${b.readingTimeMinutes ? ` · ${escapeHtml(String(b.readingTimeMinutes))} min` : ""}</p>
         </a>`,
       )
-      .join('');
+      .join("");
   } catch (_err) {
-    const listEl2 = document.getElementById('blog-related-list');
-    if (listEl2) listEl2.innerHTML = '';
+    const listEl2 = document.getElementById("blog-related-list");
+    if (listEl2) listEl2.innerHTML = "";
   }
 };
 
 const formatCodeLanguage = (value) => {
-  const raw = String(value || '')
+  const raw = String(value || "")
     .split(/\s+/)
     .find((name) => /^(language-|lang-)/.test(name));
 
   if (!raw) {
-    return 'Code';
+    return "Code";
   }
 
-  const language = raw.replace(/^(language-|lang-)/, '');
-  return language ? language.toUpperCase() : 'Code';
+  const language = raw.replace(/^(language-|lang-)/, "");
+  return language ? language.toUpperCase() : "Code";
 };
 
-const getCodeBlockText = (pre) =>
-  pre.querySelector('code')?.textContent || pre.textContent || '';
+const getCodeBlockText = (pre) => pre.querySelector("code")?.textContent || pre.textContent || "";
 
 const enhanceBlogTables = () => {
-  blogDetailBody?.querySelectorAll('table').forEach((table) => {
-    if (table.parentElement?.classList.contains('blog-table-wrap')) {
+  blogDetailBody?.querySelectorAll("table").forEach((table) => {
+    if (table.parentElement?.classList.contains("blog-table-wrap")) {
       return;
     }
 
-    const wrapper = document.createElement('div');
-    wrapper.className = 'blog-table-wrap';
+    const wrapper = document.createElement("div");
+    wrapper.className = "blog-table-wrap";
     table.parentNode.insertBefore(wrapper, table);
     wrapper.append(table);
   });
@@ -743,27 +670,27 @@ const cleanBlogMedia = () => {
 
   blogDetailBody
     .querySelectorAll(
-      '.highlight__panel, .js-actions-panel, .js-fullscreen-code-action, .image-viewer, .image-overlay, .image-controls, .expand-button, .fit-button, .fullscreen-button, .js-fullsize-image, [data-image-viewer], [data-lightbox]',
+      ".highlight__panel, .js-actions-panel, .js-fullscreen-code-action, .image-viewer, .image-overlay, .image-controls, .expand-button, .fit-button, .fullscreen-button, .js-fullsize-image, [data-image-viewer], [data-lightbox]",
     )
     .forEach((node) => node.remove());
 
-  blogDetailBody.querySelectorAll('.article-body-image-wrapper').forEach((node) => {
-    node.removeAttribute('class');
-    node.removeAttribute('data-image-viewer');
-    node.removeAttribute('data-lightbox');
+  blogDetailBody.querySelectorAll(".article-body-image-wrapper").forEach((node) => {
+    node.removeAttribute("class");
+    node.removeAttribute("data-image-viewer");
+    node.removeAttribute("data-lightbox");
   });
 
-  blogDetailBody.querySelectorAll('img').forEach((image) => {
-    if (/^(enter|exit) fullscreen mode$/i.test(image.alt || '')) {
+  blogDetailBody.querySelectorAll("img").forEach((image) => {
+    if (/^(enter|exit) fullscreen mode$/i.test(image.alt || "")) {
       image.remove();
       return;
     }
 
-    image.loading = 'lazy';
-    image.decoding = 'async';
-    image.removeAttribute('data-src');
-    image.removeAttribute('data-pin-media');
-    image.classList.remove('js-fullsize-image');
+    image.loading = "lazy";
+    image.decoding = "async";
+    image.removeAttribute("data-src");
+    image.removeAttribute("data-pin-media");
+    image.classList.remove("js-fullsize-image");
   });
 };
 
@@ -772,24 +699,22 @@ const enhanceBlogCodeBlocks = () => {
     return;
   }
 
-  blogDetailBody.querySelectorAll('pre').forEach((pre, index) => {
-    if (pre.closest('.blog-code-block')) {
+  blogDetailBody.querySelectorAll("pre").forEach((pre, index) => {
+    if (pre.closest(".blog-code-block")) {
       return;
     }
 
-    const code = pre.querySelector('code');
-    const language = formatCodeLanguage(
-      `${pre.className || ''} ${code?.className || ''}`,
-    );
-    const wrapper = document.createElement('div');
-    const toolbar = document.createElement('div');
-    const label = document.createElement('span');
+    const code = pre.querySelector("code");
+    const language = formatCodeLanguage(`${pre.className || ""} ${code?.className || ""}`);
+    const wrapper = document.createElement("div");
+    const toolbar = document.createElement("div");
+    const label = document.createElement("span");
     const button = createCopyButton(`Copy ${language.toLowerCase()} snippet`);
-    const codeId = `blog-code-${blogSlug || 'article'}-${index + 1}`;
+    const codeId = `blog-code-${blogSlug || "article"}-${index + 1}`;
 
-    wrapper.className = 'blog-code-block';
-    toolbar.className = 'blog-code-toolbar';
-    label.className = 'blog-code-language';
+    wrapper.className = "blog-code-block";
+    toolbar.className = "blog-code-toolbar";
+    label.className = "blog-code-language";
     label.textContent = language;
     button.dataset.codeTarget = codeId;
     pre.id = pre.id || codeId;
@@ -807,9 +732,7 @@ const buildBlogToc = () => {
 
   activeHeadingObserver?.disconnect();
   const usedIds = new Set();
-  const headings = Array.from(blogDetailBody.querySelectorAll('h2, h3')).filter(
-    (heading) => heading.textContent.trim(),
-  );
+  const headings = Array.from(blogDetailBody.querySelectorAll("h2, h3")).filter((heading) => heading.textContent.trim());
 
   headings.forEach((heading) => {
     const baseId = heading.id || slugifyText(heading.textContent);
@@ -830,40 +753,34 @@ const buildBlogToc = () => {
 
   if (!headings.length) {
     blogToc.hidden = true;
-    blogTocList.innerHTML = '';
+    blogTocList.innerHTML = "";
     return;
   }
 
   blogTocList.innerHTML = headings
     .map((heading) => {
-      const level = heading.tagName.toLowerCase() === 'h3' ? 'h3' : 'h2';
-      return `<a class="blog-toc-link is-${level}" href="#${escapeHtml(
-        heading.id,
-      )}" data-heading-id="${escapeHtml(heading.id)}">${escapeHtml(
-        heading.textContent.trim(),
-      )}</a>`;
+      const level = heading.tagName.toLowerCase() === "h3" ? "h3" : "h2";
+      return `<a class="blog-toc-link is-${level}" href="#${escapeHtml(heading.id)}" data-heading-id="${escapeHtml(heading.id)}">${escapeHtml(heading.textContent.trim())}</a>`;
     })
-    .join('');
+    .join("");
   blogToc.hidden = false;
 
-  const links = Array.from(blogTocList.querySelectorAll('.blog-toc-link'));
+  const links = Array.from(blogTocList.querySelectorAll(".blog-toc-link"));
   const setActiveLink = (id) => {
     links.forEach((link) => {
-      link.classList.toggle('is-active', link.dataset.headingId === id);
+      link.classList.toggle("is-active", link.dataset.headingId === id);
     });
   };
 
   activeHeadingObserver = new IntersectionObserver(
     (entries) => {
-      const visible = entries
-        .filter((entry) => entry.isIntersecting)
-        .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+      const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
 
       if (visible[0]?.target.id) {
         setActiveLink(visible[0].target.id);
       }
     },
-    { rootMargin: '-18% 0px -68% 0px', threshold: [0, 1] },
+    { rootMargin: "-18% 0px -68% 0px", threshold: [0, 1] },
   );
 
   headings.forEach((heading) => activeHeadingObserver.observe(heading));
@@ -877,31 +794,14 @@ const renderRelatedArticles = async (currentArticle) => {
 
   try {
     const { articles: blogs } = await fetchDevArticles();
-    const currentTags = new Set(
-      (Array.isArray(currentArticle.tags) ? currentArticle.tags : []).map((tag) =>
-        String(tag).toLowerCase(),
-      ),
-    );
+    const currentTags = new Set((Array.isArray(currentArticle.tags) ? currentArticle.tags : []).map((tag) => String(tag).toLowerCase()));
     const related = blogs
-      .filter(
-        (blog) =>
-          blog.localSlug !== currentArticle.localSlug &&
-          blog.devSlug !== currentArticle.devSlug &&
-          blog.url !== currentArticle.url,
-      )
+      .filter((blog) => blog.localSlug !== currentArticle.localSlug && blog.devSlug !== currentArticle.devSlug && blog.url !== currentArticle.url)
       .map((blog) => {
-        const score = (Array.isArray(blog.tags) ? blog.tags : []).reduce(
-          (total, tag) => total + (currentTags.has(String(tag).toLowerCase()) ? 1 : 0),
-          0,
-        );
+        const score = (Array.isArray(blog.tags) ? blog.tags : []).reduce((total, tag) => total + (currentTags.has(String(tag).toLowerCase()) ? 1 : 0), 0);
         return { ...blog, score };
       })
-      .sort(
-        (a, b) =>
-          b.score - a.score ||
-          new Date(b.publishedAt || 0).getTime() -
-          new Date(a.publishedAt || 0).getTime(),
-      )
+      .sort((a, b) => b.score - a.score || new Date(b.publishedAt || 0).getTime() - new Date(a.publishedAt || 0).getTime())
       .slice(0, 4);
 
     if (!related.length) {
@@ -912,14 +812,14 @@ const renderRelatedArticles = async (currentArticle) => {
     blogRelatedList.innerHTML = related
       .map(
         (blog) => `<a class="blog-related-card" href="${escapeHtml(blog.url)}">
-          <span>${escapeHtml(formatPublishedDate(blog.publishedAt).replace('Published: ', ''))}</span>
+          <span>${escapeHtml(formatPublishedDate(blog.publishedAt).replace("Published: ", ""))}</span>
           <strong>${escapeHtml(blog.title)}</strong>
         </a>`,
       )
-      .join('');
+      .join("");
     blogRelated.hidden = false;
   } catch (error) {
-    console.error('Unable to load related DEV articles:', error);
+    console.error("Unable to load related DEV articles:", error);
     blogRelated.hidden = true;
   }
 };
@@ -929,30 +829,28 @@ const renderRelatedTools = (article) => {
     return;
   }
 
-  const text = `${article.title || ''} ${article.description || ''} ${(
-    article.tags || []
-  ).join(' ')} ${blogDetailBody?.textContent || ''}`.toLowerCase();
+  const text = `${article.title || ""} ${article.description || ""} ${(article.tags || []).join(" ")} ${blogDetailBody?.textContent || ""}`.toLowerCase();
   const tools = [
     {
-      name: 'JSON Formatter',
-      href: '/aruvix.html#json-formatter',
-      keywords: ['json', 'api', 'payload', 'response'],
+      name: "JSON Formatter",
+      href: "/aruvix.html#json-formatter",
+      keywords: ["json", "api", "payload", "response"],
     },
     {
-      name: 'API Tester',
-      href: '/aruvix.html#api-tester',
-      keywords: ['api', 'postman', 'http', 'request', 'endpoint'],
+      name: "API Tester",
+      href: "/aruvix.html#api-tester",
+      keywords: ["api", "postman", "http", "request", "endpoint"],
     },
     {
-      name: 'Curl Converter',
-      href: '/aruvix.html#curl-converter',
-      keywords: ['curl', 'terminal', 'http', 'request'],
+      name: "Curl Converter",
+      href: "/aruvix.html#curl-converter",
+      keywords: ["curl", "terminal", "http", "request"],
     },
   ].filter((tool) => tool.keywords.some((keyword) => text.includes(keyword)));
 
   if (!tools.length) {
     blogToolsPanel.hidden = true;
-    blogToolList.innerHTML = '';
+    blogToolList.innerHTML = "";
     return;
   }
 
@@ -963,20 +861,19 @@ const renderRelatedTools = (article) => {
         <span>${escapeHtml(tool.name)}</span>
       </a>`,
     )
-    .join('');
+    .join("");
   blogToolsPanel.hidden = false;
 };
 
-blogDetailBody?.addEventListener('click', async (event) => {
+blogDetailBody?.addEventListener("click", async (event) => {
   const target = event.target;
-  const button =
-    target instanceof Element ? target.closest('.copy-code-button') : null;
+  const button = target instanceof Element ? target.closest(".copy-code-button") : null;
 
   if (!button) {
     return;
   }
 
-  const pre = button.closest('.blog-code-block')?.querySelector('pre');
+  const pre = button.closest(".blog-code-block")?.querySelector("pre");
 
   if (!pre) {
     return;
@@ -986,25 +883,25 @@ blogDetailBody?.addEventListener('click', async (event) => {
     const didCopy = await writeClipboardText(getCodeBlockText(pre));
 
     if (!didCopy) {
-      throw new Error('Clipboard write was rejected.');
+      throw new Error("Clipboard write was rejected.");
     }
 
-    button.classList.add('is-copied');
-    button.title = 'Copied';
-    button.setAttribute('aria-label', 'Code snippet copied');
+    button.classList.add("is-copied");
+    button.title = "Copied";
+    button.setAttribute("aria-label", "Code snippet copied");
 
     globalThis.setTimeout(() => {
-      button.classList.remove('is-copied');
-      button.title = 'Copy';
-      button.setAttribute('aria-label', 'Copy code snippet');
+      button.classList.remove("is-copied");
+      button.title = "Copy";
+      button.setAttribute("aria-label", "Copy code snippet");
     }, 1400);
   } catch (error) {
-    button.title = 'Copy failed';
-    button.setAttribute('aria-label', 'Copy failed');
+    button.title = "Copy failed";
+    button.setAttribute("aria-label", "Copy failed");
 
     globalThis.setTimeout(() => {
-      button.title = 'Copy';
-      button.setAttribute('aria-label', 'Copy code snippet');
+      button.title = "Copy";
+      button.setAttribute("aria-label", "Copy code snippet");
     }, 1400);
   }
 });
@@ -1015,22 +912,20 @@ const renderBlogDetail = async () => {
     return;
   }
 
-  document.body.classList.add('is-blog-view');
+  document.body.classList.add("is-blog-view");
 
   if (homeContent) {
     homeContent.hidden = true;
   }
 
   blogDetail.hidden = false;
-  showBlogStatus('Loading...');
+  showBlogStatus("Loading...");
 
   try {
-    const article = await fetchFreshJson(
-      `/api/blogs/${encodeURIComponent(blogSlug)}`,
-    );
+    const article = await fetchFreshJson(`/api/blogs/${encodeURIComponent(blogSlug)}`);
 
-    if (!article || typeof article !== 'object' || Array.isArray(article)) {
-      throw new Error('Blog article response was malformed.');
+    if (!article || typeof article !== "object" || Array.isArray(article)) {
+      throw new Error("Blog article response was malformed.");
     }
 
     const tags = Array.isArray(article.tags) ? article.tags : [];
@@ -1038,42 +933,28 @@ const renderBlogDetail = async () => {
     document.title = `${article.title} | amrishkhan.dev`;
     blogDetailTitle.textContent = article.title;
     if (blogDetailSummary) {
-      blogDetailSummary.textContent =
-        article.description ||
-        'Practical engineering notes, examples, and implementation details.';
+      blogDetailSummary.textContent = article.description || "Practical engineering notes, examples, and implementation details.";
     }
-    blogDetailMeta.innerHTML = [
-      formatPublishedDate(article.publishedAt),
-      article.readingTimeMinutes
-        ? `${article.readingTimeMinutes} min read`
-        : null,
-      'Amrishkhan Sheik Abdullah',
-    ]
+    blogDetailMeta.innerHTML = [formatPublishedDate(article.publishedAt), article.readingTimeMinutes ? `${article.readingTimeMinutes} min read` : null, "Amrishkhan Sheik Abdullah"]
       .filter(Boolean)
       .map((item) => `<span>${escapeHtml(item)}</span>`)
-      .join('');
-    blogDetailTags.innerHTML = tags
-      .map((tag) => `<span>${escapeHtml(tag)}</span>`)
-      .join('');
+      .join("");
+    blogDetailTags.innerHTML = tags.map((tag) => `<span>${escapeHtml(tag)}</span>`).join("");
 
     if (article.coverImage) {
       blogDetailCover.src = article.coverImage;
       blogDetailCover.hidden = false;
     } else {
-      blogDetailCover.removeAttribute('src');
+      blogDetailCover.removeAttribute("src");
       blogDetailCover.hidden = true;
     }
 
     if (article.bodyHtml) {
       blogDetailBody.innerHTML = article.bodyHtml;
     } else if (article.bodyMarkdown) {
-      blogDetailBody.innerHTML = `<pre class="blog-markdown-source">${escapeHtml(
-        article.bodyMarkdown,
-      )}</pre>`;
+      blogDetailBody.innerHTML = `<pre class="blog-markdown-source">${escapeHtml(article.bodyMarkdown)}</pre>`;
     } else {
-      blogDetailBody.innerHTML = `<p>${escapeHtml(
-        article.message || 'This article is temporarily unavailable.',
-      )}</p>`;
+      blogDetailBody.innerHTML = `<p>${escapeHtml(article.message || "This article is temporarily unavailable.")}</p>`;
     }
 
     cleanBlogMedia();
@@ -1086,8 +967,8 @@ const renderBlogDetail = async () => {
     blogDetailContent.hidden = false;
     updateScrollProgress();
   } catch (error) {
-    console.error('Unable to load DEV blog article:', error);
-    showBlogStatus('This article is temporarily unavailable.');
+    console.error("Unable to load DEV blog article:", error);
+    showBlogStatus("This article is temporarily unavailable.");
   }
 };
 
@@ -1097,15 +978,15 @@ const observer = new IntersectionObserver(
   (entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
-        entry.target.style.animationPlayState = 'running';
+        entry.target.style.animationPlayState = "running";
       }
     });
   },
   { threshold: 0.12 },
 );
 
-document.querySelectorAll('.reveal').forEach((node) => {
-  node.style.animationPlayState = 'paused';
+document.querySelectorAll(".reveal").forEach((node) => {
+  node.style.animationPlayState = "paused";
   observer.observe(node);
 });
 
@@ -1116,41 +997,40 @@ const sectionObserver = new IntersectionObserver(
         return;
       }
 
-      document.querySelectorAll('.nav-links a').forEach((link) => {
-        const href = link.getAttribute('href') || '';
+      document.querySelectorAll(".nav-links a").forEach((link) => {
+        const href = link.getAttribute("href") || "";
         const isMatch = href === `#${entry.target.id}` || href === `/#${entry.target.id}`;
-        link.classList.toggle('is-active', isMatch);
+        link.classList.toggle("is-active", isMatch);
       });
     });
   },
   { threshold: 0.5 },
 );
 
-document.querySelectorAll('main section[id]').forEach((section) => {
+document.querySelectorAll("main section[id]").forEach((section) => {
   sectionObserver.observe(section);
 });
 
-const topNav = document.querySelector('.top-nav');
+const topNav = document.querySelector(".top-nav");
 
 const updateScrollProgress = () => {
   const scrollTop = globalThis.scrollY;
-  const scrollHeight =
-    document.documentElement.scrollHeight - globalThis.innerHeight;
+  const scrollHeight = document.documentElement.scrollHeight - globalThis.innerHeight;
   const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
 
-  document.body.style.setProperty('--scroll-progress', `${progress}%`);
-  topNav?.classList.toggle('is-scrolled', scrollTop > 10);
-  backToTopBtn?.classList.toggle('is-visible', scrollTop > 520);
+  document.body.style.setProperty("--scroll-progress", `${progress}%`);
+  topNav?.classList.toggle("is-scrolled", scrollTop > 10);
+  backToTopBtn?.classList.toggle("is-visible", scrollTop > 520);
 };
 
-globalThis.addEventListener('scroll', updateScrollProgress, { passive: true });
+globalThis.addEventListener("scroll", updateScrollProgress, { passive: true });
 updateScrollProgress();
 
-backToTopBtn?.addEventListener('click', () => {
-  globalThis.scrollTo({ top: 0, behavior: 'smooth' });
+backToTopBtn?.addEventListener("click", () => {
+  globalThis.scrollTo({ top: 0, behavior: "smooth" });
 });
 
-globalThis.addEventListener('pointermove', (event) => {
-  document.body.style.setProperty('--mx', `${event.clientX}px`);
-  document.body.style.setProperty('--my', `${event.clientY}px`);
+globalThis.addEventListener("pointermove", (event) => {
+  document.body.style.setProperty("--mx", `${event.clientX}px`);
+  document.body.style.setProperty("--my", `${event.clientY}px`);
 });
