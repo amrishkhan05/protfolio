@@ -1,439 +1,460 @@
-<!-- @format -->
-
 <!doctype html>
 <html lang="en" data-theme="light">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>amrishkhan.dev | Amrishkhan Sheik Abdullah</title>
-    <meta name="theme-color" content="#f8f8f5" />
-    <meta name="color-scheme" content="only light" />
-    <script>
-      (function () {
-        var lightThemeColor = "#f8f8f5";
-        var darkThemeColor = "#0a0f1a";
-        var saved = null;
-        try {
-          saved = localStorage.getItem("portfolio-theme");
-        } catch (e) {}
-        var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-        var theme = saved || (prefersDark ? "dark" : "light");
-        var scheme = theme === "dark" ? "dark" : "only light";
-        document.documentElement.dataset.theme = theme;
-        document.documentElement.style.colorScheme = scheme;
-        document.querySelector('meta[name="color-scheme"]')?.setAttribute("content", scheme);
-        document.querySelector('meta[name="theme-color"]')?.setAttribute("content", theme === "dark" ? darkThemeColor : lightThemeColor);
-      })();
-    </script>
-    <meta
-      name="description"
-      content="Portfolio of Amrishkhan Sheik Abdullah, Technical Lead and Full Stack Engineer with 10+ years of experience in Angular, React, Vue, Node.js, Express, NestJS, and microservices."
-    />
-    <meta name="author" content="Amrishkhan Sheik Abdullah" />
-    <link rel="canonical" href="https://amrishkhan.dev/" />
-    <meta property="og:title" content="amrishkhan.dev | Amrishkhan Sheik Abdullah" />
-    <meta property="og:description" content="Technical Lead and Full Stack Engineer with 10+ years of experience building scalable products across aviation, real estate, and enterprise platforms." />
-    <meta property="og:url" content="https://amrishkhan.dev/" />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://amrishkhan.dev/favicon.svg" />
-    <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content="amrishkhan.dev | Amrishkhan Sheik Abdullah" />
-    <meta name="twitter:description" content="Technical Lead and Full Stack Engineer with 10+ years of experience building scalable products across aviation, real estate, and enterprise platforms." />
-    <meta name="twitter:image" content="https://amrishkhan.dev/favicon.svg" />
-    <script type="application/ld+json">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#f8f9ff" />
+  <meta name="color-scheme" content="only light" />
+  <script>
+    (function () {
+      var lightThemeColor = "#f8f9ff";
+      var darkThemeColor = "#111418";
+      var saved = null;
+      try {
+        saved = localStorage.getItem("portfolio-theme");
+      } catch (e) { }
+      var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      var theme = saved || (prefersDark ? "dark" : "light");
+      var scheme = theme === "dark" ? "dark" : "only light";
+      document.documentElement.dataset.theme = theme;
+      document.documentElement.style.colorScheme = scheme;
+      document.querySelector('meta[name="color-scheme"]')?.setAttribute("content", scheme);
+      document.querySelector('meta[name="theme-color"]')?.setAttribute("content", theme === "dark" ? darkThemeColor : lightThemeColor);
+    })();
+  </script>
+  <title>amrishkhan.dev | Amrish Khan</title>
+  <meta name="description"
+    content="Portfolio of Amrish Khan, Full Stack AI Engineer, TypeScript Architect, and Founder of Aruvix building scalable products, developer tools, and high-performance systems." />
+  <meta name="author" content="Amrish Khan" />
+  <link rel="canonical" href="https://amrishkhan.dev/" />
+  <meta property="og:title" content="amrishkhan.dev | Amrish Khan" />
+  <meta property="og:description"
+    content="Full Stack AI Engineer, TypeScript Architect, and Founder of Aruvix building scalable products, backend systems, and developer tools." />
+  <meta property="og:url" content="https://amrishkhan.dev/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://amrishkhan.dev/favicon.svg" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="amrishkhan.dev | Amrish Khan" />
+  <meta name="twitter:description" content="Full Stack AI Engineer, TypeScript Architect, and Founder of Aruvix." />
+  <meta name="twitter:image" content="https://amrishkhan.dev/favicon.svg" />
+  <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@graph": [
           {
             "@type": "Person",
             "@id": "https://amrishkhan.dev/#person",
-            "name": "Amrishkhan Sheik Abdullah",
+            "name": "Amrish Khan",
+            "alternateName": "Amrishkhan Sheik Abdullah",
             "url": "https://amrishkhan.dev/",
-            "jobTitle": "Technical Lead and Full Stack Engineer",
-            "address": {
-              "@type": "PostalAddress",
-              "addressLocality": "Dubai",
-              "addressCountry": "AE"
-            },
-            "sameAs": ["https://www.linkedin.com/in/amrishkhan", "https://github.com/amrishkhan05", "https://www.npmjs.com/package/sql-select-query-generator"],
-            "knowsAbout": ["Angular", "React", "Vue.js", "Node.js", "NestJS", "Microservices", "API design", "Payment integrations"]
+            "jobTitle": "Full Stack AI Engineer, TypeScript Architect, Founder of Aruvix",
+            "address": { "@type": "PostalAddress", "addressLocality": "Dubai", "addressCountry": "AE" },
+            "sameAs": ["https://www.linkedin.com/in/amrishkhan", "https://github.com/amrishkhan05", "https://www.npmjs.com/package/sql-select-query-generator", "https://www.aruvix.com/"],
+            "knowsAbout": ["TypeScript", "AI engineering", "Angular", "React", "Node.js", "NestJS", "Microservices", "API design", "Payment integrations"]
           },
           {
             "@type": "WebSite",
             "@id": "https://amrishkhan.dev/#website",
             "name": "amrishkhan.dev",
             "url": "https://amrishkhan.dev/",
-            "author": {
-              "@id": "https://amrishkhan.dev/#person"
-            },
-            "description": "Portfolio of Amrishkhan Sheik Abdullah, Technical Lead and Full Stack Engineer."
+            "author": { "@id": "https://amrishkhan.dev/#person" }
           }
         ]
       }
     </script>
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="shortcut icon" href="/favicon.svg" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" />
-    <link rel="stylesheet" href="/styles.css?v=20260508-home-redesign" />
-  </head>
-  <body>
-    <a class="skip-link" href="/#aruvix">Skip to main content</a>
-    <div class="scroll-progress" aria-hidden="true"></div>
-    <div class="bg-shape bg-shape-1"></div>
-    <div class="bg-shape bg-shape-2"></div>
-    <header class="hero section reveal centered-hero">
-      <nav class="top-nav">
-        <div class="nav-row">
-          <a class="brand" href="/" aria-label="amrishkhan.dev home">
-            <svg class="brand-logo" viewBox="0 0 205 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
-              <g font-family="Inter, ui-sans-serif, system-ui, -apple-system" letter-spacing="-0.9">
-                <text class="brand-logo-main" x="0" y="32" font-size="26" font-weight="800">amrishkhan</text>
-                <circle class="brand-logo-dot" cx="147" cy="29" r="3.5" />
-                <text class="brand-logo-suffix" x="154" y="32" font-size="26" font-weight="600">dev</text>
-              </g>
-            </svg>
-          </a>
-          <div class="mobile-controls">
-            <button class="theme-toggle" type="button" aria-label="Switch color theme" aria-pressed="false">
-              <i class="fa-solid fa-moon" aria-hidden="true"></i>
-            </button>
-            <button class="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
-              <i class="fa-solid fa-bars" aria-hidden="true"></i>
-            </button>
-          </div>
-        </div>
-        <div class="nav-links" aria-label="Primary">
-          <a href="/#aruvix">Aruvix</a>
-          <a href="/#experience">Experience</a>
-          <a href="/#blogs">Writing</a>
-          <!-- <a href="/#aruvix">Projects</a> -->
-          <a href="/#contact">Contact</a>
-        </div>
-        <div class="nav-actions">
-          <button class="theme-toggle desktop-theme-toggle" type="button" aria-label="Switch color theme" aria-pressed="false">
-            <i class="fa-solid fa-moon" aria-hidden="true"></i>
-          </button>
-          <a class="btn support-link" href="https://ko-fi.com/amrishkhansheik" target="_blank" rel="noreferrer">
-            <i class="fa-solid fa-mug-hot" aria-hidden="true"></i>
-            Buy me a coffee
-          </a>
-        </div>
-        <div class="mobile-menu" id="mobile-menu" hidden>
-          <a href="/#aruvix">Projects</a>
-          <a href="/#contact">Contact</a>
-          <a href="https://ko-fi.com/amrishkhansheik" target="_blank" rel="noreferrer">
-            <i class="fa-solid fa-mug-hot" aria-hidden="true"></i>
-            Buy me a coffee
-          </a>
-        </div>
-      </nav>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="shortcut icon" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="/styles.css?v=20260603-stitch-final" />
+</head>
 
-      <div class="hero-layout home-hero-layout">
-        <div class="hero-content">
-          <p class="eyebrow">Dubai, UAE • Product-minded engineering lead</p>
-          <p class="hero-name">Amrishkhan Sheik Abdullah</p>
-          <p class="hero-role">Technical Lead | Product Engineer | Creator of Aruvix</p>
-          <h1>Building scalable products, <span>developer tools,</span> and high-performance systems.</h1>
-          <p class="lead">
-            I build dependable web platforms, backend systems, and developer tools. Creator of Aruvix - built for speed, reliability, and measurable impact.
-          </p>
-          <!-- <div class="hero-actions"> -->
-            <!-- <a class="btn primary" href="/#aruvix">
-              Explore Projects
-              <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
-            </a> -->
-            <!-- <a class="btn ghost" href="/#blogs">
-              Read Writing
-              <i class="fa-regular fa-file-lines" aria-hidden="true"></i>
-            </a> -->
-          <!-- </div> -->
-          <div class="hero-stats" aria-label="Career snapshot">
-            <span>
-              <i class="fa-regular fa-calendar-days" aria-hidden="true"></i>
-              <span class="stat-copy"><strong>10+</strong> Years Experience</span>
-            </span>
-            <span>
-              <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
-              <span class="stat-copy"><strong>Secure</strong> API Systems</span>
-            </span>
-            <span>
-              <i class="fa-solid fa-code" aria-hidden="true"></i>
-              <span class="stat-copy"><strong>Lead</strong> Full-stack Delivery</span>
-            </span>
-            <span>
-              <i class="fa-solid fa-rocket" aria-hidden="true"></i>
-              <span class="stat-copy"><strong>Creator</strong> of Aruvix</span>
-            </span>
-          </div>
+<body>
+  <a class="skip-link" href="#home-content">Skip to main content</a>
+  <div class="scroll-progress" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <nav class="top-nav" aria-label="Primary navigation">
+      <a class="brand" href="/" aria-label="amrishkhan.dev home">amrishkhan<span>.dev</span></a>
+      <div class="nav-links">
+        <a href="/#aruvix">Aruvix</a>
+        <a href="/#experience">Experience</a>
+        <a href="/#blogs">Writing</a>
+        <a href="/#contact">Contact</a>
+      </div>
+      <div class="nav-actions">
+        <button class="theme-toggle icon-button desktop-theme-toggle" type="button" aria-label="Switch color theme"
+          aria-pressed="false">
+          <i class="fa-solid fa-moon" aria-hidden="true"></i>
+        </button>
+        <a class="btn btn-primary btn-coffee" href="https://ko-fi.com/amrishkhansheik" target="_blank"
+          rel="noreferrer"><i class="fa-solid fa-mug-hot" aria-hidden="true"></i>Buy me a coffee</a>
+        <button class="menu-toggle icon-button" type="button" aria-label="Open menu" aria-expanded="false"
+          aria-controls="mobile-menu">
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="mobile-menu" id="mobile-menu" hidden>
+        <a href="/#aruvix">Aruvix</a>
+        <a href="/#experience">Experience</a>
+        <a href="/#blogs">Writing</a>
+        <a href="/#contact">Contact</a>
+        <a href="https://ko-fi.com/amrishkhansheik" target="_blank" rel="noreferrer">Buy me a coffee</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="home-content" class="page-shell">
+    <section class="hero-section section reveal" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="eyebrow"><span></span> Dubai, UAE - Product-Minded Engineering Lead</p>
+        <h1 id="hero-title">Building scalable products, <span>developer tools,</span> and high-performance systems.</h1>
+        <p class="lead">I build dependable web platforms, backend systems, and developer tools. Creator of Aruvix -
+          built for speed, reliability, and measurable impact.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#experience">View Career Timeline <i class="fa-solid fa-arrow-right"
+              aria-hidden="true"></i></a>
+          <a class="btn btn-secondary" href="#aruvix">Discover Aruvix</a>
         </div>
-        <div class="hero-visual" aria-hidden="true">
-          <div class="hero-orbit hero-orbit-one"></div>
-          <div class="hero-orbit hero-orbit-two"></div>
-          <img src="/assets/ak_profile.avif" alt="" decoding="async" fetchpriority="high" />
+        <div class="hero-stats" aria-label="Career snapshot">
+          <article><i class="fa-regular fa-calendar-days" aria-hidden="true"></i><strong>10+</strong><span>Years
+              Experience</span></article>
+          <article><i class="fa-solid fa-shield-halved" aria-hidden="true"></i><strong>Secure</strong><span>API
+              Systems</span></article>
+          <article><i class="fa-solid fa-code" aria-hidden="true"></i><strong>Lead</strong><span>Full-stack
+              Delivery</span></article>
+          <article><i class="fa-solid fa-rocket" aria-hidden="true"></i><strong>Creator</strong><span>of Aruvix</span>
+          </article>
         </div>
       </div>
-    </header>
+      <div class="hero-visual" aria-label="Amrish Khan illustrated portrait">
+        <img src="/assets/ak_profile.png"
+          alt="Illustrated portrait of Amrish Khan standing beside developer books and a retro computer"
+          decoding="async" fetchpriority="high" />
+      </div>
+    </section>
 
-    <main id="home-content">
-      <section class="section reveal" id="summary">
-        <h3>Profile</h3>
-        <p>
-          I specialize in frontend and backend architecture, API design, microservices, payment integrations, database engineering, and delivery leadership. I created Aruvix and enjoy building
-          reliable systems with strong developer standards, high test coverage, and measurable business impact.
-        </p>
-      </section>
+    <section class="profile-band reveal" id="profile" aria-labelledby="profile-title">
+      <div>
+        <h2 id="profile-title">Profile</h2>
+        <p>I specialize in frontend and backend architecture, API design, microservices, payment integrations, database
+          engineering, and delivery leadership. I created Aruvix and enjoy building reliable systems with strong
+          developer standards, high test coverage, and measurable business impact.</p>
+      </div>
+    </section>
 
-      <section class="section reveal product-section" id="aruvix">
-        <div class="section-heading-row">
-          <div>
-            <p class="section-kicker">Built and launched product</p>
-            <h3>Aruvix</h3>
+    <section class="section aruvix-feature reveal" id="aruvix" aria-labelledby="aruvix-title">
+      <div class="aruvix-card">
+        <div class="aruvix-copy">
+          <p class="tag">Built and launched product</p>
+          <h2 id="aruvix-title">Aruvix</h2>
+          <p>I built Aruvix because I kept switching between tabs just to format JSON, inspect a request, or diff two
+            payloads. Developers everywhere were losing the same minutes every day. Aruvix brings those everyday tools
+            into one private, no-sign-up browser workspace - built by a developer, for developers.</p>
+          <div class="button-row">
+            <a class="btn btn-primary" href="/aruvix">Learn More</a>
+            <a class="btn btn-dark-outline" href="https://www.aruvix.com/" target="_blank" rel="noreferrer">Open Aruvix
+              <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
           </div>
-          <div class="section-actions">
-            <a class="btn primary" href="/aruvix">
-              Learn More
-              <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
-            </a>
-            <a class="btn secondary" href="https://www.aruvix.com/" target="_blank" rel="noreferrer">
-              Open Aruvix
-              <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
-            </a>
-          </div>
         </div>
+        <!-- <div class="terminal-window" aria-label="Aruvix terminal preview">
+            <div class="terminal-bar" aria-hidden="true"><span></span><span></span><span></span></div>
+            <pre><code>$ aruvix analyze --payload data.json
 
-        <div class="aruvix-home-blurb">
-          <p>
-            I built Aruvix because I kept switching between tabs just to format JSON, inspect a request, or diff two payloads. Developers everywhere were losing the same minutes every day. Aruvix
-            brings those everyday tools into one private, no-sign-up browser workspace - built by a developer, for developers.
-          </p>
-        </div>
-      </section>
+{
+  "status": "success",
+  "latency": "24ms",
+  "data": { ... }
+}
 
-      <section class="section reveal" id="highlights">
-        <h3>Career Highlights</h3>
-        <div class="card-grid">
-          <article class="card">
-            <h4>Airline Check-in Module</h4>
-            <p>Built and maintained passenger check-in modules with Angular and NestJS for a major airline.</p>
-          </article>
-          <article class="card">
-            <h4>Payment Integration Expert</h4>
-            <p>Integrated Magnati and Network International with robust webhook-based reconciliation.</p>
-          </article>
-          <article class="card">
-            <h4>Scalable Microservices</h4>
-            <p>Designed service decomposition strategies to improve maintainability and scaling.</p>
-          </article>
-          <article class="card">
-            <h4>Release Quality Gate Leadership</h4>
-            <p>Established a 95%+ coverage quality gate with CI automation, preventing regressions and improving release confidence across fast-moving modules.</p>
-          </article>
-          <article class="card">
-            <h4>Production Deployment Ownership</h4>
-            <p>Managed Linux server deployments, monitoring, and issue resolution for critical live systems.</p>
-          </article>
-          <article class="card">
-            <h4>Open Source Package Author</h4>
-            <p>Published sql-select-query-generator to accelerate dynamic SQL generation from JSON configs.</p>
-          </article>
-        </div>
-      </section>
+Analysis complete. 0 errors found.</code></pre>
+          </div> -->
+      </div>
+    </section>
 
-      <section class="section reveal" id="experience">
-        <h3>Professional Experience</h3>
-        <p class="section-lead">From architecture to release, I have led delivery for aviation, real estate, and enterprise products with a hands-on engineering mindset.</p>
-        <div class="timeline">
-          <article class="timeline-item">
-            <span class="dot" aria-hidden="true"></span>
-            <p class="timeline-date">Aug 2022 - Present</p>
-            <div class="timeline-card">
-              <p class="exp-role">Technology Lead Analyst Backend</p>
-              <h4>Techcarrot FZ LLC, Dubai</h4>
-              <p class="exp-theme">Built large-scale customer journeys with secure APIs and production-grade reliability.</p>
-              <ul class="exp-wins">
-                <li>Engineered backend platforms from scratch and delivered complete admin operations in Next.js.</li>
-                <li>Integrated Magnati and Network International with webhook-first reconciliation flows.</li>
-                <li>Shipped airline check-in modules, seat mapping, and ancillaries with 95%+ test coverage.</li>
-              </ul>
-              <div class="exp-stack"><span>NestJS</span><span>Next.js</span><span>Microservices</span><span>Payment Gateways</span></div>
-            </div>
-          </article>
-
-          <article class="timeline-item">
-            <span class="dot" aria-hidden="true"></span>
-            <p class="timeline-date">May 2021 - Aug 2022</p>
-            <div class="timeline-card">
-              <p class="exp-role">Lead Engineer, Full Stack Developer</p>
-              <h4>MSys Technologies, Bangalore</h4>
-              <p class="exp-theme">Owned delivery lifecycle end-to-end, from requirement workshops to production handover.</p>
-              <ul class="exp-wins">
-                <li>Drove architecture, implementation, and release accountability across client-facing products.</li>
-                <li>Built performant Node.js backends and modern Next.js frontends with standardized engineering workflows.</li>
-                <li>Created and enforced coding standards that reduced regressions and improved release confidence.</li>
-              </ul>
-              <div class="exp-stack"><span>Node.js</span><span>Next.js</span><span>SQL</span><span>Engineering Standards</span></div>
-            </div>
-          </article>
-
-          <article class="timeline-item">
-            <span class="dot" aria-hidden="true"></span>
-            <p class="timeline-date">Jul 2019 - May 2021</p>
-            <div class="timeline-card">
-              <p class="exp-role">Senior Software Engineer</p>
-              <h4>Full Potential Solutions, Chennai</h4>
-              <p class="exp-theme">Scaled front-end heavy products by offloading complexity into resilient middleware.</p>
-              <ul class="exp-wins">
-                <li>Built GraphQL middleware on AWS AppSync, Amplify, and Lambda to reduce frontend orchestration complexity.</li>
-                <li>Delivered custom product features such as multi-recording audio playlists and reporting modules.</li>
-                <li>Supported multi-project execution with staggered deployment timelines across teams.</li>
-              </ul>
-              <div class="exp-stack"><span>GraphQL</span><span>AWS</span><span>Frontend Architecture</span><span>Reporting</span></div>
-            </div>
-          </article>
-
-          <article class="timeline-item">
-            <span class="dot" aria-hidden="true"></span>
-            <p class="timeline-date">Aug 2016 - Jul 2019</p>
-            <div class="timeline-card">
-              <p class="exp-role">Programmer Analyst</p>
-              <h4>Cognizant Technology Solutions, Chennai</h4>
-              <p class="exp-theme">Built reusable MEAN-stack modules that improved speed and consistency across products.</p>
-              <ul class="exp-wins">
-                <li>Developed dynamic web modules using Angular, PrimeNG, Node.js, and MongoDB.</li>
-                <li>Implemented reusable directives, components, and keyboard-first UX enhancements.</li>
-                <li>Created cross-project modules that accelerated implementation for multiple teams.</li>
-              </ul>
-              <div class="exp-stack"><span>Angular</span><span>Node.js</span><span>MongoDB</span><span>Reusable Components</span></div>
-            </div>
-          </article>
-        </div>
-      </section>
-
-      <section class="section reveal" id="skills">
-        <h3>Tools and Languages</h3>
-        <div class="pill-wrap">
-          <span>JavaScript</span><span>TypeScript</span><span>Angular</span><span>React</span><span>Vue.js</span> <span>Next.js</span><span>Node.js</span><span>Express</span><span>NestJS</span
-          ><span>MongoDB</span> <span>MySQL</span><span>PostgreSQL</span><span>MSSQL</span><span>AWS</span><span>Nginx</span> <span>Jest</span><span>Microservices</span><span>REST</span
-          ><span>GraphQL</span><span>Payment Gateways</span>
-        </div>
-      </section>
-
-      <section class="section reveal" id="opensource">
-        <h3>Open Source</h3>
-        <article class="package-card">
-          <p class="package-label">Published npm Package</p>
-          <h4>sql-select-query-generator</h4>
-          <p class="package-meta">Generates dynamic SQL SELECT queries from JSON configuration to speed up backend development and reporting use cases.</p>
-          <a class="btn primary package-link" href="https://www.npmjs.com/package/sql-select-query-generator" target="_blank" rel="noreferrer">
-            <i class="fa-brands fa-npm" aria-hidden="true"></i>
-            View on npm
-          </a>
+    <section class="section reveal" id="highlights" aria-labelledby="highlights-title">
+      <h2 class="center-heading" id="highlights-title">Career Highlights</h2>
+      <div class="bento-grid">
+        <article class="info-card">
+          <h3>Airline Check-in Module</h3>
+          <p>Built and maintained passenger check-in modules with Angular and NestJS for a major airline.</p>
         </article>
-      </section>
+        <article class="info-card">
+          <h3>Payment Expert</h3>
+          <p>Integrated Magnati and Network International with robust webhook-based reconciliation.</p>
+        </article>
+        <article class="info-card">
+          <h3>Scalable Microservices</h3>
+          <p>Designed service decomposition strategies to improve maintainability and scaling.</p>
+        </article>
+        <article class="info-card feature"><strong>95%+ Quality Gate</strong>
+          <h3>Release Leadership</h3>
+          <p>Established a 95%+ coverage quality gate with CI automation, preventing regressions and improving release
+            confidence across fast-moving modules.</p>
+        </article>
+        <article class="info-card">
+          <h3>DevOps Ownership</h3>
+          <p>Managed Linux server deployments, monitoring, and issue resolution for critical live systems.</p>
+        </article>
+      </div>
+    </section>
 
-      <section class="section reveal" id="blogs">
-        <h3>Tech Writing</h3>
-        <p class="section-lead">I write practical engineering guides that simplify complex concepts and improve developer workflows.</p>
-        <div class="blog-grid" id="blog-grid" aria-live="polite">
-          <p class="blog-list-status">Loading latest articles...</p>
+    <section class="section reveal" id="experience" aria-labelledby="experience-title">
+      <div class="section-heading">
+        <h2 id="experience-title">Professional Experience</h2>
+        <p>From architecture to release, I have led delivery for aviation, real estate, and enterprise products with a
+          hands-on engineering mindset.</p>
+      </div>
+      <div class="timeline">
+        <article class="timeline-item">
+          <time>Aug 2022 - Present</time>
+          <div class="timeline-card">
+            <p class="role">Technology Lead Analyst Backend</p>
+            <h3>Techcarrot FZ LLC, Dubai</h3>
+            <p class="theme">Built large-scale customer journeys with secure APIs and production-grade reliability.</p>
+            <ul>
+              <li>Engineered backend platforms from scratch and delivered complete admin operations in Next.js.</li>
+              <li>Integrated Magnati and Network International with webhook-first reconciliation flows.</li>
+              <li>Shipped airline check-in modules, seat mapping, and ancillaries with 95%+ test coverage.</li>
+            </ul>
+            <div class="chip-row"><span>NestJS</span><span>Next.js</span><span>Microservices</span><span>Payment
+                Gateways</span></div>
+          </div>
+        </article>
+        <article class="timeline-item">
+          <time>May 2021 - Aug 2022</time>
+          <div class="timeline-card">
+            <p class="role">Lead Engineer, Full Stack Developer</p>
+            <h3>MSys Technologies, Bangalore</h3>
+            <p class="theme">Owned delivery lifecycle end-to-end, from requirement workshops to production handover.</p>
+            <ul>
+              <li>Drove architecture, implementation, and release accountability across client-facing products.</li>
+              <li>Built performant Node.js backends and modern Next.js frontends with standardized engineering
+                workflows.</li>
+              <li>Created and enforced coding standards that reduced regressions and improved release confidence.</li>
+            </ul>
+            <div class="chip-row"><span>Node.js</span><span>Next.js</span><span>SQL</span><span>Engineering
+                Standards</span></div>
+          </div>
+        </article>
+        <article class="timeline-item">
+          <time>Jul 2019 - May 2021</time>
+          <div class="timeline-card">
+            <p class="role">Senior Software Engineer</p>
+            <h3>Full Potential Solutions, Chennai</h3>
+            <p class="theme">Scaled front-end heavy products by offloading complexity into resilient middleware.</p>
+            <ul>
+              <li>Built GraphQL middleware on AWS AppSync, Amplify, and Lambda to reduce frontend orchestration
+                complexity.</li>
+              <li>Delivered custom product features such as multi-recording audio playlists and reporting modules.</li>
+              <li>Supported multi-project execution with staggered deployment timelines across teams.</li>
+            </ul>
+            <div class="chip-row"><span>GraphQL</span><span>AWS</span><span>Frontend
+                Architecture</span><span>Reporting</span></div>
+          </div>
+        </article>
+        <article class="timeline-item">
+          <time>Aug 2016 - Jul 2019</time>
+          <div class="timeline-card">
+            <p class="role">Programmer Analyst</p>
+            <h3>Cognizant Technology Solutions, Chennai</h3>
+            <p class="theme">Built reusable MEAN-stack modules that improved speed and consistency across products.</p>
+            <ul>
+              <li>Developed dynamic web modules using Angular, PrimeNG, Node.js, and MongoDB.</li>
+              <li>Implemented reusable directives, components, and keyboard-first UX enhancements.</li>
+              <li>Created cross-project modules that accelerated implementation for multiple teams.</li>
+            </ul>
+            <div class="chip-row"><span>Angular</span><span>Node.js</span><span>MongoDB</span><span>Reusable
+                Components</span></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section reveal" id="skills" aria-labelledby="skills-title">
+      <h2 class="center-heading" id="skills-title">Tools and Languages</h2>
+      <div class="pill-wrap">
+        <span>JavaScript</span><span>TypeScript</span><span>Angular</span><span>React</span><span>Next.js</span><span>Node.js</span><span>Express</span><span>MongoDB</span><span>PostgreSQL</span><span>AWS</span><span>GraphQL</span><span>Jest</span>
+      </div>
+    </section>
+
+    <section class="section writing-section reveal" id="blogs" aria-labelledby="blogs-title">
+      <div class="section-heading-row">
+        <div>
+          <h2 id="blogs-title">Tech Writing</h2>
+          <p>I write practical engineering guides that simplify complex concepts and improve developer workflows.</p>
         </div>
-        <div class="blog-pagination" id="blog-pagination" hidden>
-          <button class="blog-page-btn" id="blog-prev-page" type="button" aria-label="Previous articles">
-            <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
-          </button>
-          <span class="blog-page-status" id="blog-page-status" aria-live="polite"></span>
-          <button class="blog-page-btn" id="blog-next-page" type="button" aria-label="Next articles">
-            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
-          </button>
+        <div class="writing-controls" id="writing-controls-top" hidden>
+          <button id="blog-prev-page-top" type="button" aria-label="Previous articles"><i
+              class="fa-solid fa-chevron-left"></i></button>
+          <button id="blog-next-page-top" type="button" aria-label="Next articles"><i
+              class="fa-solid fa-chevron-right"></i></button>
         </div>
-      </section>
+      </div>
+      <div class="blog-grid" id="blog-grid" aria-live="polite">
+        <p class="blog-list-status">Loading latest articles...</p>
+      </div>
+      <div class="blog-pagination" id="blog-pagination" hidden>
+        <button class="blog-page-btn" id="blog-prev-page" type="button" aria-label="Previous articles"><i
+            class="fa-solid fa-chevron-left" aria-hidden="true"></i></button>
+        <span class="blog-page-status" id="blog-page-status" aria-live="polite"></span>
+        <button class="blog-page-btn" id="blog-next-page" type="button" aria-label="Next articles"><i
+            class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>
+      </div>
+    </section>
 
-      <section class="section reveal" id="education">
-        <h3>Education</h3>
-        <p>Bachelor's in Engineering (EEE), St Joseph's College of Engineering, Chennai, India (Apr 2016)</p>
-      </section>
+    <section class="section reveal" id="opensource" aria-labelledby="opensource-title">
+      <div class="package-card">
+        <div>
+          <p class="tag success">Published npm Package</p>
+          <h2 id="opensource-title">sql-select-query-generator</h2>
+          <p>Generates dynamic SQL SELECT queries from JSON configuration to speed up backend development and reporting
+            use cases.</p>
+          <a class="btn btn-inverse" href="https://www.npmjs.com/package/sql-select-query-generator" target="_blank"
+            rel="noreferrer"><i class="fa-brands fa-npm" aria-hidden="true"></i>View on npm</a>
+        </div>
+        <div class="code-card" aria-label="Package preview">
+          <div><strong>package.json</strong><span>v1.2.0</span></div>
+          <pre><code>"name": "sql-select-query-generator",
+"main": "index.js",
+"scripts": {
+  "test": "jest"
+}</code></pre>
+        </div>
+      </div>
+    </section>
 
-      <section class="section reveal" id="contact">
-        <h3>Contact</h3>
-        <div class="contact-grid">
-          <a href="tel:+971525886136"><i class="fa-solid fa-phone"></i><span>+971 52 588 6136</span></a>
-          <div class="contact-email-card" aria-label="Email contact">
-            <i class="fa-solid fa-envelope"></i>
+    <section class="section contact-section reveal" id="contact" aria-labelledby="contact-title">
+      <div>
+        <h2>Education</h2>
+        <article class="contact-card">
+          <h3>Bachelor's in Engineering (EEE)</h3>
+          <p>St Joseph's College of Engineering, Chennai, India</p>
+          <strong>Class of 2016</strong>
+        </article>
+        <h2>Resume</h2>
+        <div class="resume-row">
+          <a class="contact-card compact is-disabled" aria-disabled="true">Resume PDF <i class="fa-regular fa-file-pdf"
+              aria-hidden="true"></i></a>
+          <a class="contact-card compact" href="/resume/doc/Amrishkhan-Sheik-Abdullah-Resume.docx" download>Resume DOC
+            <i class="fa-regular fa-file-lines" aria-hidden="true"></i></a>
+        </div>
+      </div>
+      <div>
+        <h2 id="contact-title">Get in touch</h2>
+        <div class="contact-list">
+          <a class="contact-card compact" href="tel:+971525886136"><i class="fa-solid fa-phone"
+              aria-hidden="true"></i><span>+971 52 588 6136</span></a>
+          <div class="contact-card compact email-card">
+            <i class="fa-solid fa-envelope" aria-hidden="true"></i>
             <a class="email-link" href="mailto:amrishkhansheikabdullah@gmail.com">amrishkhansheikabdullah@gmail.com</a>
-            <button class="contact-copy" id="copy-email-btn" type="button" data-email="amrishkhansheikabdullah@gmail.com" aria-label="Copy email address">
-              <i class="fa-solid fa-copy icon-copy" aria-hidden="true"></i>
-              <i class="fa-solid fa-check icon-check" aria-hidden="true"></i>
-            </button>
+            <button class="contact-copy" id="copy-email-btn" type="button"
+              data-email="amrishkhansheikabdullah@gmail.com" aria-label="Copy email address"><i
+                class="fa-regular fa-copy icon-copy" aria-hidden="true"></i><i class="fa-solid fa-check icon-check"
+                aria-hidden="true"></i></button>
           </div>
-          <a href="https://www.linkedin.com/in/amrishkhan" target="_blank" rel="noreferrer"><i class="fa-brands fa-linkedin"></i><span>LinkedIn</span></a>
-          <a href="https://github.com/amrishkhan05" target="_blank" rel="noreferrer"><i class="fa-brands fa-github"></i><span>GitHub</span></a>
-          <div class="contact-resume-card" aria-label="Resume downloads">
-            <i class="fa-solid fa-file-lines"></i>
-            <span>Resume</span>
-            <div class="contact-resume-actions">
-              <a class="contact-mini-btn" href="resume/pdf/Amrishkhan-Sheik-Abdullah-Resume.pdf" download>PDF</a>
-              <a class="contact-mini-btn" href="resume/doc/Amrishkhan-Sheik-Abdullah-Resume.docx" download>DOC</a>
-            </div>
+          <div class="social-row">
+            <a class="contact-card compact" href="https://www.linkedin.com/in/amrishkhan" target="_blank"
+              rel="noreferrer"><i class="fa-brands fa-linkedin" aria-hidden="true"></i>LinkedIn</a>
+            <a class="contact-card compact" href="https://github.com/amrishkhan05" target="_blank" rel="noreferrer"><i
+                class="fa-brands fa-github" aria-hidden="true"></i>GitHub</a>
           </div>
         </div>
-      </section>
-    </main>
-
-    <main class="blog-detail-shell" id="blog-detail" hidden>
-      <div class="blog-detail-layout">
-        <aside class="blog-toc" id="blog-toc" aria-label="Article table of contents" hidden>
-          <div class="blog-sidebar-panel">
-            <p class="blog-sidebar-kicker">On this page</p>
-            <nav id="blog-toc-list"></nav>
-          </div>
-        </aside>
-
-        <article class="blog-article" aria-live="polite">
-          <a class="blog-back-link" href="/#blogs">
-            <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
-            Writing
-          </a>
-          <div class="blog-detail-status" id="blog-detail-status">Loading...</div>
-          <div class="blog-detail-content" id="blog-detail-content" hidden>
-            <header class="blog-hero">
-              <p class="eyebrow" id="blog-detail-eyebrow">Tech Writing</p>
-              <h1 id="blog-detail-title"></h1>
-              <p class="blog-summary" id="blog-detail-summary"></p>
-              <div class="blog-meta-row" id="blog-detail-meta"></div>
-              <div class="blog-tags" id="blog-detail-tags"></div>
-              <img class="blog-cover" id="blog-detail-cover" alt="" loading="lazy" decoding="async" hidden />
-            </header>
-            <div class="blog-body" id="blog-detail-body"></div>
-          </div>
-        </article>
-
-        <aside class="blog-related" id="blog-related" aria-label="Related articles and tools" hidden>
-          <div class="blog-sidebar-panel">
-            <p class="blog-sidebar-kicker">Keep reading</p>
-            <div id="blog-related-list"></div>
-          </div>
-          <div class="blog-sidebar-panel blog-tools-panel" id="blog-tools-panel" hidden>
-            <p class="blog-sidebar-kicker">Useful tools</p>
-            <div id="blog-tool-list"></div>
-          </div>
-        </aside>
       </div>
-    </main>
+    </section>
+  </main>
 
-    <footer class="section reveal footer">
-      <p>Get in touch to discuss engineering, architecture, or collaboration.</p>
-    </footer>
+  <main class="blog-detail-shell" id="blog-detail" hidden>
+    <div class="blog-detail-layout">
+      <aside class="blog-toc" id="blog-toc" aria-label="Article table of contents" hidden>
+        <div class="blog-sidebar-panel">
+          <h2>Contents</h2>
+          <nav id="blog-toc-list"></nav>
+        </div>
+        <div class="blog-sidebar-panel share-panel">
+          <h2>Share Technical Insight</h2>
+          <p>Help your peers optimize their functional chains.</p>
+          <div>
+            <button id="blog-share-btn" type="button" aria-label="Share article"><i class="fa-solid fa-share-nodes"
+                aria-hidden="true"></i></button>
+            <button id="blog-copy-link-btn" type="button" aria-label="Copy article link"><i class="fa-solid fa-link"
+                aria-hidden="true"></i></button>
+          </div>
+        </div>
+      </aside>
+      <article class="blog-article" aria-live="polite">
+        <a class="blog-back-link" href="/#blogs">Articles <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+          <span id="blog-detail-category">Tech Writing</span></a>
+        <div class="blog-detail-status" id="blog-detail-status">Loading...</div>
+        <div class="blog-detail-content" id="blog-detail-content" hidden>
+          <header class="blog-hero">
+            <img class="blog-cover" id="blog-detail-cover" alt="" loading="lazy" decoding="async" hidden />
+            <h1 id="blog-detail-title"></h1>
+            <div class="blog-meta-row" id="blog-detail-meta"></div>
+            <div class="blog-tags" id="blog-detail-tags"></div>
+          </header>
+          <div class="blog-body" id="blog-detail-body"></div>
+          <section class="author-card" aria-label="Article author">
+            <img src="/assets/ak_profile.png" alt="Illustrated portrait of Amrish Khan" loading="lazy"
+              decoding="async" />
+            <div>
+              <h2>Written by Amrish Khan</h2>
+              <p>Product-minded engineering lead specializing in scalable distributed systems, TypeScript architecture,
+                and developer tools.</p>
+              <a href="/">View Full Portfolio <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+            </div>
+          </section>
+        </div>
+      </article>
+      <aside class="blog-related" id="blog-related" aria-label="Related articles and tools" hidden>
+        <div class="blog-sidebar-panel">
+          <h2>Continue Reading</h2>
+          <div id="blog-related-list"></div>
+        </div>
+        <div class="blog-sidebar-panel blog-tools-panel" id="blog-tools-panel" hidden>
+          <h2>Useful tools</h2>
+          <div id="blog-tool-list"></div>
+        </div>
+      </aside>
+    </div>
+  </main>
 
-    <aside class="owner-view-badge" id="owner-view-badge" hidden aria-live="polite">Portfolio Views: <strong id="portfolio-view-count">--</strong></aside>
-    <button class="back-to-top" id="back-to-top" type="button" aria-label="Back to top">
-      <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
-    </button>
+  <footer class="footer">
+    <div>
+      <strong>amrishkhan<span>.dev</span></strong>
+      <p>© 2024 Amrish Khan. Built for performance.</p>
+    </div>
+    <nav aria-label="Footer links">
+      <a href="https://www.linkedin.com/in/amrishkhan" target="_blank" rel="noreferrer">LinkedIn</a>
+      <a href="https://github.com/amrishkhan05" target="_blank" rel="noreferrer">GitHub</a>
+      <a href="https://x.com/amrishkhan05" target="_blank" rel="noreferrer">Twitter</a>
+      <a href="mailto:amrishkhansheikabdullah@gmail.com">Email</a>
+    </nav>
+  </footer>
 
-    <script src="https://storage.ko-fi.com/cdn/widget/Widget_2.js"></script>
-    <script src="/script.js?v=20260509-dynamic-blog-pagination"></script>
-  </body>
+  <aside class="owner-view-badge" id="owner-view-badge" hidden aria-live="polite">Portfolio Views: <strong
+      id="portfolio-view-count">--</strong></aside>
+  <button class="back-to-top icon-button" id="back-to-top" type="button" aria-label="Back to top"><i
+      class="fa-solid fa-arrow-up" aria-hidden="true"></i></button>
+  <div class="blog-loader-overlay" id="blog-loader-overlay" hidden>
+    <div class="ai-matrix-loader">
+      <div class="digit">0</div>
+      <div class="digit">1</div>
+      <div class="digit">0</div>
+      <div class="digit">1</div>
+      <div class="digit">1</div>
+      <div class="digit">0</div>
+      <div class="digit">0</div>
+      <div class="digit">1</div>
+      <div class="glow"></div>
+    </div>
+  </div>
+  <script src="/script.js?v=20260603-stitch-final"></script>
+</body>
+
 </html>

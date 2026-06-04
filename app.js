@@ -26,7 +26,7 @@ const devApiHeaders = {
   "Accept-Encoding": "identity",
   ...(devApiKey ? { "api-key": devApiKey } : {}),
 };
-const siteUrl = "https://amrishkhan.dev";
+const siteUrl = (process.env.SITE_URL || "https://amrishkhan.dev").replace(/\/+$/, "");
 const siteImageUrl = `${siteUrl}/favicon.svg`;
 const personId = `${siteUrl}/#person`;
 
@@ -277,7 +277,7 @@ const buildSeoTags = ({ title, description, canonicalPath, type = "website", ima
 
   return `    <title>${safeTitle}</title>
     <meta name="description" content="${safeDescription}" />
-    <meta name="author" content="Amrishkhan Sheik Abdullah" />
+    <meta name="author" content="Amrish Khan" />
     <link rel="canonical" href="${safeCanonicalUrl}" />
     <meta property="og:title" content="${safeTitle}" />
     <meta property="og:description" content="${safeDescription}" />
@@ -307,16 +307,17 @@ const replaceSeoHead = (html, seoTags) => {
 const getPersonJsonLd = () => ({
   "@type": "Person",
   "@id": personId,
-  name: "Amrishkhan Sheik Abdullah",
+  name: "Amrish Khan",
+  alternateName: "Amrishkhan Sheik Abdullah",
   url: `${siteUrl}/`,
-  jobTitle: "Technical Lead and Full Stack Engineer",
+  jobTitle: "Full Stack AI Engineer, TypeScript Architect, Founder of Aruvix",
   address: {
     "@type": "PostalAddress",
     addressLocality: "Dubai",
     addressCountry: "AE",
   },
-  sameAs: ["https://www.linkedin.com/in/amrishkhan", "https://github.com/amrishkhan05", "https://www.npmjs.com/package/sql-select-query-generator"],
-  knowsAbout: ["Angular", "React", "Vue.js", "Node.js", "NestJS", "Microservices", "API design", "Payment integrations"],
+  sameAs: ["https://www.linkedin.com/in/amrishkhan", "https://github.com/amrishkhan05", "https://www.npmjs.com/package/sql-select-query-generator", "https://www.aruvix.com/"],
+  knowsAbout: ["TypeScript", "AI engineering", "Angular", "React", "Node.js", "NestJS", "Microservices", "API design", "Payment integrations"],
 });
 
 const getBlogArticleForSeo = async (slug) => {
@@ -332,7 +333,7 @@ const getBlogArticleForSeo = async (slug) => {
 const renderBlogPage = async (article) => {
   const indexHtml = await fs.readFile(path.join(__dirname, "public", "index.html"), "utf8");
   const canonicalPath = article.url;
-  const description = article.description || `Read ${article.title} by Amrishkhan Sheik Abdullah on amrishkhan.dev.`;
+  const description = article.description || `Read ${article.title} by Amrish Khan on amrishkhan.dev.`;
   const image = article.coverImage || siteImageUrl;
   const jsonLd = {
     "@context": "https://schema.org",
@@ -346,7 +347,7 @@ const renderBlogPage = async (article) => {
     author: {
       "@type": "Person",
       "@id": personId,
-      name: "Amrishkhan Sheik Abdullah",
+      name: "Amrish Khan",
       url: `${siteUrl}/`,
     },
     publisher: getPersonJsonLd(),

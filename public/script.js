@@ -16,25 +16,31 @@ const blogPagination = document.getElementById("blog-pagination");
 const blogPrevPage = document.getElementById("blog-prev-page");
 const blogNextPage = document.getElementById("blog-next-page");
 const blogPageStatus = document.getElementById("blog-page-status");
+const writingControlsTop = document.getElementById("writing-controls-top");
+const blogPrevPageTop = document.getElementById("blog-prev-page-top");
+const blogNextPageTop = document.getElementById("blog-next-page-top");
 const blogDetail = document.getElementById("blog-detail");
 const blogDetailStatus = document.getElementById("blog-detail-status");
 const blogDetailContent = document.getElementById("blog-detail-content");
 const blogDetailTitle = document.getElementById("blog-detail-title");
 const blogDetailMeta = document.getElementById("blog-detail-meta");
-const blogDetailSummary = document.getElementById("blog-detail-summary");
 const blogDetailCover = document.getElementById("blog-detail-cover");
 const blogDetailTags = document.getElementById("blog-detail-tags");
 const blogDetailBody = document.getElementById("blog-detail-body");
+const blogDetailCategory = document.getElementById("blog-detail-category");
 const blogToc = document.getElementById("blog-toc");
 const blogTocList = document.getElementById("blog-toc-list");
+const blogShareBtn = document.getElementById("blog-share-btn");
+const blogCopyLinkBtn = document.getElementById("blog-copy-link-btn");
 const blogRelated = document.getElementById("blog-related");
 const blogRelatedList = document.getElementById("blog-related-list");
 const blogToolsPanel = document.getElementById("blog-tools-panel");
 const blogToolList = document.getElementById("blog-tool-list");
+const blogLoaderOverlay = document.getElementById("blog-loader-overlay");
 const ownerMaxViewsKey = "portfolio-owner-max-views";
 const themeStorageKey = "portfolio-theme";
-const lightThemeColor = "#f8f8f5";
-const darkThemeColor = "#0a0f1a";
+const lightThemeColor = "#f8f9ff";
+const darkThemeColor = "#111418";
 const kofiWidgetId = "L3L71XQ4TR";
 const kofiWidgetLabel = "Buy me a coffee on Ko-fi";
 const kofiWidgetColors = {
@@ -95,6 +101,19 @@ const formatPublishedDate = (value) => {
     day: "numeric",
     year: "numeric",
   })}`;
+};
+
+const formatArticleCategory = (tags = []) => {
+  const preferredTags = Array.isArray(tags) ? tags.filter(Boolean) : [];
+  const primaryTag = preferredTags.find((tag) => !["webdev", "programming", "javascript", "typescript"].includes(String(tag).toLowerCase())) || preferredTags[0];
+
+  if (!primaryTag) {
+    return "Tech Writing";
+  }
+
+  return String(primaryTag)
+    .replace(/[-_]+/g, " ")
+    .replace(/\b\w/g, (char) => char.toUpperCase());
 };
 
 const escapeHtml = (value) => String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
@@ -249,6 +268,11 @@ const applyTheme = (theme) => {
     toggle.setAttribute("aria-pressed", String(isDark));
     toggle.setAttribute("aria-label", isDark ? "Switch to light theme" : "Switch to dark theme");
 
+    const checkbox = toggle.querySelector("input[type='checkbox']");
+    if (checkbox) {
+      checkbox.checked = !isDark;
+    }
+
     const icon = toggle.querySelector("i");
     if (icon) {
       icon.className = isDark ? "fa-solid fa-sun" : "fa-solid fa-moon";
@@ -327,13 +351,23 @@ const copyEmailToClipboard = async () => {
 copyEmailBtn?.addEventListener("click", copyEmailToClipboard);
 
 themeToggles.forEach((toggle) => {
-  toggle.addEventListener("click", () => {
-    const current = document.documentElement.dataset.theme || "light";
-    const next = current === "dark" ? "light" : "dark";
+  const checkbox = toggle.querySelector("input[type='checkbox']");
+  if (checkbox) {
+    checkbox.addEventListener("change", (e) => {
+      e.stopPropagation();
+      const next = checkbox.checked ? "light" : "dark";
+      applyTheme(next);
+      safeStorageSet(themeStorageKey, next);
+    });
+  } else {
+    toggle.addEventListener("click", () => {
+      const current = document.documentElement.dataset.theme || "light";
+      const next = current === "dark" ? "light" : "dark";
 
-    applyTheme(next);
-    safeStorageSet(themeStorageKey, next);
-  });
+      applyTheme(next);
+      safeStorageSet(themeStorageKey, next);
+    });
+  }
 });
 
 const setMobileMenuOpen = (isOpen) => {
@@ -427,13 +461,25 @@ const renderBlogPage = ({ preserveFirstBlog = false } = {}) => {
 
   const shouldShowPagination = totalPages > 1;
   blogPagination.hidden = !shouldShowPagination;
+  if (writingControlsTop) {
+    writingControlsTop.hidden = !shouldShowPagination;
+  }
 
   if (!shouldShowPagination) {
     return;
   }
 
-  blogPrevPage.disabled = currentBlogPage === 1;
-  blogNextPage.disabled = currentBlogPage === totalPages;
+  const isFirstPage = currentBlogPage === 1;
+  const isLastPage = currentBlogPage === totalPages;
+
+  blogPrevPage.disabled = isFirstPage;
+  blogNextPage.disabled = isLastPage;
+  if (blogPrevPageTop) {
+    blogPrevPageTop.disabled = isFirstPage;
+  }
+  if (blogNextPageTop) {
+    blogNextPageTop.disabled = isLastPage;
+  }
   blogPageStatus.textContent = `Page ${currentBlogPage} of ${totalPages}`;
 };
 
@@ -464,6 +510,9 @@ const renderBlogList = async () => {
     if (blogPagination) {
       blogPagination.hidden = true;
     }
+    if (writingControlsTop) {
+      writingControlsTop.hidden = true;
+    }
   }
 };
 
@@ -472,7 +521,17 @@ blogPrevPage?.addEventListener("click", () => {
   renderBlogPage();
 });
 
+blogPrevPageTop?.addEventListener("click", () => {
+  currentBlogPage -= 1;
+  renderBlogPage();
+});
+
 blogNextPage?.addEventListener("click", () => {
+  currentBlogPage += 1;
+  renderBlogPage();
+});
+
+blogNextPageTop?.addEventListener("click", () => {
   currentBlogPage += 1;
   renderBlogPage();
 });
@@ -525,7 +584,7 @@ const generateToc = (bodyEl) => {
   const tocEl = document.getElementById("blog-toc");
   if (!tocNav || !bodyEl || !tocEl) return;
 
-  const headings = Array.from(bodyEl.querySelectorAll("h2, h3"));
+  const headings = Array.from(bodyEl.querySelectorAll("h1, h2, h3, h4"));
   if (headings.length < 2) {
     tocEl.style.display = "none";
     return;
@@ -547,8 +606,8 @@ const generateToc = (bodyEl) => {
 
   tocNav.innerHTML = headings
     .map((h) => {
-      const isH3 = h.tagName === "H3";
-      return `<a href="#${h.id}" class="${isH3 ? "toc-h3" : ""}" data-toc-id="${h.id}">${escapeHtml(h.textContent?.trim() || "")}</a>`;
+      const level = h.tagName.toLowerCase();
+      return `<a href="#${h.id}" class="toc-${level}" data-toc-id="${h.id}">${escapeHtml(h.textContent?.trim() || "")}</a>`;
     })
     .join("");
 
@@ -732,7 +791,7 @@ const buildBlogToc = () => {
 
   activeHeadingObserver?.disconnect();
   const usedIds = new Set();
-  const headings = Array.from(blogDetailBody.querySelectorAll("h2, h3")).filter((heading) => heading.textContent.trim());
+  const headings = Array.from(blogDetailBody.querySelectorAll("h1, h2, h3, h4")).filter((heading) => heading.textContent.trim());
 
   headings.forEach((heading) => {
     const baseId = heading.id || slugifyText(heading.textContent);
@@ -759,7 +818,7 @@ const buildBlogToc = () => {
 
   blogTocList.innerHTML = headings
     .map((heading) => {
-      const level = heading.tagName.toLowerCase() === "h3" ? "h3" : "h2";
+      const level = heading.tagName.toLowerCase();
       return `<a class="blog-toc-link is-${level}" href="#${escapeHtml(heading.id)}" data-heading-id="${escapeHtml(heading.id)}">${escapeHtml(heading.textContent.trim())}</a>`;
     })
     .join("");
@@ -833,17 +892,17 @@ const renderRelatedTools = (article) => {
   const tools = [
     {
       name: "JSON Formatter",
-      href: "/aruvix.html#json-formatter",
+      href: "/aruvix#json-formatter",
       keywords: ["json", "api", "payload", "response"],
     },
     {
       name: "API Tester",
-      href: "/aruvix.html#api-tester",
+      href: "/aruvix#api-tester",
       keywords: ["api", "postman", "http", "request", "endpoint"],
     },
     {
       name: "Curl Converter",
-      href: "/aruvix.html#curl-converter",
+      href: "/aruvix#curl-converter",
       keywords: ["curl", "terminal", "http", "request"],
     },
   ].filter((tool) => tool.keywords.some((keyword) => text.includes(keyword)));
@@ -919,6 +978,10 @@ const renderBlogDetail = async () => {
   }
 
   blogDetail.hidden = false;
+  const startTime = Date.now();
+  if (blogLoaderOverlay) {
+    blogLoaderOverlay.hidden = false;
+  }
   showBlogStatus("Loading...");
 
   try {
@@ -932,13 +995,13 @@ const renderBlogDetail = async () => {
 
     document.title = `${article.title} | amrishkhan.dev`;
     blogDetailTitle.textContent = article.title;
-    if (blogDetailSummary) {
-      blogDetailSummary.textContent = article.description || "Practical engineering notes, examples, and implementation details.";
-    }
-    blogDetailMeta.innerHTML = [formatPublishedDate(article.publishedAt), article.readingTimeMinutes ? `${article.readingTimeMinutes} min read` : null, "Amrishkhan Sheik Abdullah"]
+    blogDetailMeta.innerHTML = [formatPublishedDate(article.publishedAt), article.readingTimeMinutes ? `${article.readingTimeMinutes} min read` : null]
       .filter(Boolean)
       .map((item) => `<span>${escapeHtml(item)}</span>`)
       .join("");
+    if (blogDetailCategory) {
+      blogDetailCategory.textContent = formatArticleCategory(tags);
+    }
     blogDetailTags.innerHTML = tags.map((tag) => `<span>${escapeHtml(tag)}</span>`).join("");
 
     if (article.coverImage) {
@@ -969,6 +1032,14 @@ const renderBlogDetail = async () => {
   } catch (error) {
     console.error("Unable to load DEV blog article:", error);
     showBlogStatus("This article is temporarily unavailable.");
+  } finally {
+    const elapsedTime = Date.now() - startTime;
+    if (elapsedTime < 1000) {
+      await new Promise((resolve) => setTimeout(resolve, 1000 - elapsedTime));
+    }
+    if (blogLoaderOverlay) {
+      blogLoaderOverlay.hidden = true;
+    }
   }
 };
 
@@ -986,7 +1057,6 @@ const observer = new IntersectionObserver(
 );
 
 document.querySelectorAll(".reveal").forEach((node) => {
-  node.style.animationPlayState = "paused";
   observer.observe(node);
 });
 
@@ -1034,3 +1104,44 @@ globalThis.addEventListener("pointermove", (event) => {
   document.body.style.setProperty("--mx", `${event.clientX}px`);
   document.body.style.setProperty("--my", `${event.clientY}px`);
 });
+
+blogShareBtn?.addEventListener("click", async () => {
+  if (navigator.share) {
+    try {
+      await navigator.share({
+        title: document.title,
+        url: window.location.href,
+      });
+    } catch (error) {
+      if (error.name !== "AbortError") {
+        console.error("Error sharing article:", error);
+      }
+    }
+  } else {
+    copyArticleLink();
+  }
+});
+
+const copyArticleLink = async () => {
+  if (!blogCopyLinkBtn) return;
+
+  try {
+    const success = await writeClipboardText(window.location.href);
+    if (!success) throw new Error("Clipboard write failed");
+
+    const originalIcon = blogCopyLinkBtn.innerHTML;
+    blogCopyLinkBtn.innerHTML = '<i class="fa-solid fa-check"></i>';
+    blogCopyLinkBtn.classList.add("is-copied");
+    blogCopyLinkBtn.setAttribute("aria-label", "Link copied");
+
+    setTimeout(() => {
+      blogCopyLinkBtn.innerHTML = originalIcon;
+      blogCopyLinkBtn.classList.remove("is-copied");
+      blogCopyLinkBtn.setAttribute("aria-label", "Copy article link");
+    }, 1500);
+  } catch (error) {
+    console.error("Unable to copy article link:", error);
+  }
+};
+
+blogCopyLinkBtn?.addEventListener("click", copyArticleLink);

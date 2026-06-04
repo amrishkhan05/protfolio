@@ -4,6 +4,8 @@
   "description": "Test server",
   "main": "app.js",
   "scripts": {
+    "build": "node -e \"console.log('Static portfolio build complete')\"",
+    "postbuild": "node scripts/generate-sitemap.js",
     "start": "node app.js",
     "dev": "nodemon app.js"
   },
