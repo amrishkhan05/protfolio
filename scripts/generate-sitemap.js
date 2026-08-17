@@ -1,7 +1,7 @@
 const fs = require("node:fs/promises");
 const path = require("node:path");
 
-const siteUrl = process.env.SITE_URL || (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "https://amrishkhan.dev");
+const siteUrl = (process.env.SITE_URL || "https://www.amrishkhan.dev").replace(/\/+$/, "");
 const devUsername = process.env.DEV_USERNAME || "amrishkhan05";
 const outputDir = path.join(__dirname, "..", "public");
 

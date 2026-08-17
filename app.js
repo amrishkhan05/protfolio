@@ -26,7 +26,7 @@ const devApiHeaders = {
   "Accept-Encoding": "identity",
   ...(devApiKey ? { "api-key": devApiKey } : {}),
 };
-const siteUrl = (process.env.SITE_URL || "https://amrishkhan.dev").replace(/\/+$/, "");
+const siteUrl = (process.env.SITE_URL || "https://www.amrishkhan.dev").replace(/\/+$/, "");
 const siteImageUrl = `${siteUrl}/favicon.svg`;
 const personId = `${siteUrl}/#person`;
 
@@ -49,16 +49,6 @@ const setNoStoreHeaders = (res) => {
   res.set("Expires", "0");
   res.set("X-Accel-Expires", "0");
 };
-
-app.use(
-  express.static(path.join(__dirname, "public"), {
-    etag: false,
-    lastModified: false,
-    setHeaders: (res) => {
-      setNoStoreHeaders(res);
-    },
-  }),
-);
 
 const slugify = (value) =>
   String(value)
@@ -264,6 +254,61 @@ const escapeXml = escapeHtml;
 
 const escapeJsonForHtml = (value) => JSON.stringify(value).replace(/</g, "\\u003c");
 
+const sanitizeDevArticleHtml = (html) => {
+  if (!html) {
+    return "";
+  }
+
+  return String(html)
+    .replace(/<!--[\s\S]*?-->/g, "")
+    .replace(/<(script|style|iframe|object|embed|form|input|button|textarea|select|option|link|meta)\b[\s\S]*?<\/\1>/gi, "")
+    .replace(/<(script|style|iframe|object|embed|form|input|button|textarea|select|option|link|meta)\b[^>]*\/?>/gi, "")
+    .replace(/\s+on[a-z]+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, "")
+    .replace(/\s+(href|src)\s*=\s*(["'])\s*javascript:[\s\S]*?\2/gi, "")
+    .replace(/\s+(href|src)\s*=\s*(["'])\s*data:(?!image\/(?:png|gif|jpe?g|webp|avif|svg\+xml);)[\s\S]*?\2/gi, "")
+    .replace(/\s+data-[a-z0-9_-]+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, "")
+    .replace(/\s+aria-label\s*=\s*(["'])(?:expand|fit to screen|enter fullscreen mode|exit fullscreen mode)[\s\S]*?\1/gi, "")
+    .replace(/<a\b(?![^>]*\brel=)([^>]*)>/gi, '<a$1 rel="noopener noreferrer">')
+    .trim();
+};
+
+const formatPublishedDate = (value) => {
+  if (!value) {
+    return "";
+  }
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return "";
+  }
+
+  return date.toLocaleDateString("en", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+};
+
+const renderTagList = (tags) => (Array.isArray(tags) ? tags : []).map((tag) => `<span>${escapeHtml(tag)}</span>`).join("");
+
+const injectBlogDetailContent = (html, article) => {
+  const tags = Array.isArray(article.tags) ? article.tags : [];
+  const metaItems = [formatPublishedDate(article.publishedAt), article.readingTimeMinutes ? `${article.readingTimeMinutes} min read` : null].filter(Boolean);
+  const coverImage = article.coverImage
+    ? `<img class="blog-cover" id="blog-detail-cover" src="${escapeHtml(article.coverImage)}" alt="${escapeHtml(article.title)} cover image" loading="lazy" decoding="async" />`
+    : '<img class="blog-cover" id="blog-detail-cover" alt="" loading="lazy" decoding="async" hidden />';
+  const bodyHtml = sanitizeDevArticleHtml(article.bodyHtml) || (article.bodyMarkdown ? `<pre class="blog-markdown-source">${escapeHtml(article.bodyMarkdown)}</pre>` : "");
+
+  return html
+    .replace('<div class="blog-detail-status" id="blog-detail-status">Loading...</div>', '<div class="blog-detail-status" id="blog-detail-status" hidden></div>')
+    .replace('<div class="blog-detail-content" id="blog-detail-content" hidden>', '<div class="blog-detail-content" id="blog-detail-content">')
+    .replace(/<img class="blog-cover" id="blog-detail-cover"[\s\S]*?\/>/, coverImage)
+    .replace('<h1 id="blog-detail-title"></h1>', `<h1 id="blog-detail-title">${escapeHtml(article.title)}</h1>`)
+    .replace('<div class="blog-meta-row" id="blog-detail-meta"></div>', `<div class="blog-meta-row" id="blog-detail-meta">${metaItems.map((item) => `<span>${escapeHtml(item)}</span>`).join("")}</div>`)
+    .replace('<div class="blog-tags" id="blog-detail-tags"></div>', `<div class="blog-tags" id="blog-detail-tags">${renderTagList(tags)}</div>`)
+    .replace('<div class="blog-body" id="blog-detail-body"></div>', `<div class="blog-body" id="blog-detail-body">${bodyHtml}</div>`);
+};
+
 const absoluteUrl = (pathname = "/") => new URL(pathname, siteUrl).toString();
 
 const buildSeoTags = ({ title, description, canonicalPath, type = "website", image = siteImageUrl, jsonLd }) => {
@@ -320,13 +365,58 @@ const getPersonJsonLd = () => ({
   knowsAbout: ["TypeScript", "AI engineering", "Angular", "React", "Node.js", "NestJS", "Microservices", "API design", "Payment integrations"],
 });
 
+const mapFullDevArticle = (article) => {
+  const mappedArticle = normalizeDevArticle(article);
+
+  if (!mappedArticle) {
+    return null;
+  }
+
+  return {
+    ...mappedArticle,
+    description: article.description || mappedArticle.description,
+    publishedAt: article.published_at || article.published_timestamp || mappedArticle.publishedAt,
+    tags: Array.isArray(article.tag_list) && article.tag_list.length ? article.tag_list : mappedArticle.tags,
+    coverImage: article.cover_image || article.social_image || mappedArticle.coverImage,
+    bodyHtml: article.body_html || "",
+    bodyMarkdown: article.body_markdown || "",
+    source: "dev",
+  };
+};
+
+const fetchFullDevArticle = async (slug) => {
+  const article = await fetchDevJson(buildFreshDevUrl(`/articles/${encodeURIComponent(devUsername)}/${encodeURIComponent(slug)}`));
+
+  if (!isRecord(article)) {
+    throw new Error("DEV API returned a malformed article payload.");
+  }
+
+  const mappedArticle = mapFullDevArticle(article);
+
+  if (!mappedArticle) {
+    throw new Error("DEV API returned an article that could not be normalized.");
+  }
+
+  return mappedArticle;
+};
+
 const getBlogArticleForSeo = async (slug) => {
   try {
-    const { blogs } = await fetchMappedDevBlogs();
-    return blogs.find((article) => article.localSlug === slug || article.devSlug === slug) || null;
-  } catch (error) {
-    console.error(`Could not read DEV article SEO data for ${slug}:`, error);
-    return null;
+    return await fetchFullDevArticle(slug);
+  } catch (directError) {
+    try {
+      const { blogs } = await fetchMappedDevBlogs();
+      const listedArticle = blogs.find((article) => article.localSlug === slug || article.devSlug === slug);
+
+      if (!listedArticle || listedArticle.devSlug === slug) {
+        throw directError;
+      }
+
+      return await fetchFullDevArticle(listedArticle.devSlug);
+    } catch (fallbackError) {
+      console.error(`Could not read DEV article SEO data for ${slug}:`, fallbackError);
+      return null;
+    }
   }
 };
 
@@ -358,16 +448,19 @@ const renderBlogPage = async (article) => {
     keywords: Array.isArray(article.tags) ? article.tags.join(", ") : "",
   };
 
-  return replaceSeoHead(
-    indexHtml,
-    buildSeoTags({
-      title: `${article.title} | amrishkhan.dev`,
-      description,
-      canonicalPath,
-      type: "article",
-      image,
-      jsonLd,
-    }),
+  return injectBlogDetailContent(
+    replaceSeoHead(
+      indexHtml,
+      buildSeoTags({
+        title: `${article.title} | amrishkhan.dev`,
+        description,
+        canonicalPath,
+        type: "article",
+        image,
+        jsonLd,
+      }),
+    ),
+    article,
   );
 };
 
@@ -567,28 +660,13 @@ app.get("/api/blogs/:slug", async (req, res) => {
   setNoStoreHeaders(res);
 
   try {
-    const article = await fetchDevJson(buildFreshDevUrl(`/articles/${encodeURIComponent(devUsername)}/${encodeURIComponent(req.params.slug)}`));
+    const article = await getBlogArticleForSeo(req.params.slug);
 
-    if (!isRecord(article)) {
-      throw new Error("DEV API returned a malformed article payload.");
+    if (!article) {
+      throw new Error("DEV article was not found.");
     }
 
-    const mappedArticle = normalizeDevArticle(article);
-
-    if (!mappedArticle) {
-      throw new Error("DEV API returned an article that could not be normalized.");
-    }
-
-    res.json({
-      ...mappedArticle,
-      description: article.description || mappedArticle.description,
-      publishedAt: article.published_at || article.published_timestamp || mappedArticle.publishedAt,
-      tags: Array.isArray(article.tag_list) && article.tag_list.length ? article.tag_list : mappedArticle.tags,
-      coverImage: article.cover_image || article.social_image || mappedArticle.coverImage,
-      bodyHtml: article.body_html || "",
-      bodyMarkdown: article.body_markdown || "",
-      source: "dev",
-    });
+    res.json(article);
   } catch (error) {
     console.error(`Could not read DEV article ${req.params.slug}:`, error);
     res.status(503).json({
@@ -643,6 +721,16 @@ ${urls
   res.type("application/xml");
   res.send(xml);
 });
+
+app.use(
+  express.static(path.join(__dirname, "public"), {
+    etag: false,
+    lastModified: false,
+    setHeaders: (res) => {
+      setNoStoreHeaders(res);
+    },
+  }),
+);
 
 app.get("/blog/:slug", async (req, res) => {
   setNoStoreHeaders(res);

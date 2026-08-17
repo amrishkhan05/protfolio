@@ -979,10 +979,15 @@ const renderBlogDetail = async () => {
 
   blogDetail.hidden = false;
   const startTime = Date.now();
-  if (blogLoaderOverlay) {
+  const hasServerRenderedArticle = Boolean(blogDetailContent && !blogDetailContent.hidden && blogDetailBody?.textContent.trim());
+
+  if (blogLoaderOverlay && !hasServerRenderedArticle) {
     blogLoaderOverlay.hidden = false;
   }
-  showBlogStatus("Loading...");
+
+  if (!hasServerRenderedArticle) {
+    showBlogStatus("Loading...");
+  }
 
   try {
     const article = await fetchFreshJson(`/api/blogs/${encodeURIComponent(blogSlug)}`);
@@ -1031,10 +1036,12 @@ const renderBlogDetail = async () => {
     updateScrollProgress();
   } catch (error) {
     console.error("Unable to load DEV blog article:", error);
-    showBlogStatus("This article is temporarily unavailable.");
+    if (!hasServerRenderedArticle) {
+      showBlogStatus("This article is temporarily unavailable.");
+    }
   } finally {
     const elapsedTime = Date.now() - startTime;
-    if (elapsedTime < 1000) {
+    if (!hasServerRenderedArticle && elapsedTime < 1000) {
       await new Promise((resolve) => setTimeout(resolve, 1000 - elapsedTime));
     }
     if (blogLoaderOverlay) {
