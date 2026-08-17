@@ -21,6 +21,9 @@
       document.documentElement.style.colorScheme = scheme;
       document.querySelector('meta[name="color-scheme"]')?.setAttribute("content", scheme);
       document.querySelector('meta[name="theme-color"]')?.setAttribute("content", theme === "dark" ? darkThemeColor : lightThemeColor);
+      if (/^\/blog\/[^/]+\/?$/.test(window.location.pathname)) {
+        document.documentElement.classList.add("is-blog-route", "is-blog-loading");
+      }
     })();
   </script>
   <title>amrishkhan.dev | Amrish Khan</title>

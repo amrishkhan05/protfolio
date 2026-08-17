@@ -53,6 +53,7 @@ const prefersDark = globalThis.matchMedia?.("(prefers-color-scheme: dark)")?.mat
 const countFormatter = new Intl.NumberFormat("en-US");
 const searchParams = new URLSearchParams(globalThis.location.search);
 const blogSlug = globalThis.location.pathname.match(/^\/blog\/([^/]+)\/?$/)?.[1];
+const blogLoadingClass = "is-blog-loading";
 const devArticlesUrl = "/api/blogs";
 const blogRowsPerPage = 2;
 const mobileBlogRowsPerPage = 4;
@@ -569,6 +570,14 @@ const showBlogStatus = (message) => {
   blogDetailStatus.textContent = message;
 };
 
+const setBlogLoading = (isLoading) => {
+  document.documentElement.classList.toggle(blogLoadingClass, isLoading);
+
+  if (blogLoaderOverlay) {
+    blogLoaderOverlay.hidden = !isLoading;
+  }
+};
+
 const slugifyHeading = (text) =>
   String(text)
     .toLowerCase()
@@ -981,9 +990,7 @@ const renderBlogDetail = async () => {
   const startTime = Date.now();
   const hasServerRenderedArticle = Boolean(blogDetailContent && !blogDetailContent.hidden && blogDetailBody?.textContent.trim());
 
-  if (blogLoaderOverlay && !hasServerRenderedArticle) {
-    blogLoaderOverlay.hidden = false;
-  }
+  setBlogLoading(true);
 
   if (!hasServerRenderedArticle) {
     showBlogStatus("Loading...");
@@ -1041,12 +1048,10 @@ const renderBlogDetail = async () => {
     }
   } finally {
     const elapsedTime = Date.now() - startTime;
-    if (!hasServerRenderedArticle && elapsedTime < 1000) {
+    if (elapsedTime < 1000) {
       await new Promise((resolve) => setTimeout(resolve, 1000 - elapsedTime));
     }
-    if (blogLoaderOverlay) {
-      blogLoaderOverlay.hidden = true;
-    }
+    setBlogLoading(false);
   }
 };
 

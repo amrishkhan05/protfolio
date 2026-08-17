@@ -1111,6 +1111,56 @@ body.is-blog-view {
   color: var(--text);
 }
 
+html.is-blog-route #home-content {
+  display: none !important;
+}
+
+html.is-blog-route #blog-detail[hidden] {
+  display: block !important;
+}
+
+html.is-blog-loading,
+html.is-blog-loading body {
+  overflow: hidden;
+}
+
+html.is-blog-loading #blog-detail {
+  min-height: calc(100vh - 74px);
+}
+
+html.is-blog-loading #blog-detail-content,
+html.is-blog-loading #blog-related,
+html.is-blog-loading #blog-toc {
+  visibility: hidden;
+}
+
+html.is-blog-loading body::before,
+html.is-blog-loading body::after {
+  position: fixed;
+  z-index: 9998;
+  content: "";
+  pointer-events: none;
+}
+
+html.is-blog-loading body::before {
+  inset: 0;
+  background: color-mix(in srgb, var(--surface-base) 82%, transparent);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+html.is-blog-loading body::after {
+  top: 50%;
+  left: 50%;
+  width: 44px;
+  height: 44px;
+  margin: -22px 0 0 -22px;
+  border: 3px solid var(--line-soft);
+  border-top-color: var(--primary-strong);
+  border-radius: 50%;
+  animation: article-route-loader 800ms linear infinite;
+}
+
 body.is-blog-view .site-header,
 body.is-blog-view .footer {
   background: var(--surface-base);
@@ -2113,6 +2163,12 @@ body.is-blog-view .footer {
   z-index: 9999;
 }
 
+@keyframes article-route-loader {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .ai-matrix-loader {
   width: 120px;
   height: 160px;
@@ -2275,4 +2331,3 @@ body.is-blog-view .footer {
   outline: 2px solid var(--primary-strong);
   outline-offset: 2px;
 }
-
