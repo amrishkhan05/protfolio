@@ -9,6 +9,16 @@
     <priority>0.9</priority>
   </url>
   <url>
+    <loc>https://www.amrishkhan.dev/blog/the-nextjs-hydration-error-everyone-hits-and-how-to-actually-fix-it-35aa</loc>
+    <lastmod>2026-08-18</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.amrishkhan.dev/blog/the-react-search-bug-that-shows-old-results-and-how-to-fix-it-3oi7</loc>
+    <lastmod>2026-08-17</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.amrishkhan.dev/blog/the-hidden-cost-of-object-spread-4jj3</loc>
     <lastmod>2026-07-09</lastmod>
     <priority>0.7</priority>
