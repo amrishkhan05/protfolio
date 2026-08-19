@@ -18,6 +18,8 @@ const devApiKey = process.env.DEV_API_KEY || null;
 const devApiBaseUrl = "https://dev.to/api";
 const devArticlesPerPage = 100;
 const devMaxArticlePages = 10;
+const devListCacheTtlMs = Number.parseInt(process.env.DEV_LIST_CACHE_TTL_MS || "", 10) || 1000 * 60 * 15;
+const devArticleCacheTtlMs = Number.parseInt(process.env.DEV_ARTICLE_CACHE_TTL_MS || "", 10) || 1000 * 60 * 60;
 const devApiHeaders = {
   Accept: "application/json",
   "Cache-Control": "no-store, no-cache, must-revalidate",
@@ -27,8 +29,10 @@ const devApiHeaders = {
   ...(devApiKey ? { "api-key": devApiKey } : {}),
 };
 const siteUrl = (process.env.SITE_URL || "https://www.amrishkhan.dev").replace(/\/+$/, "");
-const siteImageUrl = `${siteUrl}/favicon.svg`;
+const siteImageUrl = `${siteUrl}/assets/og-image.png`;
 const personId = `${siteUrl}/#person`;
+const devArticleListCache = new Map();
+const devArticleCache = new Map();
 
 const metricsDir = process.env.VERCEL ? path.join(os.tmpdir(), "amrishkhan-dev-metrics") : path.join(__dirname, ".data");
 const metricsFilePath = path.join(metricsDir, "portfolio-views.json");
@@ -68,6 +72,63 @@ const toValidDateTime = (value) => {
   return Number.isNaN(date.getTime()) ? null : value;
 };
 
+const getFreshness = (entry, ttlMs) => Boolean(entry?.value && Date.now() - entry.fetchedAt < ttlMs);
+
+const withCacheMeta = (result, cacheState, warning) => ({
+  ...result,
+  meta: {
+    ...result.meta,
+    cache: cacheState,
+    ...(warning ? { warning } : {}),
+  },
+});
+
+const stripHtml = (value) =>
+  String(value || "")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+const estimateWordCount = (article) => {
+  const text = stripHtml(article?.body_markdown || article?.body_html || article?.description || "");
+  return text ? text.split(/\s+/).length : null;
+};
+
+const getArticleWordCount = (article) => {
+  const explicitWordCount = Number(article?.word_count);
+  if (Number.isFinite(explicitWordCount) && explicitWordCount > 0) {
+    return explicitWordCount;
+  }
+
+  return estimateWordCount(article);
+};
+
+const normalizeTags = (article) => {
+  if (Array.isArray(article?.tag_list) && article.tag_list.length) {
+    return article.tag_list;
+  }
+
+  if (typeof article?.tag_list === "string" && article.tag_list.trim()) {
+    return article.tag_list
+      .split(",")
+      .map((tag) => tag.trim())
+      .filter(Boolean);
+  }
+
+  if (Array.isArray(article?.tags) && article.tags.length) {
+    return article.tags;
+  }
+
+  if (typeof article?.tags === "string" && article.tags.trim()) {
+    return article.tags
+      .split(",")
+      .map((tag) => tag.trim())
+      .filter(Boolean);
+  }
+
+  return [];
+};
+
 const normalizeDevArticle = (article) => {
   if (!isRecord(article)) {
     return null;
@@ -76,15 +137,8 @@ const normalizeDevArticle = (article) => {
   const title = article?.title || "Untitled article";
   const devSlug = article?.slug || slugify(title);
   const publishedAt = toValidDateTime(article?.published_at || article?.published_timestamp || article?.created_at || null);
-  const tags =
-    Array.isArray(article?.tag_list) && article.tag_list.length
-      ? article.tag_list
-      : typeof article?.tags === "string" && article.tags.trim()
-        ? article.tags
-            .split(",")
-            .map((tag) => tag.trim())
-            .filter(Boolean)
-        : [];
+  const modifiedAt = toValidDateTime(article?.edited_at || article?.updated_at || article?.published_at || article?.published_timestamp || article?.created_at || null);
+  const tags = normalizeTags(article);
 
   return {
     id: article?.id || `${devSlug}:${publishedAt || title}`,
@@ -93,8 +147,10 @@ const normalizeDevArticle = (article) => {
     devSlug,
     description: article?.description || "",
     publishedAt,
+    modifiedAt,
     tags,
     readingTimeMinutes: article?.reading_time_minutes || null,
+    wordCount: getArticleWordCount(article),
     coverImage: article?.cover_image || article?.social_image || null,
     url: `/blog/${devSlug}`,
     devUrl: article?.url || null,
@@ -243,9 +299,33 @@ const fetchMappedDevBlogs = async ({ page = 1, perPage = devArticlesPerPage, fet
       page: safePage,
       perPage: safePerPage,
       fetchedAt: new Date().toISOString(),
-      cache: "no-store",
+      cache: "network",
     },
   };
+};
+
+const getCachedDevBlogs = async ({ page = 1, perPage = devArticlesPerPage, fetchAll = true } = {}) => {
+  const safePage = parsePositiveInt(page, 1);
+  const safePerPage = parsePositiveInt(perPage, devArticlesPerPage, devArticlesPerPage);
+  const cacheKey = `${safePage}:${safePerPage}:${fetchAll ? "all" : "page"}`;
+  const cached = devArticleListCache.get(cacheKey);
+
+  if (getFreshness(cached, devListCacheTtlMs)) {
+    return withCacheMeta(cached.value, "hit");
+  }
+
+  try {
+    const result = await fetchMappedDevBlogs({ page: safePage, perPage: safePerPage, fetchAll });
+    devArticleListCache.set(cacheKey, { value: result, fetchedAt: Date.now() });
+    return withCacheMeta(result, "network");
+  } catch (error) {
+    if (cached?.value) {
+      console.error("Serving stale DEV article list cache:", error);
+      return withCacheMeta(cached.value, "stale", "Serving cached DEV articles because DEV.to is temporarily unavailable.");
+    }
+
+    throw error;
+  }
 };
 
 const escapeHtml = (value) => String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
@@ -253,6 +333,90 @@ const escapeHtml = (value) => String(value).replace(/&/g, "&amp;").replace(/</g,
 const escapeXml = escapeHtml;
 
 const escapeJsonForHtml = (value) => JSON.stringify(value).replace(/</g, "\\u003c");
+
+const formatXmlDate = (value) => {
+  if (!value) {
+    return "";
+  }
+
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? "" : date.toISOString().slice(0, 10);
+};
+
+const renderSitemapXml = (blogs = []) => {
+  const urls = [
+    { loc: `${siteUrl}/`, priority: "1.0" },
+    { loc: `${siteUrl}/aruvix`, priority: "0.9" },
+    ...blogs.map((blog) => ({
+      loc: absoluteUrl(blog.url),
+      lastmod: blog.modifiedAt || blog.publishedAt,
+      priority: "0.7",
+    })),
+  ];
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls
+  .map((url) => {
+    const lastmod = formatXmlDate(url.lastmod);
+    return `  <url>
+    <loc>${escapeXml(url.loc)}</loc>${lastmod ? `\n    <lastmod>${escapeXml(lastmod)}</lastmod>` : ""}
+    <priority>${escapeXml(url.priority)}</priority>
+  </url>`;
+  })
+  .join("\n")}
+</urlset>
+`;
+};
+
+const renderFeedXml = (blogs = []) => {
+  const latestDate = blogs.find((blog) => blog.modifiedAt || blog.publishedAt)?.modifiedAt || blogs.find((blog) => blog.publishedAt)?.publishedAt || new Date().toISOString();
+  const items = blogs
+    .map((blog) => {
+      const link = absoluteUrl(blog.url);
+      const publishedDate = blog.publishedAt ? new Date(blog.publishedAt).toUTCString() : new Date().toUTCString();
+      const modifiedDate = blog.modifiedAt ? new Date(blog.modifiedAt).toUTCString() : publishedDate;
+
+      return `    <item>
+      <title>${escapeXml(blog.title)}</title>
+      <link>${escapeXml(link)}</link>
+      <guid isPermaLink="true">${escapeXml(link)}</guid>
+      <description>${escapeXml(blog.description || `Read ${blog.title} by Amrish Khan.`)}</description>
+      <pubDate>${escapeXml(publishedDate)}</pubDate>
+      <lastBuildDate>${escapeXml(modifiedDate)}</lastBuildDate>
+      ${blog.tags.map((tag) => `<category>${escapeXml(tag)}</category>`).join("\n      ")}
+    </item>`;
+    })
+    .join("\n");
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>amrishkhan.dev - Tech Writing</title>
+    <link>${escapeXml(`${siteUrl}/`)}</link>
+    <atom:link href="${escapeXml(absoluteUrl("/feed.xml"))}" rel="self" type="application/rss+xml" />
+    <description>Practical engineering guides by Amrish Khan.</description>
+    <language>en</language>
+    <lastBuildDate>${escapeXml(new Date(latestDate).toUTCString())}</lastBuildDate>
+${items}
+  </channel>
+</rss>
+`;
+};
+
+const renderCanonicalHelperText = (blogs = []) =>
+  blogs
+    .map((blog) =>
+      [
+        `Title: ${blog.title}`,
+        `DEV.to: ${blog.devUrl || "Not provided by DEV API"}`,
+        `Portfolio: ${absoluteUrl(blog.url)}`,
+        `Published: ${formatXmlDate(blog.publishedAt) || "Unknown"}`,
+        "DEV.to front matter:",
+        `canonical_url: ${absoluteUrl(blog.url)}`,
+      ].join("\n"),
+    )
+    .join("\n\n---\n\n");
 
 const sanitizeDevArticleHtml = (html) => {
   if (!html) {
@@ -311,7 +475,7 @@ const injectBlogDetailContent = (html, article) => {
 
 const absoluteUrl = (pathname = "/") => new URL(pathname, siteUrl).toString();
 
-const buildSeoTags = ({ title, description, canonicalPath, type = "website", image = siteImageUrl, jsonLd }) => {
+const buildSeoTags = ({ title, description, canonicalPath, type = "website", image = siteImageUrl, twitterCard = "summary_large_image", jsonLd }) => {
   const canonicalUrl = absoluteUrl(canonicalPath);
   const safeTitle = escapeHtml(title);
   const safeDescription = escapeHtml(description);
@@ -329,7 +493,8 @@ const buildSeoTags = ({ title, description, canonicalPath, type = "website", ima
     <meta property="og:url" content="${safeCanonicalUrl}" />
     <meta property="og:type" content="${safeType}" />
     <meta property="og:image" content="${safeImage}" />
-    <meta name="twitter:card" content="summary" />
+    <meta property="og:site_name" content="amrishkhan.dev" />
+    <meta name="twitter:card" content="${escapeHtml(twitterCard)}" />
     <meta name="twitter:title" content="${safeTitle}" />
     <meta name="twitter:description" content="${safeDescription}" />
     <meta name="twitter:image" content="${safeImage}" />
@@ -376,8 +541,10 @@ const mapFullDevArticle = (article) => {
     ...mappedArticle,
     description: article.description || mappedArticle.description,
     publishedAt: article.published_at || article.published_timestamp || mappedArticle.publishedAt,
-    tags: Array.isArray(article.tag_list) && article.tag_list.length ? article.tag_list : mappedArticle.tags,
+    modifiedAt: toValidDateTime(article.edited_at || article.updated_at || article.published_at || article.published_timestamp || mappedArticle.modifiedAt),
+    tags: normalizeTags(article),
     coverImage: article.cover_image || article.social_image || mappedArticle.coverImage,
+    wordCount: estimateWordCount(article),
     bodyHtml: article.body_html || "",
     bodyMarkdown: article.body_markdown || "",
     source: "dev",
@@ -400,19 +567,43 @@ const fetchFullDevArticle = async (slug) => {
   return mappedArticle;
 };
 
+const getCachedFullDevArticle = async (slug) => {
+  const cacheKey = String(slug || "");
+  const cached = devArticleCache.get(cacheKey);
+
+  if (getFreshness(cached, devArticleCacheTtlMs)) {
+    return cached.value;
+  }
+
+  try {
+    const article = await fetchFullDevArticle(cacheKey);
+    devArticleCache.set(cacheKey, { value: article, fetchedAt: Date.now() });
+    devArticleCache.set(article.devSlug, { value: article, fetchedAt: Date.now() });
+    devArticleCache.set(article.localSlug, { value: article, fetchedAt: Date.now() });
+    return article;
+  } catch (error) {
+    if (cached?.value) {
+      console.error(`Serving stale DEV article cache for ${cacheKey}:`, error);
+      return cached.value;
+    }
+
+    throw error;
+  }
+};
+
 const getBlogArticleForSeo = async (slug) => {
   try {
-    return await fetchFullDevArticle(slug);
+    return await getCachedFullDevArticle(slug);
   } catch (directError) {
     try {
-      const { blogs } = await fetchMappedDevBlogs();
+      const { blogs } = await getCachedDevBlogs();
       const listedArticle = blogs.find((article) => article.localSlug === slug || article.devSlug === slug);
 
       if (!listedArticle || listedArticle.devSlug === slug) {
         throw directError;
       }
 
-      return await fetchFullDevArticle(listedArticle.devSlug);
+      return await getCachedFullDevArticle(listedArticle.devSlug);
     } catch (fallbackError) {
       console.error(`Could not read DEV article SEO data for ${slug}:`, fallbackError);
       return null;
@@ -425,6 +616,8 @@ const renderBlogPage = async (article) => {
   const canonicalPath = article.url;
   const description = article.description || `Read ${article.title} by Amrish Khan on amrishkhan.dev.`;
   const image = article.coverImage || siteImageUrl;
+  const articleSection = Array.isArray(article.tags) && article.tags.length ? article.tags[0] : "Software Engineering";
+  const wordCount = Number.isFinite(Number(article.wordCount)) ? Number(article.wordCount) : null;
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
@@ -432,8 +625,9 @@ const renderBlogPage = async (article) => {
     description,
     url: absoluteUrl(canonicalPath),
     image,
+    thumbnailUrl: image,
     datePublished: article.publishedAt,
-    dateModified: article.publishedAt,
+    dateModified: article.modifiedAt || article.publishedAt,
     author: {
       "@type": "Person",
       "@id": personId,
@@ -445,7 +639,10 @@ const renderBlogPage = async (article) => {
       "@type": "WebPage",
       "@id": absoluteUrl(canonicalPath),
     },
+    articleSection,
+    ...(wordCount ? { wordCount } : {}),
     keywords: Array.isArray(article.tags) ? article.tags.join(", ") : "",
+    ...(article.devUrl ? { isBasedOn: article.devUrl, sameAs: article.devUrl } : {}),
   };
 
   return injectBlogDetailContent(
@@ -457,6 +654,7 @@ const renderBlogPage = async (article) => {
         canonicalPath,
         type: "article",
         image,
+        twitterCard: "summary_large_image",
         jsonLd,
       }),
     ),
@@ -627,7 +825,7 @@ app.get("/api/blogs", async (req, res) => {
   setNoStoreHeaders(res);
 
   try {
-    const result = await fetchMappedDevBlogs({
+    const result = await getCachedDevBlogs({
       page: req.query.page,
       perPage: req.query.per_page,
       fetchAll: req.query.all !== "0",
@@ -653,6 +851,19 @@ app.get("/api/blogs", async (req, res) => {
       warning: "DEV articles are temporarily unavailable.",
       blogs: [],
     });
+  }
+});
+
+app.get("/api/blogs/canonical-urls", async (_req, res) => {
+  setNoStoreHeaders(res);
+
+  try {
+    const { blogs } = await getCachedDevBlogs();
+    res.type("text/plain");
+    res.send(renderCanonicalHelperText(blogs));
+  } catch (error) {
+    console.error("Could not generate DEV canonical helper output:", error);
+    res.status(503).type("text/plain").send("Canonical helper output is temporarily unavailable.");
   }
 });
 
@@ -689,37 +900,27 @@ app.get("/sitemap.xml", async (_req, res) => {
   setNoStoreHeaders(res);
 
   try {
-    blogs = (await fetchMappedDevBlogs()).blogs;
+    blogs = (await getCachedDevBlogs()).blogs;
   } catch (error) {
     console.error("Could not read DEV articles for sitemap:", error);
   }
 
-  const urls = [
-    { loc: `${siteUrl}/`, priority: "1.0" },
-    { loc: `${siteUrl}/aruvix`, priority: "0.9" },
-    ...blogs.map((blog) => ({
-      loc: absoluteUrl(blog.url),
-      lastmod: blog.publishedAt,
-      priority: "0.7",
-    })),
-  ];
-  const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urls
-  .map((url) => {
-    const lastmod = url.lastmod ? `\n    <lastmod>${escapeXml(url.lastmod.slice(0, 10))}</lastmod>` : "";
-
-    return `  <url>
-    <loc>${escapeXml(url.loc)}</loc>${lastmod}
-    <priority>${escapeXml(url.priority)}</priority>
-  </url>`;
-  })
-  .join("\n")}
-</urlset>
-`;
-
   res.type("application/xml");
-  res.send(xml);
+  res.send(renderSitemapXml(blogs));
+});
+
+app.get("/feed.xml", async (_req, res) => {
+  let blogs = [];
+  setNoStoreHeaders(res);
+
+  try {
+    blogs = (await getCachedDevBlogs()).blogs;
+  } catch (error) {
+    console.error("Could not read DEV articles for feed:", error);
+  }
+
+  res.type("application/rss+xml");
+  res.send(renderFeedXml(blogs));
 });
 
 app.use(

@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>amrishkhan.dev - Tech Writing</title>
+    <link>https://www.amrishkhan.dev/</link>
+    <atom:link href="https://www.amrishkhan.dev/feed.xml" rel="self" type="application/rss+xml" />
+    <description>Practical engineering guides by Amrish Khan.</description>
+    <language>en</language>
+    <lastBuildDate>Wed, 19 Aug 2026 07:14:44 GMT</lastBuildDate>
+    <item>
+      <title>Fix Next.js Middleware Redirect Loop: Why Your Login Page Keeps Redirecting</title>
+      <link>https://www.amrishkhan.dev/blog/fix-nextjs-middleware-redirect-loop-why-your-login-page-keeps-redirecting-3m8d</link>
+      <guid isPermaLink="true">https://www.amrishkhan.dev/blog/fix-nextjs-middleware-redirect-loop-why-your-login-page-keeps-redirecting-3m8d</guid>
+      <description>Learn why a Next.js middleware redirect loop happens, how login pages get accidentally protected, and how to fix protected routes with matcher and public route checks.</description>
+      <pubDate>Wed, 19 Aug 2026 07:14:44 GMT</pubDate>
+      <lastBuildDate>Wed, 19 Aug 2026 07:14:44 GMT</lastBuildDate>
+      <category>nextjs</category>
+      <category>react</category>
+      <category>javascript</category>
+      <category>webdev</category>
+    </item>
+    <item>
+      <title>The Next.js Hydration Error Everyone Hits and How to Actually Fix It</title>
+      <link>https://www.amrishkhan.dev/blog/the-nextjs-hydration-error-everyone-hits-and-how-to-actually-fix-it-35aa</link>
+      <guid isPermaLink="true">https://www.amrishkhan.dev/blog/the-nextjs-hydration-error-everyone-hits-and-how-to-actually-fix-it-35aa</guid>
+      <description>A beginner-friendly guide to why Next.js hydration errors happen, why localStorage often causes them, and how to fix them with practical React code.</description>
+      <pubDate>Tue, 18 Aug 2026 05:21:30 GMT</pubDate>
+      <lastBuildDate>Tue, 18 Aug 2026 05:21:30 GMT</lastBuildDate>
+      <category>nextjs</category>
+      <category>react</category>
+      <category>javascript</category>
+      <category>webdev</category>
+    </item>
+    <item>
+      <title>The React Search Bug That Shows Old Results and How to Fix It</title>
+      <link>https://www.amrishkhan.dev/blog/the-react-search-bug-that-shows-old-results-and-how-to-fix-it-3oi7</link>
+      <guid isPermaLink="true">https://www.amrishkhan.dev/blog/the-react-search-bug-that-shows-old-results-and-how-to-fix-it-3oi7</guid>
+      <description>A beginner-friendly walkthrough of stale search results in React, why debounce is not the whole fix, and how AbortController makes the UI behave correctly.</description>
+      <pubDate>Mon, 17 Aug 2026 13:18:00 GMT</pubDate>
+      <lastBuildDate>Tue, 18 Aug 2026 05:21:57 GMT</lastBuildDate>
+      <category>react</category>
+      <category>javascript</category>
+      <category>webdev</category>
+      <category>beginners</category>
+    </item>
+    <item>
+      <title>The Hidden Cost of Object Spread</title>
+      <link>https://www.amrishkhan.dev/blog/the-hidden-cost-of-object-spread-4jj3</link>
+      <guid isPermaLink="true">https://www.amrishkhan.dev/blog/the-hidden-cost-of-object-spread-4jj3</guid>
+      <description>One of the most common pieces of JavaScript you&#39;ll find in modern codebases looks like this:    const...</description>
+      <pubDate>Thu, 09 Jul 2026 01:40:00 GMT</pubDate>
+      <lastBuildDate>Thu, 09 Jul 2026 01:40:00 GMT</lastBuildDate>
+      <category>frontend</category>
+      <category>javascript</category>
+      <category>performance</category>
+      <category>webdev</category>
+    </item>
+    <item>
+      <title>Why Functional Code Can Be Slower</title>
+      <link>https://www.amrishkhan.dev/blog/why-functional-code-can-be-slower-579b</link>
+      <guid isPermaLink="true">https://www.amrishkhan.dev/blog/why-functional-code-can-be-slower-579b</guid>
+      <description>Functional Programming has a marketing problem.  Or perhaps more accurately:  Functional Programming...</description>
+      <pubDate>Wed, 08 Jul 2026 04:22:00 GMT</pubDate>
+      <lastBuildDate>Wed, 08 Jul 2026 04:22:00 GMT</lastBuildDate>
+      <category>webdev</category>
+      <category>programming</category>
+      <category>productivity</category>
+      <category>javascript</category>
+    </item>
+    <item>
+      <title>When a `for...of` Loop Is Better Than `reduce()`</title>
+      <link>https://www.amrishkhan.dev/blog/when-a-forof-loop-is-better-than-reduce-1f3j</link>
+      <guid isPermaLink="true">https://www.amrishkhan.dev/blog/when-a-forof-loop-is-better-than-reduce-1f3j</guid>
+      <description>A few years ago, I was obsessed with reduce().  Every problem looked like a reduction problem.  Need...</description>
+      <pubDate>Wed, 08 Jul 2026 01:28:00 GMT</pubDate>
+      <lastBuildDate>Wed, 08 Jul 2026 01:28:00 GMT</lastBuildDate>
+      <category>webdev</category>
+      <category>programming</category>
+      <category>productivity</category>
+      <category>javascript</category>
+    </item>
+    <item>
+      <title>Composability Is The Real Superpower</title>
+      <link>https://www.amrishkhan.dev/blog/composability-is-the-real-superpower-272o</link>
+      <guid isPermaLink="true">https://www.amrishkhan.dev/blog/composability-is-the-real-superpower-272o</guid>
+      <description>Over the last few articles, we&#39;ve explored a surprising number of...</description>
+      <pubDate>Thu, 25 Jun 2026 04:45:00 GMT</pubDate>
+      <lastBuildDate>Wed, 24 Jun 2026 07:27:58 GMT</lastBuildDate>
+      <category>architecture</category>
+      <category>computerscience</category>
+      <category>javascript</category>
+      <category>softwareengineering</category>
+    </item>
+    <item>
+      <title>Why Retry Is One Of The Most Dangerous Keywords In Software</title>
+      <link>https://www.amrishkhan.dev/blog/why-retry-is-one-of-the-most-dangerous-keywords-in-software-1m43</link>
+      <guid isPermaLink="true">https://www.amrishkhan.dev/blog/why-retry-is-one-of-the-most-dangerous-keywords-in-software-1m43</guid>
+      <description>Few lines of code look more innocent than this:    retry(3)        Enter fullscreen mode           ...</description>
+      <pubDate>Sat, 13 Jun 2026 06:27:00 GMT</pubDate>
+      <lastBuildDate>Sat, 13 Jun 2026 06:27:00 GMT</lastBuildDate>
+      <category>webdev</category>
+      <category>programming</category>
+      <category>productivity</category>
+      <category>javascript</category>
+    </item>
+    <item>
+      <title>Idempotency Is More Important Than You Think</title>
+      <link>https://www.amrishkhan.dev/blog/idempotency-is-more-important-than-you-think-32ka</link>
+      <guid isPermaLink="true">https://www.amrishkhan.dev/blog/idempotency-is-more-important-than-you-think-32ka</guid>
+      <description>Most developers don&#39;t think about idempotency until production breaks.  That&#39;s not because...</description>
+      <pubDate>Sat, 13 Jun 2026 06:21:00 GMT</pubDate>
+      <lastBuildDate>Sat, 13 Jun 2026 06:21:00 GMT</lastBuildDate>
+      <category>webdev</category>
+      <category>programming</category>
+      <category>productivity</category>
+      <category>javascript</category>
+    </item>
+    <item>
+      <title>Why Abstractions Leak</title>
+      <link>https://www.amrishkhan.dev/blog/why-abstractions-leak-8ba</link>
+      <guid isPermaLink="true">https://www.amrishkhan.dev/blog/why-abstractions-leak-8ba</guid>
+      <description>One of the most dangerous moments in a developer&#39;s career is when an abstraction works...</description>
+      <pubDate>Fri, 12 Jun 2026 05:16:00 GMT</pubDate>
+      <lastBuildDate>Sat, 30 May 2026 18:22:56 GMT</lastBuildDate>
+      <category>webdev</category>
+      <category>programming</category>
+      <category>javascript</category>
+      <category>tutorial</category>
+    </item>
+    <item>
+      <title>Building Your Own Functional Utility Library</title>
+      <link>https://www.amrishkhan.dev/blog/building-your-own-functional-utility-library-47ne</link>
+      <guid isPermaLink="true">https://www.amrishkhan.dev/blog/building-your-own-functional-utility-library-47ne</guid>
+      <description>One of the best ways to understand a programming concept is to build it yourself.  Over the last...</description>
+      <pubDate>Thu, 11 Jun 2026 04:51:00 GMT</pubDate>
+      <lastBuildDate>Sat, 30 May 2026 18:22:30 GMT</lastBuildDate>
+      <category>webdev</category>
+      <category>productivity</category>
+      <category>programming</category>
+      <category>javascript</category>
+    </item>
+    <item>
+      <title>Event Sourcing Is Just Reduce Over Time</title>
+      <link>https://www.amrishkhan.dev/blog/event-sourcing-is-just-reduce-over-time-4j4b</link>
+      <guid isPermaLink="true">https://www.amrishkhan.dev/blog/event-sourcing-is-just-reduce-over-time-4j4b</guid>
+      <description>Event Sourcing has a reputation problem.  The moment someone mentions it, the conversation usually...</description>
+      <pubDate>Sun, 07 Jun 2026 04:20:00 GMT</pubDate>
+      <lastBuildDate>Sun, 07 Jun 2026 04:20:00 GMT</lastBuildDate>
+      <category>webdev</category>
+      <category>programming</category>
+      <category>productivity</category>
+      <category>javascript</category>
+    </item>
+    <item>
+      <title>scan() Is Reduce For Infinite Data</title>
+      <link>https://www.amrishkhan.dev/blog/scan-is-reduce-for-infinite-data-5bck</link>
+      <guid isPermaLink="true">https://www.amrishkhan.dev/blog/scan-is-reduce-for-infinite-data-5bck</guid>
+      <description>If you&#39;ve used RxJS for any meaningful amount of time, you&#39;ve probably encountered scan().  Maybe...</description>
+      <pubDate>Sat, 06 Jun 2026 04:11:00 GMT</pubDate>
+      <lastBuildDate>Sat, 06 Jun 2026 04:11:00 GMT</lastBuildDate>
+      <category>webdev</category>
+      <category>programming</category>
+      <category>productivity</category>
+      <category>javascript</category>
+    </item>
+    <item>
+      <title>RxJS Is Just Arrays Over Time</title>
+      <link>https://www.amrishkhan.dev/blog/rxjs-is-just-arrays-over-time-3hc2</link>
+      <guid isPermaLink="true">https://www.amrishkhan.dev/blog/rxjs-is-just-arrays-over-time-3hc2</guid>
+      <description>RxJS has a reputation problem.  Mention RxJS in a JavaScript discussion and you&#39;ll usually get one of...</description>
+      <pubDate>Fri, 05 Jun 2026 04:06:00 GMT</pubDate>
+      <lastBuildDate>Fri, 05 Jun 2026 04:06:00 GMT</lastBuildDate>
+      <category>webdev</category>
+      <category>programming</category>
+      <category>productivity</category>
+      <category>javascript</category>
+    </item>
+    <item>
+      <title>You&#39;ve Been Using Monads Without Realizing It</title>
+      <link>https://www.amrishkhan.dev/blog/youve-been-using-monads-without-realizing-it-1eg7</link>
+      <guid isPermaLink="true">https://www.amrishkhan.dev/blog/youve-been-using-monads-without-realizing-it-1eg7</guid>
+      <description>Let&#39;s get the scary part out of the way.  The word:    Monad        Enter fullscreen mode           ...</description>
+      <pubDate>Thu, 04 Jun 2026 04:01:00 GMT</pubDate>
+      <lastBuildDate>Thu, 04 Jun 2026 04:01:00 GMT</lastBuildDate>
+      <category>webdev</category>
+      <category>programming</category>
+      <category>productivity</category>
+      <category>javascript</category>
+    </item>
+    <item>
+      <title>FlatMap Is More Important Than You Think</title>
+      <link>https://www.amrishkhan.dev/blog/-flatmap-is-more-important-than-you-think-3ma1</link>
+      <guid isPermaLink="true">https://www.amrishkhan.dev/blog/-flatmap-is-more-important-than-you-think-3ma1</guid>
+      <description>Most developers learn map() and think they&#39;ve figured it out.  You take a value.  Transform it.  Get...</description>
+      <pubDate>Wed, 03 Jun 2026 04:51:00 GMT</pubDate>
+      <lastBuildDate>Sat, 30 May 2026 12:14:37 GMT</lastBuildDate>
+      <category>webdev</category>
+      <category>programming</category>
+      <category>productivity</category>
+      <category>javascript</category>
+    </item>
+    <item>
+      <title>You&#39;ve Been Using Functors For Years</title>
+      <link>https://www.amrishkhan.dev/blog/-youve-been-using-functors-for-years-3179</link>
+      <guid isPermaLink="true">https://www.amrishkhan.dev/blog/-youve-been-using-functors-for-years-3179</guid>
+      <description>The functional programming community has done a terrible job explaining Functors.  The moment the...</description>
+      <pubDate>Tue, 02 Jun 2026 04:30:00 GMT</pubDate>
+      <lastBuildDate>Sat, 30 May 2026 12:14:52 GMT</lastBuildDate>
+      <category>webdev</category>
+      <category>programming</category>
+      <category>productivity</category>
+      <category>javascript</category>
+    </item>
+    <item>
+      <title>Why `map()` Exists Everywhere</title>
+      <link>https://www.amrishkhan.dev/blog/why-map-exists-everywhere-1d1</link>
+      <guid isPermaLink="true">https://www.amrishkhan.dev/blog/why-map-exists-everywhere-1d1</guid>
+      <description>Most developers think map() is an array method.  It isn&#39;t.  Just like most developers think reduce()...</description>
+      <pubDate>Mon, 01 Jun 2026 04:30:00 GMT</pubDate>
+      <lastBuildDate>Mon, 01 Jun 2026 04:30:00 GMT</lastBuildDate>
+      <category>webdev</category>
+      <category>programming</category>
+      <category>javascript</category>
+      <category>typescript</category>
+    </item>
+    <item>
+      <title>The Myth Of Stateless Systems</title>
+      <link>https://www.amrishkhan.dev/blog/the-myth-of-stateless-systems-3blg</link>
+      <guid isPermaLink="true">https://www.amrishkhan.dev/blog/the-myth-of-stateless-systems-3blg</guid>
+      <description>One of the most common phrases in modern software architecture is:   Our service is...</description>
+      <pubDate>Sat, 30 May 2026 18:47:23 GMT</pubDate>
+      <lastBuildDate>Sat, 30 May 2026 18:47:23 GMT</lastBuildDate>
+      <category>webdev</category>
+      <category>programming</category>
+      <category>productivity</category>
+      <category>javascript</category>
+    </item>
+    <item>
+      <title>Reduce Has Nothing To Do With Arrays</title>
+      <link>https://www.amrishkhan.dev/blog/reduce-has-nothing-to-do-with-arrays-1he6</link>
+      <guid isPermaLink="true">https://www.amrishkhan.dev/blog/reduce-has-nothing-to-do-with-arrays-1he6</guid>
+      <description>Most developers think they understand reduce().  They don&#39;t.  And to be fair, I didn&#39;t either for a...</description>
+      <pubDate>Sat, 30 May 2026 11:22:59 GMT</pubDate>
+      <lastBuildDate>Sat, 30 May 2026 11:22:59 GMT</lastBuildDate>
+      <category>webdev</category>
+      <category>programming</category>
+      <category>javascript</category>
+      <category>typescript</category>
+    </item>
+    <item>
+      <title>Transducers in JavaScript: When `reduce()` Is Not the End of the Story</title>
+      <link>https://www.amrishkhan.dev/blog/transducers-in-javascript-when-reduce-is-not-the-end-of-the-story-3h6j</link>
+      <guid isPermaLink="true">https://www.amrishkhan.dev/blog/transducers-in-javascript-when-reduce-is-not-the-end-of-the-story-3h6j</guid>
+      <description>In my previous article, I wrote about one of the most underestimated functions in JavaScript:...</description>
+      <pubDate>Sat, 30 May 2026 10:35:42 GMT</pubDate>
+      <lastBuildDate>Wed, 03 Jun 2026 18:06:07 GMT</lastBuildDate>
+      <category>webdev</category>
+      <category>programming</category>
+      <category>javascript</category>
+      <category>typescript</category>
+    </item>
+    <item>
+      <title>Promise.all() Is Not Parallelism — And It Can Break Your System</title>
+      <link>https://www.amrishkhan.dev/blog/promiseall-is-not-parallelism-and-it-can-break-your-system-43ec</link>
+      <guid isPermaLink="true">https://www.amrishkhan.dev/blog/promiseall-is-not-parallelism-and-it-can-break-your-system-43ec</guid>
+      <description>Promise.all() looks innocent.  It is one of those JavaScript features most developers learn early and...</description>
+      <pubDate>Sat, 09 May 2026 06:56:00 GMT</pubDate>
+      <lastBuildDate>Sat, 09 May 2026 06:56:00 GMT</lastBuildDate>
+      <category>javascript</category>
+      <category>performance</category>
+      <category>softwareengineering</category>
+      <category>webdev</category>
+    </item>
+    <item>
+      <title>Why I’m Building Local-First Developer Tools</title>
+      <link>https://www.amrishkhan.dev/blog/why-im-building-local-first-developer-tools-5a8l</link>
+      <guid isPermaLink="true">https://www.amrishkhan.dev/blog/why-im-building-local-first-developer-tools-5a8l</guid>
+      <description>The Industry Is Quietly Rebalancing Toward Local-First Applications   There’s a strange...</description>
+      <pubDate>Fri, 08 May 2026 15:26:21 GMT</pubDate>
+      <lastBuildDate>Fri, 08 May 2026 15:29:31 GMT</lastBuildDate>
+      <category>offline</category>
+      <category>webdev</category>
+      <category>programming</category>
+      <category>productivity</category>
+    </item>
+    <item>
+      <title>The Most Underestimated Function in JavaScript: `reduce()`</title>
+      <link>https://www.amrishkhan.dev/blog/the-most-underestimated-function-in-javascript-reduce-2o8e</link>
+      <guid isPermaLink="true">https://www.amrishkhan.dev/blog/the-most-underestimated-function-in-javascript-reduce-2o8e</guid>
+      <description>Most Developers Meet reduce() at the Wrong Time   Usually, it happens through some...</description>
+      <pubDate>Fri, 08 May 2026 06:01:54 GMT</pubDate>
+      <lastBuildDate>Fri, 08 May 2026 15:32:38 GMT</lastBuildDate>
+      <category>javascript</category>
+      <category>webdev</category>
+      <category>programming</category>
+      <category>typescript</category>
+    </item>
+    <item>
+      <title>Why I Built Aruvix — One Local-First Toolkit for Every Developer Workflow</title>
+      <link>https://www.amrishkhan.dev/blog/aruvix-the-ultimate-offline-first-developer-toolkit-e0i</link>
+      <guid isPermaLink="true">https://www.amrishkhan.dev/blog/aruvix-the-ultimate-offline-first-developer-toolkit-e0i</guid>
+      <description>A privacy-first, offline-first toolkit for JSON formatting, API testing, schema generation, frontend...</description>
+      <pubDate>Thu, 07 May 2026 07:08:08 GMT</pubDate>
+      <lastBuildDate>Fri, 08 May 2026 15:41:17 GMT</lastBuildDate>
+      <category>privacy</category>
+      <category>productivity</category>
+      <category>showdev</category>
+      <category>tooling</category>
+    </item>
+    <item>
+      <title>Unlocking the Power of the Browser Console: A Developer&#39;s Guide</title>
+      <link>https://www.amrishkhan.dev/blog/unlocking-the-power-of-the-browser-console-a-developers-guide-4n7k</link>
+      <guid isPermaLink="true">https://www.amrishkhan.dev/blog/unlocking-the-power-of-the-browser-console-a-developers-guide-4n7k</guid>
+      <description>For web developers, the browser&#39;s developer console is an indispensable tool. It&#39;s more than just a...</description>
+      <pubDate>Fri, 17 Oct 2025 11:25:49 GMT</pubDate>
+      <lastBuildDate>Fri, 08 May 2026 06:06:44 GMT</lastBuildDate>
+      <category>webdev</category>
+      <category>javascript</category>
+      <category>productivity</category>
+      <category>tutorial</category>
+    </item>
+    <item>
+      <title>Demystifying SOLID: 5 Principles for Building Robust and Maintainable Software</title>
+      <link>https://www.amrishkhan.dev/blog/demystifying-solid-5-principles-for-building-robust-and-maintainable-software-2c9j</link>
+      <guid isPermaLink="true">https://www.amrishkhan.dev/blog/demystifying-solid-5-principles-for-building-robust-and-maintainable-software-2c9j</guid>
+      <description>In the world of software development, some principles stand the test of time. Among the most...</description>
+      <pubDate>Tue, 14 Oct 2025 11:25:16 GMT</pubDate>
+      <lastBuildDate>Fri, 08 May 2026 06:07:07 GMT</lastBuildDate>
+      <category>solidprinciples</category>
+      <category>programming</category>
+      <category>webdev</category>
+      <category>javascript</category>
+    </item>
+    <item>
+      <title>GitHub Code Setup: Choosing Your Workflow (HTTPS, SSH, Terminal, &amp; Desktop)</title>
+      <link>https://www.amrishkhan.dev/blog/github-code-setup-choosing-your-workflow-https-ssh-terminal-desktop-7op</link>
+      <guid isPermaLink="true">https://www.amrishkhan.dev/blog/github-code-setup-choosing-your-workflow-https-ssh-terminal-desktop-7op</guid>
+      <description>Getting a codebase from GitHub onto your local machine is the first step in any development project....</description>
+      <pubDate>Wed, 08 Oct 2025 14:38:01 GMT</pubDate>
+      <lastBuildDate>Wed, 08 Oct 2025 14:38:01 GMT</lastBuildDate>
+      <category>github</category>
+      <category>ssh</category>
+      <category>webdev</category>
+      <category>programming</category>
+    </item>
+    <item>
+      <title>Level Up Your Workflow: Mastering Bulk Actions in Postman</title>
+      <link>https://www.amrishkhan.dev/blog/level-up-your-workflow-mastering-bulk-actions-in-postman-2489</link>
+      <guid isPermaLink="true">https://www.amrishkhan.dev/blog/level-up-your-workflow-mastering-bulk-actions-in-postman-2489</guid>
+      <description>Postman is much more than just a tool for sending single API requests; it’s a powerful environment...</description>
+      <pubDate>Wed, 08 Oct 2025 08:45:23 GMT</pubDate>
+      <lastBuildDate>Fri, 08 May 2026 06:07:31 GMT</lastBuildDate>
+      <category>api</category>
+      <category>tutorial</category>
+      <category>tooling</category>
+      <category>productivity</category>
+    </item>
+    <item>
+      <title>Unraveling the JavaScript Event Loop: A Deep Dive for Developers</title>
+      <link>https://www.amrishkhan.dev/blog/unraveling-the-javascript-event-loop-a-deep-dive-for-developers-50fg</link>
+      <guid isPermaLink="true">https://www.amrishkhan.dev/blog/unraveling-the-javascript-event-loop-a-deep-dive-for-developers-50fg</guid>
+      <description>JavaScript is often described as a single-threaded language, meaning it can only execute one task at...</description>
+      <pubDate>Tue, 07 Oct 2025 05:24:08 GMT</pubDate>
+      <lastBuildDate>Tue, 07 Oct 2025 05:24:08 GMT</lastBuildDate>
+      <category>architecture</category>
+      <category>javascript</category>
+      <category>performance</category>
+    </item>
+    <item>
+      <title>A Developer&#39;s Guide to API Types: Architectures, Use Cases, and Code Examples</title>
+      <link>https://www.amrishkhan.dev/blog/a-developers-guide-to-api-types-architectures-use-cases-and-code-examples-3kbm</link>
+      <guid isPermaLink="true">https://www.amrishkhan.dev/blog/a-developers-guide-to-api-types-architectures-use-cases-and-code-examples-3kbm</guid>
+      <description>Selecting the right API architectural style is a fundamental decision that determines a project&#39;s...</description>
+      <pubDate>Mon, 06 Oct 2025 11:56:29 GMT</pubDate>
+      <lastBuildDate>Mon, 06 Oct 2025 11:57:45 GMT</lastBuildDate>
+      
+    </item>
+    <item>
+      <title>npm vs. Yarn vs. pnpm: A Developer&#39;s Guide to Choosing the Right Package Manager</title>
+      <link>https://www.amrishkhan.dev/blog/npm-vs-yarn-vs-pnpm-a-developers-guide-to-choosing-the-right-package-manager-285f</link>
+      <guid isPermaLink="true">https://www.amrishkhan.dev/blog/npm-vs-yarn-vs-pnpm-a-developers-guide-to-choosing-the-right-package-manager-285f</guid>
+      <description>In the fast-paced world of JavaScript development, the tools we use can significantly impact our...</description>
+      <pubDate>Mon, 06 Oct 2025 11:47:30 GMT</pubDate>
+      <lastBuildDate>Mon, 06 Oct 2025 11:57:11 GMT</lastBuildDate>
+      <category>npm</category>
+      <category>webdev</category>
+      <category>programming</category>
+      <category>javascript</category>
+    </item>
+    <item>
+      <title>The Postman Alternative Guide: Which API Client is Right for You in 2025?</title>
+      <link>https://www.amrishkhan.dev/blog/the-postman-alternative-guide-which-api-client-is-right-for-you-in-2025-2p0b</link>
+      <guid isPermaLink="true">https://www.amrishkhan.dev/blog/the-postman-alternative-guide-which-api-client-is-right-for-you-in-2025-2p0b</guid>
+      <description>For years, Postman has reigned as the undisputed champion of API clients. Its robust feature set for...</description>
+      <pubDate>Mon, 06 Oct 2025 11:44:59 GMT</pubDate>
+      <lastBuildDate>Mon, 06 Oct 2025 11:46:29 GMT</lastBuildDate>
+      <category>opensource</category>
+      <category>api</category>
+      <category>tooling</category>
+      <category>productivity</category>
+    </item>
+  </channel>
+</rss>
