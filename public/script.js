@@ -395,171 +395,218 @@ mobileMenu?.querySelectorAll("a").forEach((link) => {
   link.addEventListener("click", () => setMobileMenuOpen(false));
 });
 
-const renderBlogCard = (blog) => {
-  const tags = Array.isArray(blog.tags) ? blog.tags.slice(0, 4) : [];
+// Editorial DEV.to journal. Uses the existing /api/blogs normalization and /blog/:slug routes.
+const journalFeatured = document.getElementById("journal-featured");
+const journalFilters = document.getElementById("journal-filters");
+const journalSearch = document.getElementById("journal-search");
+const journalSort = document.getElementById("journal-sort");
+const journalResults = document.getElementById("journal-results");
+const journalLoadMore = document.getElementById("journal-load-more");
+const journalPageSize = 6;
+let journalVisibleCount = journalPageSize;
+let journalActiveTag = "all";
+let journalQuery = "";
 
-  return `
-    <a class="blog-card" href="${escapeHtml(blog.url)}">
-      <h4>${escapeHtml(blog.title)}</h4>
-      <p class="blog-meta">${escapeHtml(formatPublishedDate(blog.publishedAt))}${blog.readingTimeMinutes ? ` • ${escapeHtml(blog.readingTimeMinutes)} min read` : ""}</p>
-      <div class="blog-tags">
-        ${tags.map((tag) => `<span>${escapeHtml(tag)}</span>`).join("")}
+const journalDate = (publishedAt) => {
+  const date = new Date(publishedAt || "");
+  return Number.isNaN(date.getTime()) ? "Date unavailable" : date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+};
+
+const journalArticleLink = (article) => {
+  const url = String(article?.url || "");
+  // Links are produced by normalizeDevArticle() on the server. Reject unexpected paths.
+  return /^\/blog\/[a-z0-9-]+\/?$/.test(url) ? url : "/#blogs";
+};
+
+const journalCoverFallback = (featured) => `<span class="journal-cover-art" aria-hidden="true"><span class="journal-cover-orbit"></span><span class="journal-cover-wordmark">${featured ? "FIELD / NOTES" : "BUILD / LEARN"}</span></span>`;
+
+// DEV cover URLs can expire. Replace failed images with the same designed fallback.
+const journalRecoverCovers = (root) => {
+  root?.querySelectorAll(".journal-cover img").forEach((image) => {
+    const replaceBrokenImage = () => {
+      const cover = image.closest(".journal-cover");
+      if (cover) cover.innerHTML = journalCoverFallback(cover.classList.contains("journal-cover-featured"));
+    };
+    image.addEventListener("error", replaceBrokenImage, { once: true });
+    if (image.complete && image.naturalWidth === 0) replaceBrokenImage();
+  });
+};
+
+const journalCover = (article, featured = false) => {
+  const cover = String(article?.coverImage || "");
+  let isValidCover = false;
+  try {
+    isValidCover = new URL(cover).protocol === "https:";
+  } catch (_error) { /* Use the designed fallback illustration. */ }
+  const image = isValidCover
+    ? `<img src="${escapeHtml(cover)}" alt="" loading="lazy" decoding="async" />`
+    : journalCoverFallback(featured);
+  return `<div class="journal-cover${featured ? " journal-cover-featured" : ""}">${image}</div>`;
+};
+
+const journalCategory = (article) => escapeHtml(formatArticleCategory(article.tags));
+const journalTime = (article) => article.readingTimeMinutes ? `${Math.max(1, Math.round(Number(article.readingTimeMinutes) || 1))} min read` : "Article";
+const journalCardTags = (article) => (Array.isArray(article.tags) ? article.tags : []).slice(0, 2)
+  .map((tag) => `<span class="journal-tag">#${escapeHtml(tag)}</span>`).join("");
+
+const renderBlogCard = (article) => `
+  <article class="journal-card">
+    <a href="${escapeHtml(journalArticleLink(article))}" class="journal-card-link" aria-label="Read ${escapeHtml(article.title)}">
+      ${journalCover(article)}
+      <div class="journal-card-content">
+        <div class="journal-card-topline"><span>${journalCategory(article)}</span><span>${escapeHtml(journalTime(article))}</span></div>
+        <h4>${escapeHtml(article.title)}</h4>
+        <p class="journal-card-description">${escapeHtml(article.description || "A field note on software, systems, and making things better.")}</p>
+        <div class="journal-card-footer"><time>${escapeHtml(journalDate(article.publishedAt))}</time><span class="journal-card-arrow" aria-hidden="true"><i class="fa-solid fa-arrow-up-right-from-square"></i></span></div>
       </div>
     </a>
-  `;
+  </article>
+`;
+
+const renderJournalFeatured = (article) => {
+  if (!journalFeatured) return;
+  const tags = journalCardTags(article);
+  journalFeatured.innerHTML = `
+    <article class="journal-feature-story">
+      <a class="journal-feature-media" href="${escapeHtml(journalArticleLink(article))}" aria-label="Read featured article: ${escapeHtml(article.title)}">${journalCover(article, true)}</a>
+      <div class="journal-feature-copy">
+        <div class="journal-feature-eyebrow"><span class="journal-feature-dot"></span> THE LATEST STORY <span class="journal-feature-separator">/</span> ${escapeHtml(journalDate(article.publishedAt))}</div>
+        <span class="journal-feature-category">${journalCategory(article)} · ${escapeHtml(journalTime(article))}</span>
+        <h3><a href="${escapeHtml(journalArticleLink(article))}">${escapeHtml(article.title)}</a></h3>
+        <p>${escapeHtml(article.description || "A new note from the workbench.")}</p>
+        <div class="journal-feature-tags">${tags}</div>
+        <a class="journal-feature-cta" href="${escapeHtml(journalArticleLink(article))}">Read the story <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+      </div>
+    </article>`;
+  journalFeatured.hidden = false;
+  journalRecoverCovers(journalFeatured);
 };
 
-const getBlogGridColumnCount = () => {
-  if (!blogGrid) {
-    return 1;
-  }
-
-  const columns = globalThis.getComputedStyle(blogGrid).gridTemplateColumns.trim();
-
-  if (!columns || columns === "none") {
-    return 1;
-  }
-
-  return columns.split(/\s+/).length || 1;
+const journalFilteredArticles = () => {
+  const normalizedQuery = journalQuery.trim().toLowerCase();
+  return blogListItems.filter((article) => {
+    const tags = Array.isArray(article.tags) ? article.tags : [];
+    const matchesTag = journalActiveTag === "all" || tags.some((tag) => String(tag).toLowerCase() === journalActiveTag);
+    const searchableText = [article.title, article.description, ...tags].join(" ").toLowerCase();
+    return matchesTag && (!normalizedQuery || searchableText.includes(normalizedQuery));
+  }).sort((left, right) => {
+    const leftTime = new Date(left.publishedAt || 0).getTime() || 0;
+    const rightTime = new Date(right.publishedAt || 0).getTime() || 0;
+    return journalSort?.value === "oldest" ? leftTime - rightTime : rightTime - leftTime;
+  });
 };
 
-const getBlogsPerPage = () => {
-  const columns = getBlogGridColumnCount();
-  const rows = columns === 1 ? mobileBlogRowsPerPage : blogRowsPerPage;
-
-  return Math.max(1, columns * rows);
+const renderJournalFilters = () => {
+  if (!journalFilters) return;
+  const counts = new Map();
+  for (const article of blogListItems) {
+    for (const tag of new Set((Array.isArray(article.tags) ? article.tags : []).map((value) => String(value).toLowerCase()))) {
+      if (tag && !["programming", "webdev", "beginners", "discuss"].includes(tag)) counts.set(tag, (counts.get(tag) || 0) + 1);
+    }
+  }
+  const suggested = [...counts].sort((left, right) => right[1] - left[1] || left[0].localeCompare(right[0])).slice(0, 5);
+  journalFilters.innerHTML = [`<button type="button" class="journal-filter is-active" data-journal-tag="all" aria-pressed="true">All stories <span>${blogListItems.length}</span></button>`, ...suggested.map(([tag, count]) => `<button type="button" class="journal-filter" data-journal-tag="${escapeHtml(tag)}" aria-pressed="false">${escapeHtml(tag.replace(/[-_]/g," "))} <span>${count}</span></button>`)].join("");
 };
 
-const renderBlogPage = ({ preserveFirstBlog = false } = {}) => {
-  if (!blogGrid) {
-    return;
+const journalReset = () => {
+  journalActiveTag = "all";
+  journalQuery = "";
+  if (journalSearch) journalSearch.value = "";
+  if (journalSort) journalSort.value = "newest";
+  journalVisibleCount = journalPageSize;
+  renderBlogPage();
+};
+
+const renderBlogPage = () => {
+  if (!blogGrid) return;
+  const isDefaultView = journalActiveTag === "all" && !journalQuery.trim() && journalSort?.value !== "oldest";
+  const matched = journalFilteredArticles();
+  const featuredArticle = isDefaultView ? matched[0] : null;
+  if (featuredArticle) renderJournalFeatured(featuredArticle);
+  else if (journalFeatured) { journalFeatured.hidden = true; journalFeatured.innerHTML = ""; }
+  const listing = featuredArticle ? matched.slice(1) : matched;
+  const visible = listing.slice(0, journalVisibleCount);
+  blogGrid.setAttribute("aria-busy", "false");
+  if (visible.length) {
+    blogGrid.innerHTML = visible.map(renderBlogCard).join("");
+  } else if (featuredArticle) {
+    blogGrid.innerHTML = '<p class="journal-empty">More stories are on their way. In the meantime, enjoy the featured read above.</p>';
+  } else {
+    blogGrid.innerHTML = '<div class="journal-empty"><strong>No matching stories.</strong><p>Try another topic or a shorter search.</p><button type="button" class="journal-reset" id="journal-reset">Clear filters <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button></div>';
+    blogGrid.querySelector("#journal-reset")?.addEventListener("click", journalReset);
   }
-
-  const previousStartIndex = (currentBlogPage - 1) * currentBlogsPerPage;
-  currentBlogsPerPage = getBlogsPerPage();
-
-  const totalPages = Math.max(1, Math.ceil(blogListItems.length / currentBlogsPerPage));
-
-  if (preserveFirstBlog) {
-    currentBlogPage = Math.floor(previousStartIndex / currentBlogsPerPage) + 1;
+  journalRecoverCovers(blogGrid);
+  if (journalResults) {
+    const label = matched.length === 1 ? "story" : "stories";
+    journalResults.textContent = `${matched.length} ${label} ${journalActiveTag !== "all" || journalQuery ? "found" : "in the journal"}`;
   }
-
-  currentBlogPage = Math.min(Math.max(currentBlogPage, 1), totalPages);
-
-  const startIndex = (currentBlogPage - 1) * currentBlogsPerPage;
-  const pageBlogs = blogListItems.slice(startIndex, startIndex + currentBlogsPerPage);
-
-  blogGrid.innerHTML = pageBlogs.map(renderBlogCard).join("");
-
-  const renderedCards = blogGrid.querySelectorAll(".blog-card").length;
-  if (renderedCards !== pageBlogs.length) {
-    console.warn(`Rendered blog card count (${renderedCards}) differs from current page item count (${pageBlogs.length}).`);
+  if (blogPagination && journalLoadMore) {
+    blogPagination.hidden = listing.length <= journalVisibleCount;
+    journalLoadMore.textContent = `Show more stories (${listing.length - journalVisibleCount} remaining) ↓`;
   }
-
-  if (!blogPagination || !blogPrevPage || !blogNextPage || !blogPageStatus) {
-    return;
+  for (const button of journalFilters?.querySelectorAll("[data-journal-tag]") || []) {
+    const selected = button.dataset.journalTag === journalActiveTag;
+    button.classList.toggle("is-active", selected);
+    button.setAttribute("aria-pressed", String(selected));
   }
+};
 
-  const shouldShowPagination = totalPages > 1;
-  blogPagination.hidden = !shouldShowPagination;
-  if (writingControlsTop) {
-    writingControlsTop.hidden = !shouldShowPagination;
-  }
-
-  if (!shouldShowPagination) {
-    return;
-  }
-
-  const isFirstPage = currentBlogPage === 1;
-  const isLastPage = currentBlogPage === totalPages;
-
-  blogPrevPage.disabled = isFirstPage;
-  blogNextPage.disabled = isLastPage;
-  if (blogPrevPageTop) {
-    blogPrevPageTop.disabled = isFirstPage;
-  }
-  if (blogNextPageTop) {
-    blogNextPageTop.disabled = isLastPage;
-  }
-  blogPageStatus.textContent = `Page ${currentBlogPage} of ${totalPages}`;
+const showJournalFallback = (message) => {
+  if (!blogGrid) return;
+  if (journalFeatured) journalFeatured.hidden = true;
+  blogGrid.setAttribute("aria-busy", "false");
+  blogGrid.innerHTML = `<div class="journal-empty journal-unavailable"><strong>${escapeHtml(message)}</strong><p>You can still find every published story on DEV.</p><div class="journal-fallback-actions"><button id="journal-retry" type="button" class="journal-reset">Try again ↻</button><a href="https://dev.to/amrishkhan05" target="_blank" rel="noopener noreferrer">Browse DEV <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a></div></div>`;
+  blogGrid.querySelector("#journal-retry")?.addEventListener("click", renderBlogList);
+  if (journalResults) journalResults.textContent = "The journal is temporarily unavailable";
+  if (blogPagination) blogPagination.hidden = true;
 };
 
 const renderBlogList = async () => {
-  if (!blogGrid || blogSlug) {
-    return;
-  }
-
+  if (!blogGrid || blogSlug) return;
+  blogGrid.setAttribute("aria-busy", "true");
+  blogGrid.innerHTML = '<div class="journal-skeleton" aria-hidden="true"></div><div class="journal-skeleton" aria-hidden="true"></div><div class="journal-skeleton" aria-hidden="true"></div>';
+  if (journalResults) journalResults.textContent = "Loading the journal...";
+  if (blogPagination) blogPagination.hidden = true;
   try {
-    blogGrid.innerHTML = '<p class="blog-list-status">Loading latest articles...</p>';
-    if (blogPagination) {
-      blogPagination.hidden = true;
-    }
-
-    const { articles: blogs } = await fetchDevArticles();
-
-    if (!blogs.length) {
-      blogGrid.innerHTML = '<p class="blog-list-status">No articles are available right now.</p>';
-      return;
-    }
-
-    blogListItems = blogs;
-    currentBlogPage = 1;
+    const { articles } = await fetchDevArticles();
+    if (!articles.length) { showJournalFallback("No stories could be loaded right now."); return; }
+    blogListItems = articles;
+    journalActiveTag = "all";
+    journalQuery = "";
+    journalVisibleCount = journalPageSize;
+    if (journalSearch) journalSearch.value = "";
+    if (journalSort) journalSort.value = "newest";
+    renderJournalFilters();
     renderBlogPage();
   } catch (error) {
-    console.error("Unable to load DEV blog list:", error);
-    blogGrid.innerHTML = '<p class="blog-list-status">Articles are temporarily unavailable.</p>';
-    if (blogPagination) {
-      blogPagination.hidden = true;
-    }
-    if (writingControlsTop) {
-      writingControlsTop.hidden = true;
-    }
+    console.error("Unable to load DEV journal:", error);
+    showJournalFallback("The stories are taking a little longer to arrive.");
   }
 };
 
-blogPrevPage?.addEventListener("click", () => {
-  currentBlogPage -= 1;
+journalFilters?.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-journal-tag]");
+  if (!button || !journalFilters.contains(button)) return;
+  journalActiveTag = button.dataset.journalTag || "all";
+  journalVisibleCount = journalPageSize;
   renderBlogPage();
 });
 
-blogPrevPageTop?.addEventListener("click", () => {
-  currentBlogPage -= 1;
+journalSearch?.addEventListener("input", () => {
+  journalQuery = journalSearch.value;
+  journalVisibleCount = journalPageSize;
   renderBlogPage();
 });
 
-blogNextPage?.addEventListener("click", () => {
-  currentBlogPage += 1;
+journalSort?.addEventListener("change", () => {
+  journalVisibleCount = journalPageSize;
   renderBlogPage();
 });
 
-blogNextPageTop?.addEventListener("click", () => {
-  currentBlogPage += 1;
+journalLoadMore?.addEventListener("click", () => {
+  journalVisibleCount += journalPageSize;
   renderBlogPage();
 });
-
-const syncBlogPageSize = () => {
-  if (!blogGrid || !blogListItems.length || blogSlug) {
-    return;
-  }
-
-  const nextBlogsPerPage = getBlogsPerPage();
-
-  if (nextBlogsPerPage === currentBlogsPerPage) {
-    return;
-  }
-
-  globalThis.clearTimeout(blogResizeTimer);
-  blogResizeTimer = globalThis.setTimeout(() => {
-    renderBlogPage({ preserveFirstBlog: true });
-  }, 120);
-};
-
-if (blogGrid && "ResizeObserver" in globalThis) {
-  const blogGridObserver = new ResizeObserver(syncBlogPageSize);
-  blogGridObserver.observe(blogGrid);
-} else {
-  globalThis.addEventListener("resize", syncBlogPageSize);
-}
 
 const showBlogStatus = (message) => {
   if (!blogDetailStatus) {

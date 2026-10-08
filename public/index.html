@@ -91,6 +91,7 @@
     rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
   <link rel="stylesheet" href="/styles.css?v=20260603-stitch-final" />
+  <link rel="stylesheet" href="/editorial-writing.css?v=1" />
 </head>
 
 <body>
@@ -376,29 +377,51 @@ Analysis complete. 0 errors found.</code></pre>
       </div>
     </section>
 
-    <section class="section writing-section reveal" id="blogs" aria-labelledby="blogs-title">
-      <div class="section-heading-row">
-        <div>
-          <h2 id="blogs-title">Tech Writing</h2>
-          <p>I write practical engineering guides that simplify complex concepts and improve developer workflows.</p>
+        <section class="section writing-section reveal" id="blogs" aria-labelledby="blogs-title">
+      <div class="journal-masthead">
+        <div class="journal-heading">
+          <p class="journal-kicker"><span class="journal-kicker-mark" aria-hidden="true"></span> FIELD NOTES / THE ENGINEERING JOURNAL</p>
+          <h2 id="blogs-title">Good engineering <em>has a story.</em></h2>
+          <p>Real lessons from building, breaking, and rethinking software. Architecture, developer tools, and the occasional rabbit hole worth sharing.</p>
         </div>
-        <div class="writing-controls" id="writing-controls-top" hidden>
-          <button id="blog-prev-page-top" type="button" aria-label="Previous articles"><i
-              class="fa-solid fa-chevron-left"></i></button>
-          <button id="blog-next-page-top" type="button" aria-label="Next articles"><i
-              class="fa-solid fa-chevron-right"></i></button>
+        <a class="journal-dev-link" href="https://dev.to/amrishkhan05" target="_blank" rel="noopener noreferrer">
+          Read on DEV <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+        </a>
+      </div>
+
+      <div class="journal-featured" id="journal-featured" hidden></div>
+
+      <div class="journal-browser" id="journal-browser">
+        <div class="journal-browser-top">
+          <div class="journal-browser-label"><span class="journal-section-index">01 /</span> <h3>Explore the archive</h3></div>
+          <label class="journal-search">
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+            <span class="sr-only">Search articles</span>
+            <input id="journal-search" type="search" placeholder="Search articles..." autocomplete="off" />
+          </label>
+        </div>
+        <div class="journal-toolbar">
+          <div class="journal-filters" id="journal-filters" role="group" aria-label="Filter articles by topic">
+            <button type="button" class="journal-filter is-active" data-journal-tag="all" aria-pressed="true">All stories</button>
+          </div>
+          <label class="journal-sort-label" for="journal-sort">Sort
+            <select id="journal-sort">
+              <option value="newest">Newest first</option>
+              <option value="oldest">Oldest first</option>
+            </select>
+          </label>
+        </div>
+        <p class="journal-results" id="journal-results" role="status" aria-live="polite">Loading the journal...</p>
+        <div class="blog-grid journal-grid" id="blog-grid" aria-busy="true">
+          <div class="journal-skeleton" aria-hidden="true"></div>
+          <div class="journal-skeleton" aria-hidden="true"></div>
+          <div class="journal-skeleton" aria-hidden="true"></div>
+        </div>
+        <div class="blog-pagination journal-more" id="blog-pagination" hidden>
+          <button type="button" class="journal-more-button" id="journal-load-more">Show more stories <i class="fa-solid fa-arrow-down" aria-hidden="true"></i></button>
         </div>
       </div>
-      <div class="blog-grid" id="blog-grid" aria-live="polite">
-        <p class="blog-list-status">Loading latest articles...</p>
-      </div>
-      <div class="blog-pagination" id="blog-pagination" hidden>
-        <button class="blog-page-btn" id="blog-prev-page" type="button" aria-label="Previous articles"><i
-            class="fa-solid fa-chevron-left" aria-hidden="true"></i></button>
-        <span class="blog-page-status" id="blog-page-status" aria-live="polite"></span>
-        <button class="blog-page-btn" id="blog-next-page" type="button" aria-label="Next articles"><i
-            class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>
-      </div>
+      <div class="journal-endnote"><span>NOTES FROM THE WORKBENCH</span><span>Written with curiosity, shared with purpose.</span></div>
     </section>
 
     <section class="section reveal" id="opensource" aria-labelledby="opensource-title">
