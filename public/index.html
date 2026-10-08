@@ -91,398 +91,133 @@
     rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
   <link rel="stylesheet" href="/styles.css?v=20260603-stitch-final" />
-  <link rel="stylesheet" href="/editorial-writing.css?v=1" />
+  <link rel="stylesheet" href="/site-redesign.css?v=2" />
 </head>
 
 <body>
   <a class="skip-link" href="#home-content">Skip to main content</a>
   <div class="scroll-progress" aria-hidden="true"></div>
 
-  <header class="site-header">
-    <nav class="top-nav" aria-label="Primary navigation">
-      <a class="brand" href="/" aria-label="amrishkhan.dev home">amrishkhan<span>.dev</span></a>
-      <div class="nav-links">
-        <a href="/#aruvix">Aruvix</a>
-        <a href="/#skills">Skills</a>
-        <a href="/#experience">Experience</a>
-        <a href="/#blogs">Writing</a>
-        <a href="/#contact">Contact</a>
-      </div>
-      <div class="nav-actions">
-        <button class="theme-toggle icon-button desktop-theme-toggle" type="button" aria-label="Switch color theme"
-          aria-pressed="false">
-          <i class="fa-solid fa-moon" aria-hidden="true"></i>
-        </button>
-        <a class="btn btn-primary btn-coffee" href="https://ko-fi.com/amrishkhansheik" target="_blank"
-          rel="noreferrer"><i class="fa-solid fa-mug-hot" aria-hidden="true"></i>Buy me a coffee</a>
-        <button class="menu-toggle icon-button" type="button" aria-label="Open menu" aria-expanded="false"
-          aria-controls="mobile-menu">
-          <i class="fa-solid fa-bars" aria-hidden="true"></i>
-        </button>
-      </div>
-      <div class="mobile-menu" id="mobile-menu" hidden>
-        <a href="/#aruvix">Aruvix</a>
-        <a href="/#skills">Skills</a>
-        <a href="/#experience">Experience</a>
-        <a href="/#blogs">Writing</a>
-        <a href="/#contact">Contact</a>
-        <a href="https://ko-fi.com/amrishkhansheik" target="_blank" rel="noreferrer">Buy me a coffee</a>
-      </div>
-    </nav>
+  <header class="site-header" id="top">
+    <div class="nav-wrap container">
+      <a href="#top" class="brand" aria-label="Amrish Khan, go to top"><span class="brand-mark">a<span>.</span>k</span><span class="brand-label">AMRISH KHAN <small>ENGINEER BY INSTINCT</small></span></a>
+      <nav id="primary-nav" class="nav-links" aria-label="Main navigation">
+        <a href="#work">Work</a>
+        <a href="#approach">Approach</a>
+        <a href="#experience">Experience</a>
+        <a href="#writing">Writing</a>
+        <a class="nav-contact-mobile" href="#contact">Get in touch <span aria-hidden="true">↗</span></a>
+      </nav>
+      <a href="#contact" class="header-cta">LET'S CONNECT <span aria-hidden="true">↗</span></a>
+      <button class="menu-toggle" id="menu-toggle" type="button" aria-controls="primary-nav" aria-expanded="false" aria-label="Open menu"><span></span><span></span></button>
+    </div>
   </header>
 
-  <main id="home-content" class="page-shell">
-    <section class="hero-section section reveal" aria-labelledby="hero-title">
-      <div class="hero-copy">
-        <p class="eyebrow"><span></span> Dubai, UAE - Technical Lead • Microservices Architect</p>
-        <h1 id="hero-title">Architecting scalable platforms, <span>developer tools,</span> and high-performance systems.
-        </h1>
-        <p class="lead">I design and deliver enterprise-grade web platforms, distributed backend systems, API
-          ecosystems, and AI-assisted developer tooling. Creator of Aruvix.</p>
-        <div class="hero-actions">
-          <a class="btn btn-primary" href="#experience">View Career Timeline <i class="fa-solid fa-arrow-right"
-              aria-hidden="true"></i></a>
-          <a class="btn btn-secondary" href="#aruvix">Discover Aruvix</a>
+  <main id="home-content" class="redesign-main">
+    <section class="hero" aria-labelledby="hero-heading">
+      <div class="hero-orbit hero-orbit-one" aria-hidden="true"></div>
+      <div class="hero-orbit hero-orbit-two" aria-hidden="true"></div>
+      <div class="container hero-container">
+        <div class="hero-copy">
+          <p class="eyebrow light"><span class="live-dot"></span> DUBAI, UAE <span class="eyebrow-dash">/</span> TECHNOLOGY LEAD & ARCHITECT</p>
+          <h1 id="hero-heading">Making<br>complex <span class="asterisk" aria-hidden="true">✳</span><br><em>feel effortless<span class="period">.</span></em></h1>
+          <p class="hero-description">I'm <strong>Amrish Khan</strong> — I turn intricate systems into intuitive experiences. From enterprise platforms to tools developers genuinely love using.</p>
+          <div class="hero-actions">
+            <a class="btn btn-lime" href="#work">Explore my work <span class="arrow-circle" aria-hidden="true">↗</span></a>
+            <a class="text-link white-link" href="#contact">Start a conversation <span aria-hidden="true">↗</span></a>
+          </div>
         </div>
-        <div class="hero-stats" aria-label="Career snapshot">
-          <article><i class="fa-regular fa-calendar-days" aria-hidden="true"></i><strong>10+</strong><span>Years
-              Experience</span></article>
-          <article><i class="fa-solid fa-shield-halved" aria-hidden="true"></i><strong>Secure</strong><span>API
-              Systems</span></article>
-          <article><i class="fa-solid fa-code" aria-hidden="true"></i><strong>Lead</strong><span>Full-stack
-              Delivery</span></article>
-          <article><i class="fa-solid fa-rocket" aria-hidden="true"></i><strong>600+</strong><span>Aruvix users</span>
+        <div class="hero-art" aria-label="Illustrated systems map connecting client interfaces, services, data, and the developer experience">
+          <div class="topo-frame">
+            <div class="topo-meta"><span>FIG. 01 — SYSTEMS IN MOTION</span><span>AK / 26</span></div>
+            <svg class="system-svg" viewBox="0 0 580 560" role="img" aria-labelledby="diagram-title diagram-desc" xmlns="http://www.w3.org/2000/svg">
+              <title id="diagram-title">A connected architecture, made clear</title><desc id="diagram-desc">A central orchestration node connects product interfaces, APIs, transactions, data, and developer tools.</desc>
+              <defs>
+                <linearGradient id="connector" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d5f478"/><stop offset="1" stop-color="#a7b8ff"/></linearGradient>
+                <radialGradient id="glow"><stop offset="0" stop-color="#d5f478" stop-opacity=".18"/><stop offset="1" stop-color="#d5f478" stop-opacity="0"/></radialGradient>
+              </defs>
+              <g class="topo-grid" stroke="#637179" stroke-width=".65" opacity=".22">
+                <path d="M0 70H580M0 140H580M0 210H580M0 280H580M0 350H580M0 420H580M0 490H580M70 0V560M140 0V560M210 0V560M280 0V560M350 0V560M420 0V560M490 0V560M560 0V560"/>
+              </g>
+              <circle cx="292" cy="280" r="198" fill="none" stroke="#839199" stroke-dasharray="2 10" opacity=".3"/><circle cx="292" cy="280" r="133" fill="none" stroke="#839199" opacity=".25"/><circle cx="292" cy="280" r="242" fill="url(#glow)"/>
+              <g fill="none" stroke="url(#connector)" stroke-width="1.7"><path d="M292 280L135 145"/><path d="M292 280L452 142"/><path d="M292 280L458 392"/><path d="M292 280L128 413"/></g>
+              <g class="flow-dashes" stroke="#d5f478" stroke-width="3" stroke-linecap="round"><path d="M292 280L135 145"/><path d="M292 280L452 142"/><path d="M292 280L458 392"/><path d="M292 280L128 413"/></g>
+              <g class="diagram-node diagram-node-one"><rect x="42" y="99" rx="15" width="190" height="90" fill="#232b33" stroke="#626f70" stroke-opacity=".65"/><rect x="58" y="116" width="35" height="35" rx="10" fill="#aabaff"/><path d="M67 133h18m-9-9v18" stroke="#1c2330" stroke-width="2.5"/><text x="107" y="135" class="svg-node-label">PRODUCT</text><text x="107" y="156" class="svg-node-sub">UX / FRONTEND</text><circle cx="207" cy="117" r="4" fill="#d5f478"/></g>
+              <g class="diagram-node diagram-node-two"><rect x="354" y="97" rx="15" width="180" height="90" fill="#232b33" stroke="#626f70" stroke-opacity=".65"/><rect x="370" y="114" width="35" height="35" rx="10" fill="#d5f478"/><path d="M378 131l8-7 8 7-8 7z" stroke="#19201e" stroke-width="2" fill="none"/><text x="418" y="133" class="svg-node-label">SERVICES</text><text x="418" y="154" class="svg-node-sub">API / CLOUD</text><circle cx="510" cy="115" r="4" fill="#d5f478"/></g>
+              <g class="diagram-node diagram-node-three"><rect x="355" y="352" rx="15" width="184" height="90" fill="#232b33" stroke="#626f70" stroke-opacity=".65"/><rect x="371" y="369" width="35" height="35" rx="10" fill="#f4a88b"/><path d="M379 382h19m-19 6h13" stroke="#262124" stroke-width="2.5" stroke-linecap="round"/><text x="418" y="389" class="svg-node-label">RELIABILITY</text><text x="418" y="410" class="svg-node-sub">SCALE / TRUST</text><circle cx="510" cy="371" r="4" fill="#d5f478"/></g>
+              <g class="diagram-node diagram-node-four"><rect x="38" y="352" rx="15" width="190" height="90" fill="#232b33" stroke="#626f70" stroke-opacity=".65"/><rect x="54" y="369" width="35" height="35" rx="10" fill="#bba8f5"/><path d="M65 380l-6 7 6 7m11-14l6 7-6 7" stroke="#252035" stroke-width="2" fill="none"/><text x="101" y="389" class="svg-node-label">TOOLING</text><text x="101" y="410" class="svg-node-sub">DX / WORKFLOWS</text><circle cx="202" cy="371" r="4" fill="#d5f478"/></g>
+              <g class="core-node"><circle cx="292" cy="280" r="82" fill="#d5f478"/><circle cx="292" cy="280" r="72" fill="none" stroke="#10151d" opacity=".18"/><text x="292" y="275" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="52" font-weight="700" fill="#10151d">a.k</text><text x="292" y="304" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" letter-spacing="2" fill="#10151d">ENGINEERING</text></g>
+              <g font-family="DM Mono,monospace" font-size="10" fill="#85949a" letter-spacing="1.5"><text x="47" y="515">INPUT  /  COMPLEXITY</text><text x="367" y="515">OUTPUT  /  CLARITY</text></g>
+            </svg>
+            <div class="topo-footer"><span><span class="status-led"></span> ALL SYSTEMS CONNECTED</span><span>∴ BUILT WITH INTENT</span></div>
+          </div>
+          <div class="floating-stamp" aria-hidden="true"><span>FROM<br>CHAOS<br>TO CLARITY</span><span>↗</span></div>
+        </div>
+      </div>
+      <div class="container hero-bottom"><span>THE SHORT VERSION</span><div class="hero-stats"><div><strong>10<span>+</span></strong><small>YEARS BUILDING</small></div><div><strong>600<span>+</span></strong><small>ARUVIX USERS*</small></div><div><strong>95<span>%+</span></strong><small>QUALITY GATE**</small></div></div><span class="scroll-label">SCROLL TO EXPLORE <span aria-hidden="true">↓</span></span></div>
+    </section>
+
+    <div class="ticker" aria-label="Areas of expertise"><div class="ticker-inner" aria-hidden="true"><span>ENGINEERING WITH INTENT</span><b>✳</b><span>PRODUCT THINKING</span><b>✳</b><span>SYSTEMS ARCHITECTURE</span><b>✳</b><span>FROM IDEA TO PRODUCTION</span><b>✳</b><span>ENGINEERING WITH INTENT</span><b>✳</b><span>PRODUCT THINKING</span><b>✳</b><span>SYSTEMS ARCHITECTURE</span><b>✳</b><span>FROM IDEA TO PRODUCTION</span><b>✳</b></div></div>
+
+    <section class="intro-section section" id="approach" aria-labelledby="approach-title">
+      <div class="container">
+        <div class="section-top"><span class="section-index">01 / THE MINDSET</span><span class="section-side">NO MAGIC. JUST CONSIDERED ENGINEERING.</span></div>
+        <div class="intro-grid">
+          <h2 id="approach-title" class="display-heading reveal">The best systems<br>make the <span class="highlight-brush">hard stuff</span><br>look simple.</h2>
+          <div class="intro-copy reveal"><p>Great engineering is what happens when technical depth meets product instinct. I like complex problems, clear contracts, useful abstractions, and shipping things that last.</p><p>I work across the entire journey — from the architecture nobody sees to the little details everyone feels.</p><a href="#experience" class="underlined-link">A little more about me <span aria-hidden="true">↗</span></a></div>
+        </div>
+        <div class="capability-grid">
+          <article class="capability-card reveal"><div class="cap-icon">⌘</div><span class="cap-number">01</span><h3>Think in systems.</h3><p>Backend architecture, orchestration, resilient APIs, and distributed workflows designed for real-world complexity.</p><div class="cap-pills"><span>Microservices</span><span>Node.js</span><span>NestJS</span></div></article>
+          <article class="capability-card reveal"><div class="cap-icon cap-icon-peach">◈</div><span class="cap-number">02</span><h3>Build for people.</h3><p>Thoughtful web products and developer experiences where usability isn't an afterthought.</p><div class="cap-pills"><span>React</span><span>Next.js</span><span>TypeScript</span></div></article>
+          <article class="capability-card reveal"><div class="cap-icon cap-icon-lavender">↗</div><span class="cap-number">03</span><h3>Own the outcome.</h3><p>From first design decision through test quality, deployment, monitoring, and production support.</p><div class="cap-pills"><span>CI/CD</span><span>Payments</span><span>Cloud</span></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="work-section section" id="work" aria-labelledby="work-title">
+      <div class="container">
+        <div class="section-top"><span class="section-index">02 / SELECTED WORK</span><span class="section-side">THE THINGS THAT MAKE IT REAL</span></div>
+        <div class="work-heading-row"><h2 id="work-title" class="display-heading reveal">Proof over<br><span class="serif-italic">promises.</span></h2><p class="work-standfirst">Products, enterprise platforms, and the messy middle where technology has to work.</p></div>
+        <div class="filter-tabs" role="group" aria-label="Filter projects"><button type="button" class="filter-tab active" data-filter="all" aria-pressed="true">All work <span>04</span></button><button type="button" class="filter-tab" data-filter="product" aria-pressed="false">Products <span>01</span></button><button type="button" class="filter-tab" data-filter="enterprise" aria-pressed="false">Enterprise <span>02</span></button><button type="button" class="filter-tab" data-filter="open-source" aria-pressed="false">Open source <span>01</span></button></div>
+        <div class="work-layout" id="work-layout">
+          <article class="project-card project-aruvix reveal" data-category="product">
+            <div class="project-upper"><span class="project-kicker"><span class="project-dot"></span> FLAGSHIP PRODUCT / 2026</span><span class="project-no">P—01</span></div>
+            <div class="aruvix-copy"><span class="project-super">MADE FOR THE BUILDERS</span><h3>Aruvix<span class="project-star">✳</span></h3><p>All the little developer tasks. One wonderfully uncluttered place. A private, browser-first workspace for JSON, API workflows, diffing and more.</p><a href="https://www.aruvix.com/" target="_blank" rel="noopener noreferrer" class="project-action">Explore Aruvix <span aria-hidden="true">↗</span></a></div>
+            <div class="mock-editor" aria-label="Interactive JSON formatting demonstration">
+              <div class="editor-head"><div class="editor-window-dots"><i></i><i></i><i></i></div><span>ARUVIX / JSON FORMATTER</span><span class="editor-online"><i></i> LOCAL</span></div>
+              <div class="editor-toolbar"><span>input.json</span><span>JSON  ·  UTF-8</span></div>
+              <label for="json-input" class="sr-only">JSON to format</label><textarea id="json-input" spellcheck="false" aria-describedby="json-status">{"hello":"world","tools":["format","diff","inspect"],"private":true}</textarea>
+              <div class="editor-bottom"><span id="json-status" role="status" aria-live="polite">Your JSON stays in this browser.</span><button id="format-btn" type="button">FORMAT JSON <span aria-hidden="true">↗</span></button></div>
+            </div>
+            <div class="project-foot"><span>LOCAL-FIRST</span><span>DEVELOPER EXPERIENCE</span><span>PRODUCT DESIGN</span></div>
           </article>
+          <article class="project-card project-airline reveal" data-category="enterprise">
+            <div class="project-upper"><span class="project-kicker"><span class="project-dot"></span> ENTERPRISE / AVIATION</span><span class="project-no">E—02</span></div>
+            <div class="airline-visual" aria-hidden="true"><div class="boarding-pass"><div class="pass-top"><span>BOARDING SYSTEMS <span>↗</span></span><span>EXPERIENCE 01 / 03</span></div><div class="pass-routes"><div><span>FROM</span><strong>UX</strong></div><span class="pass-route-line">✦</span><div><span>TO</span><strong>API</strong></div></div><div class="pass-bottom"><span>HIGH-AVAILABILITY JOURNEYS</span><div class="bar-code"></div></div></div></div>
+            <div class="project-content"><span class="project-type">PLATFORMS THAT MOVE PEOPLE</span><h3>Airline journeys,<br>without the friction.</h3><p>Engineering resilient customer-facing flows across check-in, seat selection, ancillaries, and boarding passes.</p><div class="project-tags"><span>Microservices</span><span>BFF</span><span>API orchestration</span></div></div>
+          </article>
+          <article class="project-card project-payments reveal" data-category="enterprise"><div class="project-upper"><span class="project-kicker"><span class="project-dot"></span> ENTERPRISE / PAYMENTS</span><span class="project-no">E—03</span></div><div class="payment-visual" aria-hidden="true"><div class="payment-chip chip-left">REQUEST <span>↗</span></div><svg viewBox="0 0 320 170"><path d="M48 85 C100 85 108 25 160 25 S220 85 272 85" fill="none" stroke="#ffb49e" stroke-width="2" stroke-dasharray="4 6"/><path d="M48 85 C100 85 108 145 160 145 S220 85 272 85" fill="none" stroke="#b7c7ff" stroke-width="2" stroke-dasharray="4 6"/><circle cx="48" cy="85" r="9" fill="#ffb49e"/><circle cx="160" cy="25" r="9" fill="#d5f478"/><circle cx="160" cy="145" r="9" fill="#b7c7ff"/><circle cx="272" cy="85" r="9" fill="#d5f478"/></svg><div class="payment-chip chip-right">SETTLED <span>✓</span></div><div class="payment-caption">EVERY TRANSACTION HAS A STORY. MAKE IT RELIABLE.</div></div><div class="project-content"><span class="project-type">CONFIDENCE IN EVERY TRANSACTION</span><h3>Payments, engineered<br>for the real world.</h3><p>Gateway integrations, webhook handling, reconciliation, and failure-aware transaction flows.</p><div class="project-tags"><span>Magnati</span><span>Network International</span><span>Webhooks</span></div></div></article>
+          <article class="project-card project-oss reveal" data-category="open-source"><div class="project-upper"><span class="project-kicker"><span class="project-dot"></span> OPEN SOURCE / UTILITIES</span><span class="project-no">O—04</span></div><div class="oss-visual" aria-hidden="true"><span class="oss-bracket">{</span><div><strong>make it</strong><strong>reusable<span>.</span></strong><small>npm / tools / tiny useful things</small></div><span class="oss-bracket">}</span></div><div class="project-content"><span class="project-type">SMALL TOOLS. BIG TIME SAVERS.</span><h3>Building in public.</h3><p>Practical developer utilities, from dynamic SQL generation to experiments in improving everyday engineering workflows.</p><div class="project-tags"><span>npm</span><span>TypeScript</span><span>Tooling</span></div><a class="project-text-link" href="https://github.com/amrishkhan05" target="_blank" rel="noopener noreferrer">Explore my GitHub ↗</a></div></article>
         </div>
-      </div>
-      <div class="hero-visual" aria-label="Amrish Khan illustrated portrait">
-        <img src="/assets/ak_profile.png"
-          alt="Illustrated portrait of Amrish Khan standing beside developer books and a retro computer"
-          decoding="async" fetchpriority="high" />
+        <div class="projects-footer"><span>* Product reach and quality metrics are based on figures published on the existing portfolio; verify before publishing.</span><a href="https://github.com/amrishkhan05" rel="noopener noreferrer" target="_blank">More on GitHub <span aria-hidden="true">↗</span></a></div>
       </div>
     </section>
 
-    <section class="profile-band reveal" id="profile" aria-labelledby="profile-title">
-      <div>
-        <h2 id="profile-title">Profile</h2>
-        <p>Technical Lead, Microservices Architect, and Full-Stack Engineer with around 10 years of experience designing
-          scalable enterprise platforms, distributed backend systems, API ecosystems, payment workflows, and cloud-ready
-          integrations. I combine hands-on delivery with architecture ownership across Node.js, NestJS, TypeScript,
-          React, Angular, and AI-assisted developer tooling as the creator of Aruvix.</p>
-      </div>
-    </section>
+    <section class="experience-section section" id="experience" aria-labelledby="experience-title"><div class="container"><div class="section-top"><span class="section-index">03 / THE JOURNEY</span><span class="section-side">A DECADE OF FIGURING IT OUT, THEN BUILDING IT BETTER</span></div><div class="experience-layout"><div class="experience-heading"><h2 id="experience-title" class="display-heading reveal">Built on<br><span class="serif-italic">experience.</span></h2><p>Hands-on engineering leadership across backend systems, customer products, and production-critical integrations.</p><a class="underlined-link" href="https://www.linkedin.com/in/amrishkhan/" target="_blank" rel="noopener noreferrer">My professional profile ↗</a></div><div class="timeline"><article class="timeline-row reveal"><div class="timeline-date">2022 — NOW</div><div class="timeline-dot"></div><div class="timeline-content"><span>TECHCARROT FZ LLC · DUBAI</span><h3>Technology Lead Analyst<br><em>Backend & Architecture</em></h3><p>Leading architecture and delivery for scalable airline experiences, enterprise APIs, service integrations, and production systems.</p><div class="tiny-tags"><span>NestJS</span><span>API design</span><span>Payments</span></div></div></article><article class="timeline-row reveal"><div class="timeline-date">2021 — 2022</div><div class="timeline-dot"></div><div class="timeline-content"><span>MSYS TECHNOLOGIES · BANGALORE</span><h3>Lead Engineer<br><em>Full Stack</em></h3><p>Owned technical design, full-stack implementation, engineering standards, and the journey from requirements to release.</p><div class="tiny-tags"><span>Node.js</span><span>Next.js</span><span>Leadership</span></div></div></article><article class="timeline-row reveal"><div class="timeline-date">2019 — 2021</div><div class="timeline-dot"></div><div class="timeline-content"><span>FULL POTENTIAL SOLUTIONS · CHENNAI</span><h3>Senior Software<br><em>Engineer</em></h3><p>Designed GraphQL and AWS-backed integration layers, reusable frontend modules, and reporting tools.</p><div class="tiny-tags"><span>GraphQL</span><span>AWS</span><span>Frontend</span></div></div></article><article class="timeline-row reveal"><div class="timeline-date">2016 — 2019</div><div class="timeline-dot"></div><div class="timeline-content"><span>COGNIZANT · CHENNAI</span><h3>Programmer<br><em>Analyst</em></h3><p>Started with enterprise application development, reusable web components, and API integrations.</p><div class="tiny-tags"><span>Angular</span><span>Java</span><span>Node.js</span></div></div></article></div></div></div></section>
 
-    <section class="section aruvix-feature reveal" id="aruvix" aria-labelledby="aruvix-title">
-      <div class="aruvix-card">
-        <div class="aruvix-copy">
-          <p class="tag">Built and launched product</p>
-          <h2 id="aruvix-title">Aruvix</h2>
-          <p>I built Aruvix because I kept switching between tabs just to format JSON, inspect a request, or diff two
-            payloads. Developers everywhere were losing the same minutes every day. Aruvix now serves 600+ users with
-            one private, no-sign-up browser workspace - built by a developer, for developers.</p>
-          <div class="button-row">
-            <a class="btn btn-primary" href="/aruvix">Learn More</a>
-            <a class="btn btn-dark-outline" href="https://www.aruvix.com/" target="_blank" rel="noreferrer">Open Aruvix
-              <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
-          </div>
-        </div>
-        <!-- <div class="terminal-window" aria-label="Aruvix terminal preview">
-            <div class="terminal-bar" aria-hidden="true"><span></span><span></span><span></span></div>
-            <pre><code>$ aruvix analyze --payload data.json
-
-{
-  "status": "success",
-  "latency": "24ms",
-  "data": { ... }
-}
-
-Analysis complete. 0 errors found.</code></pre>
-          </div> -->
-      </div>
-    </section>
-
-    <section class="section reveal" id="highlights" aria-labelledby="highlights-title">
-      <h2 class="center-heading" id="highlights-title">Selected Engineering Impact</h2>
-      <div class="bento-grid">
-        <article class="info-card">
-          <h3>Enterprise Airline Platforms</h3>
-          <p>Delivered high-availability passenger journeys across check-in, seat selection, ancillaries, boarding-pass
-            workflows, and downstream enterprise APIs.</p>
-        </article>
-        <article class="info-card">
-          <h3>Backend Architecture & API Orchestration</h3>
-          <p>Designed Node.js/NestJS services, BFF layers, microservices, and distributed integration patterns for
-            customer-facing systems.</p>
-        </article>
-        <article class="info-card">
-          <h3>Payment & Transaction Systems</h3>
-          <p>Integrated Magnati and Network International with webhook-driven transaction handling, reconciliation, and
-            failure-aware processing.</p>
-        </article>
-        <article class="info-card feature"><strong>Aruvix</strong>
-          <h3>Product Builder</h3>
-          <p>Founded and built a privacy-first developer productivity product around local-first workflows,
-            browser-native processing, API utilities, and modern developer experience.</p>
-        </article>
-        <article class="info-card">
-          <h3>AI Developer Tooling</h3>
-          <p>Research and prototype LLM workflows, RAG, MCP, local-first architecture, and intelligent developer
-            productivity systems.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="section reveal" id="skills" aria-labelledby="skills-title">
-      <h2 class="center-heading" id="skills-title">Technical Skills</h2>
-      <div class="skill-grid" aria-label="Technical skills grouped by discipline">
-        <article class="skill-card">
-          <h3>Languages</h3>
-          <div class="pill-wrap">
-            <span>TypeScript</span><span>JavaScript</span><span>Java</span><span>SQL</span><span>HTML</span><span>CSS</span>
-          </div>
-        </article>
-        <article class="skill-card">
-          <h3>Frontend</h3>
-          <div class="pill-wrap">
-            <span>Angular</span><span>React</span><span>Next.js</span><span>Vite</span>
-          </div>
-        </article>
-        <article class="skill-card">
-          <h3>Backend</h3>
-          <div class="pill-wrap">
-            <span>Node.js</span><span>NestJS</span><span>Express</span><span>REST APIs</span><span>GraphQL</span><span>WebSockets</span>
-          </div>
-        </article>
-        <article class="skill-card">
-          <h3>Architecture</h3>
-          <div class="pill-wrap">
-            <span>Microservices</span><span>Event-driven</span><span>BFF APIs</span><span>Distributed Systems</span><span>API Orchestration</span>
-          </div>
-        </article>
-        <article class="skill-card">
-          <h3>Cloud and Production</h3>
-          <div class="pill-wrap">
-            <span>AWS</span><span>AppSync</span><span>Amplify</span><span>Lambda</span><span>Linux</span><span>Nginx</span><span>CI/CD</span><span>Monitoring</span>
-          </div>
-        </article>
-        <article class="skill-card">
-          <h3>Integrations</h3>
-          <div class="pill-wrap">
-            <span>Payment Gateways</span><span>Magnati</span><span>Network International</span><span>Webhooks</span><span>Authentication</span>
-          </div>
-        </article>
-        <article class="skill-card">
-          <h3>Quality and Leadership</h3>
-          <div class="pill-wrap">
-            <span>Jest</span><span>Automated Testing</span><span>Code Reviews</span><span>Release Ownership</span><span>Mentoring</span>
-          </div>
-        </article>
-        <article class="skill-card">
-          <h3>Developer Tooling and AI</h3>
-          <div class="pill-wrap">
-            <span>Local-first</span><span>Tauri</span><span>Rust-backed Execution</span><span>LLM Workflows</span><span>RAG</span><span>MCP</span>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <section class="section reveal" id="experience" aria-labelledby="experience-title">
-      <div class="section-heading">
-        <h2 id="experience-title">Professional Experience</h2>
-        <p>I lead enterprise delivery across architecture, full-stack engineering, integrations, production operations,
-          and release ownership for customer-facing digital platforms.</p>
-      </div>
-      <div class="timeline">
-        <article class="timeline-item">
-          <time>Aug 2022 - Present</time>
-          <div class="timeline-card">
-            <p class="role">Technology Lead Analyst - Backend</p>
-            <h3>Techcarrot FZ LLC, Dubai</h3>
-            <p class="theme">Lead backend architecture and delivery for enterprise airline journeys, API orchestration,
-              and production-critical integrations.</p>
-            <ul>
-              <li>Architect and build scalable Node.js, NestJS, and TypeScript services for check-in, seat selection,
-                ancillaries, boarding-pass workflows, and downstream enterprise APIs.</li>
-              <li>Design BFF and integration layers with secure APIs, validation, retry handling, and failure-management
-                patterns for distributed service interactions.</li>
-              <li>Integrate Magnati and Network International payment platforms with webhook-driven transaction
-                handling, reconciliation flows, and failure-aware processing.</li>
-              <li>Manage Linux/Nginx deployments, cron jobs, monitoring, backend optimization, troubleshooting, and
-                release support for live systems.</li>
-              <li>Drive engineering quality through code reviews, reusable implementation patterns, automated testing,
-                production-readiness checks, and 95%+ coverage for critical modules.</li>
-            </ul>
-            <div class="chip-row"><span>NestJS</span><span>TypeScript</span><span>Microservices</span><span>BFF
-                APIs</span><span>Payments</span></div>
-          </div>
-        </article>
-        <article class="timeline-item">
-          <time>May 2021 - Aug 2022</time>
-          <div class="timeline-card">
-            <p class="role">Lead Engineer, Full Stack Developer</p>
-            <h3>MSys Technologies, Bangalore</h3>
-            <p class="theme">Owned full lifecycle delivery across architecture, hands-on implementation, release
-              planning, and production handover.</p>
-            <ul>
-              <li>Led requirement analysis, technical design, implementation, testing, deployment, and stakeholder
-                coordination for client-facing applications.</li>
-              <li>Built scalable Node.js and TypeScript APIs alongside Next.js, React, and Java-based application
-                components in polyglot environments.</li>
-              <li>Established reusable engineering patterns, code review practices, and release standards that improved
-                consistency and reduced regressions.</li>
-              <li>Supported release planning and production delivery while maintaining accountability for application
-                quality, stability, and technical handover.</li>
-            </ul>
-            <div class="chip-row"><span>Node.js</span><span>TypeScript</span><span>Next.js</span><span>React</span><span>Java</span><span>Release
-                Ownership</span></div>
-          </div>
-        </article>
-        <article class="timeline-item">
-          <time>Jul 2019 - May 2021</time>
-          <div class="timeline-card">
-            <p class="role">Senior Software Engineer</p>
-            <h3>Full Potential Solutions, Chennai</h3>
-            <p class="theme">Reduced frontend complexity by centralizing service orchestration through GraphQL and
-              cloud-backed application services.</p>
-            <ul>
-              <li>Designed GraphQL middleware and data-access patterns using AWS AppSync, Amplify, and Lambda for
-                reusable service integration.</li>
-              <li>Delivered custom product capabilities including multi-recording audio playlist workflows, reporting
-                modules, and reusable UI components.</li>
-              <li>Supported concurrent releases across frontend, backend, QA, and product teams while investigating
-                production issues and improving existing functionality.</li>
-            </ul>
-            <div class="chip-row"><span>GraphQL</span><span>AWS AppSync</span><span>AWS Lambda</span><span>Amplify</span><span>Reporting</span></div>
-          </div>
-        </article>
-        <article class="timeline-item">
-          <time>Aug 2016 - Jul 2019</time>
-          <div class="timeline-card">
-            <p class="role">Programmer Analyst</p>
-            <h3>Cognizant Technology Solutions, Chennai</h3>
-            <p class="theme">Built a strong enterprise engineering foundation through MEAN-stack development, reusable
-              modules, and production support.</p>
-            <ul>
-              <li>Developed enterprise web applications using Angular, Java, Node.js, JavaScript, MongoDB, HTML, and
-                CSS.</li>
-              <li>Created reusable Angular components, directives, services, shared modules, and keyboard-focused UX
-                interaction patterns.</li>
-              <li>Participated in requirements, development, testing, debugging, API integration, and production support
-                across collaborative delivery teams.</li>
-            </ul>
-            <div class="chip-row"><span>Angular</span><span>Java</span><span>Node.js</span><span>MongoDB</span><span>MEAN
-                Stack</span><span>Shared Modules</span></div>
-          </div>
-        </article>
-      </div>
-    </section>
-
-        <section class="section writing-section reveal" id="blogs" aria-labelledby="blogs-title">
-      <div class="journal-masthead">
-        <div class="journal-heading">
-          <p class="journal-kicker"><span class="journal-kicker-mark" aria-hidden="true"></span> FIELD NOTES / THE ENGINEERING JOURNAL</p>
-          <h2 id="blogs-title">Good engineering <em>has a story.</em></h2>
-          <p>Real lessons from building, breaking, and rethinking software. Architecture, developer tools, and the occasional rabbit hole worth sharing.</p>
-        </div>
-        <a class="journal-dev-link" href="https://dev.to/amrishkhan05" target="_blank" rel="noopener noreferrer">
-          Read on DEV <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
-        </a>
-      </div>
-
-      <div class="journal-featured" id="journal-featured" hidden></div>
-
-      <div class="journal-browser" id="journal-browser">
-        <div class="journal-browser-top">
-          <div class="journal-browser-label"><span class="journal-section-index">01 /</span> <h3>Explore the archive</h3></div>
-          <label class="journal-search">
-            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-            <span class="sr-only">Search articles</span>
-            <input id="journal-search" type="search" placeholder="Search articles..." autocomplete="off" />
-          </label>
-        </div>
-        <div class="journal-toolbar">
-          <div class="journal-filters" id="journal-filters" role="group" aria-label="Filter articles by topic">
-            <button type="button" class="journal-filter is-active" data-journal-tag="all" aria-pressed="true">All stories</button>
-          </div>
-          <label class="journal-sort-label" for="journal-sort">Sort
-            <select id="journal-sort">
-              <option value="newest">Newest first</option>
-              <option value="oldest">Oldest first</option>
-            </select>
-          </label>
-        </div>
-        <p class="journal-results" id="journal-results" role="status" aria-live="polite">Loading the journal...</p>
-        <div class="blog-grid journal-grid" id="blog-grid" aria-busy="true">
-          <div class="journal-skeleton" aria-hidden="true"></div>
-          <div class="journal-skeleton" aria-hidden="true"></div>
-          <div class="journal-skeleton" aria-hidden="true"></div>
-        </div>
-        <div class="blog-pagination journal-more" id="blog-pagination" hidden>
-          <button type="button" class="journal-more-button" id="journal-load-more">Show more stories <i class="fa-solid fa-arrow-down" aria-hidden="true"></i></button>
-        </div>
-      </div>
-      <div class="journal-endnote"><span>NOTES FROM THE WORKBENCH</span><span>Written with curiosity, shared with purpose.</span></div>
-    </section>
-
-    <section class="section reveal" id="opensource" aria-labelledby="opensource-title">
-      <div class="package-card">
-        <div>
-          <p class="tag success">Published npm Package</p>
-          <h2 id="opensource-title">sql-select-query-generator</h2>
-          <p>Generates dynamic SQL SELECT queries from JSON configuration to speed up backend development and reporting
-            use cases.</p>
-          <a class="btn btn-inverse" href="https://www.npmjs.com/package/sql-select-query-generator" target="_blank"
-            rel="noreferrer"><i class="fa-brands fa-npm" aria-hidden="true"></i>View on npm</a>
-        </div>
-        <div class="code-card" aria-label="Package preview">
-          <div><strong>package.json</strong><span>v1.2.0</span></div>
-          <pre><code>"name": "sql-select-query-generator",
-"main": "index.js",
-"scripts": {
-  "test": "jest"
-}</code></pre>
-        </div>
-      </div>
-    </section>
-
-    <section class="section contact-section reveal" id="contact" aria-labelledby="contact-title">
-      <div>
-        <h2>Education</h2>
-        <article class="contact-card">
-          <h3>Bachelor's in Engineering (EEE)</h3>
-          <p>St Joseph's College of Engineering, Chennai, India</p>
-          <strong>Class of 2016</strong>
-        </article>
-        <h2>Resume</h2>
-        <div class="resume-row">
-          <a class="contact-card compact" href="/resume/pdf/Amrishkhan-Sheik-Abdullah-Resume.pdf" download>Resume PDF
-            <i class="fa-regular fa-file-pdf" aria-hidden="true"></i></a>
-          <a class="contact-card compact" href="/resume/doc/Amrishkhan-Sheik-Abdullah-Resume.docx" download>Resume DOC
-            <i class="fa-regular fa-file-lines" aria-hidden="true"></i></a>
-        </div>
-      </div>
-      <div>
-        <h2 id="contact-title">Get in touch</h2>
-        <div class="contact-list">
-          <a class="contact-card compact" href="tel:+971525886136"><i class="fa-solid fa-phone"
-              aria-hidden="true"></i><span>+971 52 588 6136</span></a>
-          <div class="contact-card compact email-card">
-            <i class="fa-solid fa-envelope" aria-hidden="true"></i>
-            <a class="email-link" href="mailto:amrishkhansheikabdullah@gmail.com">amrishkhansheikabdullah@gmail.com</a>
-            <button class="contact-copy" id="copy-email-btn" type="button"
-              data-email="amrishkhansheikabdullah@gmail.com" aria-label="Copy email address"><i
-                class="fa-regular fa-copy icon-copy" aria-hidden="true"></i><i class="fa-solid fa-check icon-check"
-                aria-hidden="true"></i></button>
-          </div>
-          <div class="social-row">
-            <a class="contact-card compact" href="https://www.linkedin.com/in/amrishkhan" target="_blank"
-              rel="noreferrer"><i class="fa-brands fa-linkedin" aria-hidden="true"></i>LinkedIn</a>
-            <a class="contact-card compact" href="https://github.com/amrishkhan05" target="_blank" rel="noreferrer"><i
-                class="fa-brands fa-github" aria-hidden="true"></i>GitHub</a>
-          </div>
-        </div>
-      </div>
-    </section>
+    
+<section class="thinking-section section" id="writing" aria-labelledby="writing-title">
+<div class="container">
+<div class="section-top"><span class="section-index">04 / NOTES FROM THE FIELD</span><span class="section-side">IDEAS WORTH SHARING</span></div>
+<div class="thinking-intro"><div><span class="thinking-label">WHO SAW THE CONNECTION? / ENGINEERING JOURNAL</span><h2 class="display-heading" id="writing-title">Curiosity is<br>a <span class="serif-italic">feature.</span></h2></div><p>Good engineering ideas show up in unexpected places — on factory floors, at pit stops, and sometimes in a failed deploy.</p></div>
+<div class="journal-toolbar"><div><span class="journal-kicker">PUBLISHED STORIES</span><p id="journal-count" aria-live="polite">Connecting to DEV.to...</p></div><a href="https://dev.to/amrishkhan05" rel="noopener noreferrer" target="_blank">EXPLORE ON DEV.TO ↗</a></div>
+<div id="journal-feature" class="journal-feature" aria-live="polite"></div>
+<div class="journal-actions"><label for="journal-search">Find an idea</label><input id="journal-search" type="search" placeholder="Search articles or topics..." autocomplete="off"><label for="journal-order" class="sr-only">Article order</label><select id="journal-order" aria-label="Sort articles"><option value="newest">Newest first</option><option value="oldest">Oldest first</option></select></div>
+<div id="journal-filters" class="journal-filters" role="group" aria-label="Filter article topics"></div>
+<div id="journal-grid" class="journal-grid" aria-live="polite"><p class="journal-status">Loading the latest stories…</p></div>
+<div class="journal-footer"><p id="journal-showing"></p><button id="journal-more" type="button" hidden>SHOW MORE STORIES ↓</button></div>
+</div></section>
+<section class="contact-section" id="contact" aria-labelledby="contact-title"><div class="container"><div class="contact-top"><span>05 / LET'S BUILD SOMETHING GOOD</span><span class="live-indicator"><i></i> BASED IN DUBAI · CONNECT WORLDWIDE</span></div><div class="contact-grid"><div><p class="contact-preline">THE NEXT GOOD IDEA STARTS WITH A CONVERSATION.</p><h2 id="contact-title">Have a complex<br>problem<span>?</span><br><em>Let's talk.</em></h2></div><div class="contact-right"><p>Whether it's architecture, a product idea, or a collaboration, I'd love to hear what you're working on.</p><a class="contact-mail" href="mailto:amrishkhansheikabdullah@gmail.com">Send an email <span>↗</span></a><button id="copy-email" type="button" class="copy-email">COPY EMAIL ADDRESS <span aria-hidden="true">⧉</span></button><span id="copy-feedback" class="copy-feedback" role="status" aria-live="polite"></span></div></div><footer class="footer"><a class="footer-brand" href="#top" aria-label="Back to top">a.k<span>✳</span></a><span>© <span id="current-year">2026</span> AMRISH KHAN. DESIGNED WITH INTENT.</span><div class="footer-social"><a href="https://github.com/amrishkhan05" target="_blank" rel="noopener noreferrer">GITHUB ↗</a><a href="https://www.linkedin.com/in/amrishkhan/" target="_blank" rel="noopener noreferrer">LINKEDIN ↗</a><a href="https://dev.to/amrishkhan05" target="_blank" rel="noopener noreferrer">DEV.TO ↗</a><a href="#top">BACK TO TOP ↑</a></div></footer></div></section>
   </main>
 
   <main class="blog-detail-shell" id="blog-detail" hidden>
@@ -555,8 +290,10 @@ Analysis complete. 0 errors found.</code></pre>
 
   <aside class="owner-view-badge" id="owner-view-badge" hidden aria-live="polite">Portfolio Views: <strong
       id="portfolio-view-count">--</strong></aside>
-  <button class="back-to-top icon-button" id="back-to-top" type="button" aria-label="Back to top"><i
-      class="fa-solid fa-arrow-up" aria-hidden="true"></i></button>
+  <button id="back-to-top" class="back-to-top" type="button" aria-label="Back to top" title="Back to top">
+    <svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.9"><path d="M12 19V5m-6 6 6-6 6 6"/></svg>
+    <span aria-hidden="true">TOP</span>
+  </button>
   <div class="blog-loader-overlay" id="blog-loader-overlay" hidden>
     <div class="ai-matrix-loader">
       <div class="digit">0</div>
@@ -570,7 +307,7 @@ Analysis complete. 0 errors found.</code></pre>
       <div class="glow"></div>
     </div>
   </div>
-  <script src="/script.js?v=20260603-stitch-final"></script>
+  <script defer src="/site-redesign.js?v=2"></script><script>if (/^\/blog\//.test(location.pathname)) {const s=document.createElement("script");s.src="/script.js?v=20260603-stitch-final";s.defer=true;document.body.appendChild(s);}</script>
 </body>
 
 </html>
