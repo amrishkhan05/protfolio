@@ -223,6 +223,16 @@ assert.ok(contactAnchor.writingBottom<=contactAnchor.navBottom+33,'writing cards
 assert.ok(contactAnchor.writingPaddingBottom<=33,'no oversized blank writing-to-contact band');
 assert.ok(contactAnchor.contactBottom>=contactAnchor.viewport-3,'contact panel and footer reach the viewport bottom');
 assert.ok(contactAnchor.footerBottom<=contactAnchor.viewport+4,'contact footer remains visible at final anchor on tall desktop');
+const footerControlCollision=await page.evaluate(()=>{
+  const last=document.querySelector('#contact .footer-social a:last-child').getBoundingClientRect();
+  const button=document.querySelector('#back-to-top').getBoundingClientRect();
+  return {linkRight:last.right,linkTop:last.top,linkBottom:last.bottom,buttonLeft:button.left,buttonTop:button.top,buttonBottom:button.bottom};
+});
+assert.ok(footerControlCollision.linkRight< footerControlCollision.buttonLeft-4 ||
+  footerControlCollision.linkBottom<footerControlCollision.buttonTop-4 ||
+  footerControlCollision.linkTop>footerControlCollision.buttonBottom+4,
+  'fixed back-to-top button must not cover footer navigation');
+
 await page.screenshot({path:path.join(output,'contact-desktop-1536x960.png'),fullPage:false});
 await page.goto(base+'/#contact',{waitUntil:'domcontentloaded'});
 await page.locator('#journal-grid .journal-card').first().waitFor({timeout:20000});

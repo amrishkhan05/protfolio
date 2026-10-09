@@ -553,3 +553,8 @@ body.is-aruvix-view .hero-section p,body.is-aruvix-view .case-study-shell p{colo
   html:not(.is-blog-route):has(#contact){scroll-padding-top:68px}
   #home-content #contact{scroll-margin-top:0}
 }
+
+/* Leave space for the fixed back-to-top control beside footer links. */
+#home-content #contact .footer-social{
+  padding-inline-end:clamp(70px,5.5vw,88px);
+}
