@@ -109,3 +109,78 @@ html.is-blog-route .blog-cover-frame .blog-cover {
   #home-content .journal-feature .journal-art,
   #home-content .journal-grid .journal-art { min-height: 0; }
 }
+
+
+/* ATOMIC ARTICLE REVEAL
+   The article, its navigation, and the cover must become visible together.
+   Explicit hidden rules defeat the legacy .blog-toc{display:grid} declaration,
+   which previously made an uninitialized sidebar flash before the article. */
+html.is-blog-route #blog-toc[hidden],
+html.is-blog-route #blog-related[hidden],
+html.is-blog-route #blog-detail-status[hidden],
+html.is-blog-route #blog-tools-panel[hidden] { display:none!important; }
+html.is-blog-route:not(.is-blog-ready) .blog-detail-layout,
+html.is-blog-route:not(.is-blog-ready) .article-footer{
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
+html.is-blog-route.is-blog-loading body::before,
+html.is-blog-route.is-blog-loading body::after{display:none!important}
+html.is-blog-route.is-blog-loading,
+html.is-blog-route.is-blog-loading body{overflow:hidden}
+html.is-blog-route:not(.is-blog-ready) #blog-loader-overlay{
+  display:grid!important;opacity:1;visibility:visible;pointer-events:auto;
+}
+html.is-blog-route.is-blog-ready #blog-loader-overlay{
+  display:grid;opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .22s ease,visibility 0s linear .22s;
+}
+html.is-blog-route.is-blog-ready #blog-loader-overlay[hidden]{display:none!important}
+html.is-blog-route.is-blog-ready .blog-detail-layout{
+  visibility:visible;
+}
+/* Reserve featured and card dimensions while the DEV.to list is loading.
+   Replace placeholders in one synchronous DOM update, not section by section. */
+#home-content .journal-loading-feature{
+  display:grid;grid-template-columns:1.15fr 1fr;min-height:350px;
+  background:#152329;border:0;
+}
+#home-content .journal-loading-art{
+  min-height:340px;background:linear-gradient(135deg,#213b38 0%,#344b42 48%,#233535 100%);
+}
+#home-content .journal-loading-copy{
+  display:flex;flex-direction:column;gap:16px;justify-content:center;padding:38px;
+}
+#home-content .journal-loading-copy span,
+#home-content .journal-loading-lines i{
+  display:block;border-radius:4px;background:linear-gradient(100deg,#dbe4da 0%,#e9f0e6 48%,#dbe4da 100%);
+  background-size:200% 100%;animation:journal-placeholder-scan 1.6s ease-in-out infinite;
+}
+#home-content .journal-loading-copy span{height:15px;background-color:#50635b;opacity:.38}
+#home-content .journal-loading-copy span:nth-child(1){width:35%;height:11px}
+#home-content .journal-loading-copy span:nth-child(2){width:90%;height:30px}
+#home-content .journal-loading-copy span:nth-child(3){width:77%;height:30px}
+#home-content .journal-loading-copy span:nth-child(4){width:65%}
+#home-content .journal-loading-card{
+  min-width:0;min-height:385px;overflow:hidden;border:1px solid #cbd3c9;
+  border-radius:9px;background:#fff;
+}
+#home-content .journal-loading-image{aspect-ratio:1000/420;background:#dce3da}
+#home-content .journal-loading-lines{display:grid;gap:14px;padding:24px}
+#home-content .journal-loading-lines i{height:16px}
+#home-content .journal-loading-lines i:nth-child(1){width:38%;height:11px}
+#home-content .journal-loading-lines i:nth-child(2){width:95%;height:25px}
+#home-content .journal-loading-lines i:nth-child(3){width:68%}
+#home-content .journal-filters{min-height:61px}
+@keyframes journal-placeholder-scan{0%{background-position:200% 0}100%{background-position:-200% 0}}
+@media(max-width:760px){
+  #home-content .journal-loading-feature{grid-template-columns:minmax(0,1fr)}
+  #home-content .journal-loading-art{min-height:0;aspect-ratio:1000/420}
+  #home-content .journal-loading-copy{padding:24px;min-height:190px}
+  #home-content .journal-loading-card{min-height:350px}
+}
+@media(prefers-reduced-motion:reduce){
+  #home-content .journal-loading-copy span,
+  #home-content .journal-loading-lines i{animation:none}
+  html.is-blog-route.is-blog-ready #blog-loader-overlay{transition:none}
+}

@@ -624,7 +624,7 @@ const renderBlogPage = async (article) => {
       ['<link rel="stylesheet" href="/styles.css?v=4" />', '<link rel="stylesheet" href="/site-redesign.css?v=5" />'].join("\n"),
     );
   // The response already has article content: never paint a homepage/loading flash.
-  const readyHtml = indexHtml.replace('classList.add("is-blog-route", "is-blog-loading")', 'classList.add("is-blog-route", "is-blog-ready")');
+  const readyHtml = indexHtml; // SSR content is complete; the loader stays until reader enhancements are mounted.
   const canonicalPath = article.url;
   const description = article.description || `Read ${article.title} by Amrish Khan on amrishkhan.dev.`;
   const image = article.coverImage || siteImageUrl;

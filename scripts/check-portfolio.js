@@ -35,7 +35,7 @@ check('Aruvix current products, privacy boundaries and desktop scope documented'
 check('No theme-toggle controls remain on homepage or Aruvix', !home.includes('studio-theme-toggle') && !aruvix.includes('studio-theme-toggle'));
 check('Shared stylesheet on all page types', home.includes('/site-polish.css') && aruvix.includes('/site-polish.css'));
 check('No persisted theme overrides the editorial palette', !common.includes('portfolio-theme') && !home.includes('portfolio-theme') && !aruvix.includes('portfolio-theme') && !read('public/script.js').includes('portfolio-theme'));
-check('Article reader uses refreshed theme-free script', home.includes('/script.js?v=5'));
+check('Article reader uses refreshed theme-free script', home.includes('/script.js?v=6'));
 check('Resume PDF path exists', fs.existsSync(path.join(root, 'public/resume/pdf/Amrishkhan-Sheik-Abdullah-Resume.pdf')));
 check('Only PDF resume is offered', !home.includes('resume/doc/') && !aruvix.includes('resume/doc/'));
 check('PDF resume links remain in the UI', home.includes('/resume/pdf/Amrishkhan-Sheik-Abdullah-Resume.pdf') && aruvix.includes('/resume/pdf/Amrishkhan-Sheik-Abdullah-Resume.pdf'));
@@ -47,6 +47,7 @@ check('Viewport-aware section spacing instead of fixed 110px bands', polish.incl
 check('Contact finishes flush to viewport beneath sticky header', polish.includes('CONTACT FINISH / HASH ANCHOR') && polish.includes('min-height:calc(100svh - 68px)') && home.includes('site-polish.css?v=10'));
 check('Writing contextual navigation is accessible and desktop-only', home.includes('id="writing-context"') && home.includes('aria-label="Writing quick navigation"') && home.includes('id="writing-context-search"') && homeScript.includes('function updateWritingContext') && homeScript.includes('field.focus({preventScroll:true})') && read('public/writing-context.css').includes('@media(max-width:1050px)'));
 check('Homepage section navigation and writing feed', home.includes('id="writing"') && home.includes('id="work"') && homeScript.includes('/api/blogs'));
+check('Article reader does not expose uninitialized sidebars', read('public/article-experience.css').includes('ATOMIC ARTICLE REVEAL') && read('public/article-experience.css').includes('#blog-toc[hidden]') && read('public/script.js').includes('prepareArticleFirstPaint') && read('app.js').includes('const readyHtml = indexHtml'));
 check('Blog article reader and canonical metadata', home.includes('id="blog-detail"') && home.includes('rel="canonical"'));
 check('Aruvix product has distinct internal case-study and external launch actions', home.includes('href="/aruvix" class="project-action">Learn more') && home.includes('class="aruvix-visit-link"') && aruvix.includes('href="/#work">← Back to selected work') && polish.includes('#home-content #work .aruvix-action-row'));
 check('Blog and Aruvix Express routes preserved', backend.includes('app.get("/blog/:slug"') && backend.includes('app.get("/aruvix"'));

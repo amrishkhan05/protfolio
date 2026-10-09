@@ -588,7 +588,6 @@ const articleHtml=pageSource
  .replace('<link rel="stylesheet" href="/site-redesign.css?v=5" />', ['<link rel="stylesheet" href="/styles.css?v=4" />', '<link rel="stylesheet" href="/site-redesign.css?v=5" />'].join("\n"))
  .replace('<div class="blog-detail-content" id="blog-detail-content" hidden>','<div class="blog-detail-content" id="blog-detail-content">')
  .replace('<div class="blog-detail-status" id="blog-detail-status">Loading...</div>','<div class="blog-detail-status" id="blog-detail-status" hidden></div>')
- .replace('classList.add("is-blog-route", "is-blog-loading")','classList.add("is-blog-route", "is-blog-ready")')
  .replace('<img class="blog-cover" id="blog-detail-cover" alt="" loading="eager" fetchpriority="high" decoding="async" width="1200" height="675" hidden />','<img class="blog-cover" id="blog-detail-cover" alt="" src="https://media.invalid/article-cover.webp" loading="eager" decoding="async" width="1200" height="675" />')
  .replace('<h1 id="blog-detail-title"></h1>','<h1 id="blog-detail-title">Sometimes the fastest system is the one willing to stop</h1>')
  .replace('<div class="blog-body" id="blog-detail-body"></div>','<div class="blog-body" id="blog-detail-body"><p>Engineering is about thoughtful decisions in complex systems.</p></div>');

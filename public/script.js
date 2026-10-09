@@ -562,11 +562,39 @@ const showBlogStatus = (message) => {
 };
 
 const setBlogLoading = (isLoading) => {
-  document.documentElement.classList.toggle(blogLoadingClass, isLoading);
-
-  if (blogLoaderOverlay) {
-    blogLoaderOverlay.hidden = !isLoading;
+  const root = document.documentElement;
+  if (isLoading) {
+    root.classList.remove("is-blog-ready");
+    root.classList.add(blogLoadingClass);
+    if (blogLoaderOverlay) blogLoaderOverlay.hidden = false;
+    return;
   }
+
+  // Commit the entire reading shell in one paint, never the TOC by itself.
+  root.classList.add("is-blog-ready");
+  root.classList.remove(blogLoadingClass);
+  if (blogLoaderOverlay) {
+    globalThis.setTimeout(() => {
+      if (!root.classList.contains(blogLoadingClass)) blogLoaderOverlay.hidden = true;
+    }, 260);
+  }
+};
+
+const prepareArticleFirstPaint = async () => {
+  const tasks = [];
+  // The article cover has a reserved frame; a short decode wait avoids a second
+  // content swap without holding visitors indefinitely on a slow CDN.
+  if (blogDetailCover && !blogDetailCover.hidden && blogDetailCover.getAttribute("src")) {
+    if (typeof blogDetailCover.decode === "function") {
+      tasks.push(blogDetailCover.decode().catch(() => {}));
+    }
+  }
+  if (document.fonts?.ready) tasks.push(document.fonts.ready.catch(() => {}));
+  await Promise.race([
+    Promise.all(tasks),
+    new Promise(resolve => globalThis.setTimeout(resolve, 450)),
+  ]);
+  await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
 };
 
 const slugifyHeading = (text) =>
@@ -1019,19 +1047,21 @@ const renderBlogDetail = async () => {
   }
 
   blogDetail.hidden = false;
+  setBlogLoading(true);
   const startTime = Date.now();
   const hasServerRenderedArticle = Boolean(blogDetailContent && !blogDetailContent.hidden && blogDetailBody?.textContent.trim());
 
   // SSR is already a complete page. Re-fetching and rewriting it was causing
   // the title, cover, sidebar and content to jump after navigation.
   if (hasServerRenderedArticle) {
-    setBlogLoading(false);
     cleanBlogMedia();
     recoverArticleImages();
     enhanceBlogTables();
     enhanceBlogCodeBlocks();
     buildBlogToc();
     recoverArticleImages();
+    await prepareArticleFirstPaint();
+    setBlogLoading(false);
     fetchFreshJson(`/api/blogs/${encodeURIComponent(blogSlug)}`)
       .then(article => {
         if (article && typeof article === "object") {
@@ -1042,8 +1072,7 @@ const renderBlogDetail = async () => {
     return;
   }
 
-  setBlogLoading(!hasServerRenderedArticle);
-
+  // Even SSR articles stay hidden behind the terminal until their layout is ready.
   if (!hasServerRenderedArticle) {
     showBlogStatus("Loading...");
   }
@@ -1094,6 +1123,7 @@ const renderBlogDetail = async () => {
     renderRelatedArticles(article);
     blogDetailStatus.hidden = true;
     blogDetailContent.hidden = false;
+    await prepareArticleFirstPaint();
     updateScrollProgress();
   } catch (error) {
     console.error("Unable to load DEV blog article:", error);
