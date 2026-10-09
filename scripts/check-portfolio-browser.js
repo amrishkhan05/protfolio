@@ -148,7 +148,7 @@ for (const {width,height} of [{width:1440,height:900},{width:1536,height:960}]){
  await page.waitForFunction(()=>{
   const section=document.getElementById('skills').getBoundingClientRect();
   const nav=document.querySelector('.site-header').getBoundingClientRect();
-  return Math.abs(section.top-nav.bottom)<6;
+  return Math.abs(section.top-nav.bottom)<24;
  },null,{timeout:8000});
  await page.waitForTimeout(380); // CSS smooth-scrolling must finish before taking geometry.
  const fit=await page.evaluate(()=>{

@@ -1,0 +1,42 @@
+name: Build portfolio resume
+on:
+  workflow_dispatch:
+  push:
+    branches: [feature/editorial-writing-experience]
+    paths:
+      - scripts/build-resume.py
+      - .github/workflows/build-resume.yml
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install document tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq libreoffice-writer fonts-crosextra-carlito poppler-utils
+          pip install --disable-pip-version-check "python-docx==1.2.0"
+      - name: Generate both resume downloads
+        run: |
+          python scripts/build-resume.py
+          mkdir -p public/resume/pdf
+          libreoffice -env:UserInstallation=file:///tmp/lo-resume-build --headless --convert-to pdf --outdir public/resume/pdf public/resume/doc/Amrishkhan-Sheik-Abdullah-Resume.docx
+          test -s public/resume/doc/Amrishkhan-Sheik-Abdullah-Resume.docx
+          test -s public/resume/pdf/Amrishkhan-Sheik-Abdullah-Resume.pdf
+          pdfinfo public/resume/pdf/Amrishkhan-Sheik-Abdullah-Resume.pdf | grep 'Pages:'
+      - name: Publish generated files
+        run: |
+          git config user.name "portfolio-build[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/resume/doc/Amrishkhan-Sheik-Abdullah-Resume.docx public/resume/pdf/Amrishkhan-Sheik-Abdullah-Resume.pdf
+          if ! git diff --cached --quiet; then
+            git commit -m "docs(resume): refresh PDF and Word downloads [skip ci]"
+            git push origin HEAD:$GITHUB_REF_NAME
+          fi
