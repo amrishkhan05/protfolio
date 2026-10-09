@@ -1,0 +1,7 @@
+/* Cross-platform icon rendering. SVG avoids iOS interpreting ↗ as an emoji. */
+svg.ui-arrow-svg{display:inline-block;width:1em;height:1em;flex:0 0 auto;vertical-align:-.12em;overflow:visible;color:inherit}
+#home-content #contact .contact-mail svg.ui-arrow-svg{width:.82em;height:.82em}
+#home-content .arrow-circle svg.ui-arrow-svg{width:20px;height:20px}
+body.is-aruvix-view .aru-tool h3 svg.ui-arrow-svg{width:.8em;height:.8em}
+#home-content .journal-read svg.ui-arrow-svg,body.is-blog-view .related-card-tail svg.ui-arrow-svg{vertical-align:-.17em}
+@media(prefers-reduced-motion:reduce){svg.ui-arrow-svg{transition:none!important;animation:none!important}}

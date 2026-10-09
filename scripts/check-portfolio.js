@@ -38,6 +38,13 @@ check('Shared stylesheet on all page types', home.includes('/site-polish.css') &
 check('No persisted theme overrides the editorial palette', !common.includes('portfolio-theme') && !home.includes('portfolio-theme') && !aruvix.includes('portfolio-theme') && !read('public/script.js').includes('portfolio-theme'));
 check('Article reader uses refreshed theme-free script', home.includes('/script.js?v=6'));
 check('Resume PDF path exists', fs.existsSync(path.join(root, 'public/resume/pdf/Amrishkhan-Sheik-Abdullah-Resume.pdf')));
+check('iOS-safe SVG arrow icons replace Unicode arrow glyphs in navigation and articles',
+  ['public/index.html','public/aruvix.html','public/site-redesign.js','public/script.js'].every(file=>!/[↗↘↧↑↓←]/.test(read(file)))
+  && home.includes('href="/ui-arrows.css?v=1"')
+  && aruvix.includes('href="/ui-arrows.css?v=1"')
+  && count(home,/class="ui-arrow-svg"/g)>25
+  && read('public/ui-arrows.css').includes('color:inherit')
+  && !polish.includes('content:"CV ↧"'));
 check('Only PDF resume is offered', !home.includes('resume/doc/') && !aruvix.includes('resume/doc/'));
 check('PDF resume links remain in the UI', home.includes('/resume/pdf/Amrishkhan-Sheik-Abdullah-Resume.pdf') && aruvix.includes('/resume/pdf/Amrishkhan-Sheik-Abdullah-Resume.pdf'));
 check('No resume generation workflow remains', !fs.existsSync(path.join(root,'.github/workflows/build-resume.yml')) && !fs.existsSync(path.join(root,'scripts/build-resume.py')));
@@ -54,8 +61,8 @@ check('Article sidebar and related editorial cards', home.includes('class="blog-
 check('Only destination article owns the terminal loader', !homeScript.includes("document.documentElement.classList.add('is-opening-article')") && !homeScript.includes('location.assign(link.href)') && read('public/article-experience.css').includes('SINGLE ARTICLE LOADER / stable geometry'));
 check('Article reader does not expose uninitialized sidebars', read('public/article-experience.css').includes('ATOMIC ARTICLE REVEAL') && read('public/article-experience.css').includes('#blog-toc[hidden]') && read('public/script.js').includes('prepareArticleFirstPaint') && read('app.js').includes('const readyHtml = indexHtml'));
 check('Blog article reader and canonical metadata', home.includes('id="blog-detail"') && home.includes('rel="canonical"'));
-check('SEO: Aruvix navigation links use destination-specific text', home.includes('>Aruvix case study <span aria-hidden="true">↗</span>') && !home.includes('class="project-action">Learn more'));
-check('Aruvix product has distinct internal case-study and external launch actions', home.includes('href="/aruvix" class="project-action">Aruvix case study') && home.includes('class="aruvix-visit-link"') && aruvix.includes('href="/#work">← Back to selected work') && polish.includes('#home-content #work .aruvix-action-row'));
+check('SEO: Aruvix navigation links use destination-specific text', home.includes('>Aruvix case study <span aria-hidden="true"><svg class="ui-arrow-svg"') && !home.includes('class="project-action">Learn more'));
+check('Aruvix product has distinct internal case-study and external launch actions', home.includes('href="/aruvix" class="project-action">Aruvix case study') && home.includes('class="aruvix-visit-link"') && aruvix.includes('href="/#work"><svg class="ui-arrow-svg"') && polish.includes('#home-content #work .aruvix-action-row'));
 check('Blog and Aruvix Express routes preserved', backend.includes('app.get("/blog/:slug"') && backend.includes('app.get("/aruvix"'));
 check('DEV.to article payload sanitized', backend.includes('bodyHtml: sanitizeDevArticleHtml(article.bodyHtml)'));
 check('Article first-paint routing and fixed light palette', home.includes('classList.add("is-blog-route", "is-blog-loading")') && polish.includes('html.is-blog-route #blog-detail[hidden]'));

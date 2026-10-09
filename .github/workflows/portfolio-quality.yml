@@ -31,7 +31,7 @@ jobs:
         run: |
           npm ci
           npm install --no-save playwright@1.56.1
-          npx playwright install --with-deps chromium
+          npx playwright install --with-deps chromium webkit
       - name: Start the local portfolio server
         run: |
           npm start > /tmp/portfolio-server.log 2>&1 &
@@ -43,6 +43,8 @@ jobs:
           exit 1
       - name: Test home, mobile, themes, articles and downloads
         run: node scripts/check-portfolio-browser.js
+      - name: Test iPhone-sized Safari/WebKit SVG arrow rendering
+        run: node scripts/check-portfolio-webkit.js
       - name: Upload browser screenshots
         if: always()
         uses: actions/upload-artifact@v4
