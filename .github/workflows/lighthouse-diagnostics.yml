@@ -37,11 +37,12 @@ jobs:
       - name: Run local and deployed Lighthouse
         run: |
           mkdir -p lighthouse-reports
-          for case in homepage-local aruvix-local homepage-preview; do
+          for case in homepage-local aruvix-local homepage-preview homepage-production; do
             case "$case" in
               homepage-local) URL="http://127.0.0.1:3333/" ;;
               aruvix-local) URL="http://127.0.0.1:3333/aruvix" ;;
               homepage-preview) URL="https://protfolio-git-feature-editorial-w-d67f8c-amrishkhan05s-projects.vercel.app/" ;;
+              homepage-production) URL="https://www.amrishkhan.dev/" ;;
             esac
             echo "::group::Lighthouse $case $URL"
             npx lighthouse "$URL" \
@@ -54,6 +55,9 @@ jobs:
           const label=process.argv[2],p="lighthouse-reports/"+label+".json";
           if(!fs.existsSync(p)){console.log(label,"NO_REPORT");process.exit(0)}
           const r=JSON.parse(fs.readFileSync(p,"utf8"));
+          if(label==="homepage-preview"&&/vercel\\.com\\/login/.test(r.finalDisplayedUrl||"")){
+             console.log("BLOCKED_BY_VERCEL_AUTH","Preview redirected to Vercel login. Report measures the login screen, not the portfolio.");
+           }
           console.log("TARGET",label,"URL",r.finalDisplayedUrl,"Lighthouse",r.lighthouseVersion,
              "scores",Object.fromEntries(Object.entries(r.categories).map(([k,v])=>[k,v.score*100])));
           const ids=new Set(Object.values(r.categories).flatMap(c=>c.auditRefs.filter(a=>a.weight>0).map(a=>a.id)));
