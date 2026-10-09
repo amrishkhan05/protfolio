@@ -52,5 +52,7 @@ check('Blog and Aruvix Express routes preserved', backend.includes('app.get("/bl
 check('DEV.to article payload sanitized', backend.includes('bodyHtml: sanitizeDevArticleHtml(article.bodyHtml)'));
 check('Article first-paint routing and fixed light palette', home.includes('classList.add("is-blog-route", "is-blog-loading")') && polish.includes('html.is-blog-route #blog-detail[hidden]'));
 check('Reduced-motion styles present', baseCss.includes('prefers-reduced-motion'));
+check('Unified bespoke AK identity replaces the square badge', home.includes('class="brand-name"') && aruvix.includes('class="brand-name"') && !home.includes('class="brand-mark" aria-hidden="true">AK') && !aruvix.includes('class="brand-mark" aria-hidden="true">AK') && read('public/identity-nav.css').includes('AK identity system'));
+check('Editorial navigation keeps section, resume, and contact actions', home.includes('href="/identity-nav.css?v=1"') && aruvix.includes('href="/identity-nav.css?v=1"') && home.includes('class="studio-resume-link"') && home.includes('class="header-cta"') && home.includes('class="nav-order"') && read('public/favicon.svg').includes('#D5F478'));
 check('Accessible mobile navigation controls', home.includes('aria-controls="primary-nav"') && aruvix.includes('aria-controls="primary-nav"'));
 console.log('Portfolio quality checks passed.');

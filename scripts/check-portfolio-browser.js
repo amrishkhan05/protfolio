@@ -101,6 +101,24 @@ await assertHoverContrast('.site-header .header-cta','Header contact button');
 await assertHoverContrast('#work .filter-tab.active','Selected Work active filter');
 
 assert.ok(await page.locator('.hero h1').isVisible(),'hero heading shown');
+const identity=page.locator('.site-header');
+assert.equal(await identity.locator('.brand-mark svg').count(),1,'custom vector AK monogram displayed');
+assert.ok(await identity.locator('.brand-name').isVisible(),'new editorial wordmark is visible');
+assert.ok((await identity.locator('.brand-name').innerText()).includes('amrish.khan'),'wordmark is correctly spelled');
+assert.equal(await identity.locator('.nav-links a[href="#work"] .nav-order').innerText(),'01','numbered navigation displayed');
+assert.equal(await identity.locator('a[href="#contact"].header-cta').count(),1,'header contact CTA preserved');
+assert.equal(await identity.locator('.studio-resume-link[download]').count(),1,'resume download remains in header');
+const navDesktop=await identity.evaluate(header=>{
+ const brand=header.querySelector('.brand').getBoundingClientRect();
+ const nav=header.querySelector('.nav-links').getBoundingClientRect();
+ const actions=header.querySelector('.nav-actions-studio').getBoundingClientRect();
+ return {brandRight:brand.right,navLeft:nav.left,navRight:nav.right,actionsLeft:actions.left,width:document.documentElement.scrollWidth,viewport:innerWidth};
+});
+assert.ok(navDesktop.brandRight+4<navDesktop.navLeft,'brand and desktop navigation do not collide');
+assert.ok(navDesktop.navRight+4<navDesktop.actionsLeft,'navigation and actions do not collide');
+assert.ok(navDesktop.width<=navDesktop.viewport+2,'header has no desktop horizontal overflow');
+await page.locator('.site-header').screenshot({path:path.join(output,'header-desktop.png')});
+
 const board=page.locator('.hero-switchboard');
 assert.ok(await board.isVisible(),'interactive systems artwork visible');
 assert.equal(await page.locator('.topo-frame').count(),0,'old hub-and-spoke diagram removed');
@@ -448,6 +466,9 @@ assert.equal(await page.locator('.aru-text-link[href="/#work"]').count(),1,'Aruv
 await page.goto(base+'/aruvix',{waitUntil:'domcontentloaded'});
 assert.equal(await page.evaluate(()=>document.documentElement.dataset.theme),'light','Aruvix uses the same single theme');
 assert.ok(await page.locator('#case-study').isVisible(),'Aruvix content visible');
+assert.equal(await page.locator('.site-header .brand-mark svg').count(),1,'Aruvix uses the same new vector monogram');
+assert.ok(await page.locator('.site-header .brand-name').isVisible(),'Aruvix uses the same brand wordmark');
+
 assert.equal(await page.locator('.aru-hero h1').count(),1,'one clear Aruvix case study headline');
 assert.equal(await page.locator('.aru-tool').count(),6,'current six tool families documented');
 assert.equal(await page.locator('link[href^="/styles.css"]').count(),0,'new Aruvix page does not load legacy stylesheet');
@@ -520,6 +541,18 @@ await page.locator('#skills').screenshot({path:path.join(output,'skills-mobile.p
 await page.locator('#menu-toggle').click();
 assert.equal(await page.locator('#menu-toggle').getAttribute('aria-expanded'),'true','mobile menu opens');
 assert.ok(await page.locator('#primary-nav').isVisible(),'mobile nav visible');
+assert.ok(await page.locator('#primary-nav .nav-contact-mobile').isVisible(),'mobile contact action is available');
+assert.equal(await page.locator('#primary-nav a .nav-order').count(),5,'mobile menu retains all five numbered actions');
+const mobileHeader=await page.locator('.site-header').evaluate(header=>{
+ const brand=header.querySelector('.brand').getBoundingClientRect();
+ const menu=header.querySelector('#menu-toggle').getBoundingClientRect();
+ return {brandRight:brand.right,menuLeft:menu.left,menuWidth:menu.width,
+   viewport:innerWidth,documentWidth:document.documentElement.scrollWidth};
+});
+assert.ok(mobileHeader.brandRight+8<mobileHeader.menuLeft,'mobile header wordmark does not collide with menu');
+assert.ok(mobileHeader.documentWidth<=mobileHeader.viewport+2,'mobile header has no horizontal overflow');
+await page.locator('.site-header').screenshot({path:path.join(output,'header-mobile-open.png')});
+
 await page.locator('#primary-nav a[href="#writing"]').click();
 assert.equal(await page.locator('#menu-toggle').getAttribute('aria-expanded'),'false','mobile menu closes');
 const mobileTicket=await page.locator('#work .boarding-pass').evaluate(el=>({width:el.getBoundingClientRect().width,height:el.getBoundingClientRect().height,bg:getComputedStyle(el).backgroundColor,barcode:getComputedStyle(document.querySelector('#work .bar-code')).backgroundImage}));
