@@ -115,7 +115,7 @@ const ossCard=await page.locator('#work .project-oss').evaluate(card=>{
  const outer=card.getBoundingClientRect();
  const grid=card.parentElement.getBoundingClientRect();
  const tiles=Array.from(card.querySelectorAll('.oss-package')).map(x=>x.getBoundingClientRect());
- const columns=getComputedStyle(card.querySelector('.oss-package-list')).gridTemplateColumns.trim().split(/\\s+/).length;
+ const columns=getComputedStyle(card.querySelector('.oss-package-list')).gridTemplateColumns.trim().split(/\s+/).length;
  return {height:Math.round(outer.height),width:outer.width,gridWidth:grid.width,columns,tiles:tiles.map(t=>({x:Math.round(t.x),height:Math.round(t.height)})),illustration:!!card.querySelector('.oss-visual')};
 });
 assert.equal(ossCard.illustration,false,'oversized OSS illustration is removed');
@@ -209,7 +209,7 @@ assert.equal(await page.locator('#menu-toggle').getAttribute('aria-expanded'),'f
 const mobileTicket=await page.locator('#work .boarding-pass').evaluate(el=>({width:el.getBoundingClientRect().width,height:el.getBoundingClientRect().height,bg:getComputedStyle(el).backgroundColor,barcode:getComputedStyle(document.querySelector('#work .bar-code')).backgroundImage}));
 assert.ok(mobileTicket.width>=240&&mobileTicket.height>=140,'boarding pass remains legible on phones');
 assert.equal(mobileTicket.bg,'rgb(250, 249, 244)','mobile boarding pass uses ivory paper');
-const mobileOss = await page.locator('#work .project-oss').evaluate(el=>({height:Math.round(el.getBoundingClientRect().height),width:el.getBoundingClientRect().width,columns:getComputedStyle(el.querySelector('.oss-package-list')).gridTemplateColumns.trim().split(/\\s+/).length}));
+const mobileOss = await page.locator('#work .project-oss').evaluate(el=>({height:Math.round(el.getBoundingClientRect().height),width:el.getBoundingClientRect().width,columns:getComputedStyle(el.querySelector('.oss-package-list')).gridTemplateColumns.trim().split(/\s+/).length}));
 assert.equal(mobileOss.columns,1,'mobile OSS packages display as one compact list');
 assert.ok(mobileOss.height<=540,'open source panel stays concise on mobile');
 assert.ok(mobileOss.width<=390,'open source does not overflow mobile viewport');
