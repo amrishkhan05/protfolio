@@ -1037,7 +1037,7 @@ const renderBlogDetail = async () => {
   const startTime = Date.now();
   const hasServerRenderedArticle = Boolean(blogDetailContent && !blogDetailContent.hidden && blogDetailBody?.textContent.trim());
 
-  setBlogLoading(true);
+  setBlogLoading(!hasServerRenderedArticle);
 
   if (!hasServerRenderedArticle) {
     showBlogStatus("Loading...");
@@ -1094,9 +1094,9 @@ const renderBlogDetail = async () => {
       showBlogStatus("This article is temporarily unavailable.");
     }
   } finally {
-    const elapsedTime = Date.now() - startTime;
-    if (elapsedTime < 1000) {
-      await new Promise((resolve) => setTimeout(resolve, 1000 - elapsedTime));
+    if (!hasServerRenderedArticle) {
+      const elapsedTime = Date.now() - startTime;
+      if (elapsedTime < 250) await new Promise((resolve) => setTimeout(resolve, 250 - elapsedTime));
     }
     setBlogLoading(false);
   }

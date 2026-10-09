@@ -51,7 +51,7 @@
             "name": "Amrish Khan",
             "alternateName": "Amrishkhan Sheik Abdullah",
             "url": "https://www.amrishkhan.dev/",
-            "jobTitle": "Full Stack AI Engineer, TypeScript Architect, Founder of Aruvix",
+            "jobTitle": "Technology Lead, Systems Architect, Creator of Aruvix",
             "address": { "@type": "PostalAddress", "addressLocality": "Dubai", "addressCountry": "AE" },
             "sameAs": ["https://www.linkedin.com/in/amrishkhan", "https://github.com/amrishkhan05", "https://www.npmjs.com/package/sql-select-query-generator", "https://www.aruvix.com/"],
             "knowsAbout": ["TypeScript", "AI engineering", "Angular", "React", "Node.js", "NestJS", "Microservices", "API design", "Payment integrations"]
@@ -71,9 +71,9 @@
             "isPartOf": { "@id": "https://www.amrishkhan.dev/#website" },
             "mainEntity": { "@id": "https://www.amrishkhan.dev/#person" },
             "hasPart": [
-              { "@type": "WebPageElement", "@id": "https://www.amrishkhan.dev/#blogs", "name": "Tech Writing" },
-              { "@type": "WebPageElement", "@id": "https://www.amrishkhan.dev/#aruvix", "name": "Aruvix" },
-              { "@type": "WebPageElement", "@id": "https://www.amrishkhan.dev/#skills", "name": "Technical Skills" },
+              { "@type": "WebPageElement", "@id": "https://www.amrishkhan.dev/#writing", "name": "Tech Writing" },
+              { "@type": "WebPageElement", "@id": "https://www.amrishkhan.dev/#work", "name": "Aruvix" },
+              { "@type": "WebPageElement", "@id": "https://www.amrishkhan.dev/#approach", "name": "Technical Skills" },
               { "@type": "WebPageElement", "@id": "https://www.amrishkhan.dev/#experience", "name": "Professional Experience" }
             ]
           }
@@ -86,11 +86,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap"
+    href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500;600&family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
     rel="stylesheet" />
   
   <link rel="stylesheet" href="/styles.css?v=4" />
-  <link rel="stylesheet" href="/site-redesign.css?v=4" />
+  <script>if (/^\\/blog\\//.test(location.pathname)) {var icons=document.createElement('link'); icons.rel='stylesheet'; icons.href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css'; document.head.appendChild(icons)}</script>
+  <link rel="stylesheet" href="/site-redesign.css?v=5" />
   <link rel="stylesheet" href="/site-polish.css?v=4" />
 </head>
 
@@ -100,9 +101,9 @@
 
   <header class="site-header" id="top">
     <div class="nav-wrap container">
-      <a href="/#top" class="brand" aria-label="Amrish Khan — Portfolio home"><span class="brand-mark" aria-hidden="true">AK</span><span class="brand-label">AMRISH KHAN<small>ENGINEER · ARCHITECT · BUILDER</small></span></a>
+      <a href="#top" class="brand" aria-label="Amrish Khan — Portfolio home"><span class="brand-mark" aria-hidden="true">AK</span><span class="brand-label">AMRISH KHAN<small>ENGINEER · ARCHITECT · BUILDER</small></span></a>
       <nav id="primary-nav" class="nav-links" aria-label="Main navigation">
-        <a href="/#work">Work</a><a href="/#approach">Approach</a><a href="/#experience">Experience</a><a href="/#writing">Writing</a><a href="/#contact" class="nav-contact-mobile">Contact ↗</a>
+        <a href="#work">Work</a><a href="#approach">Approach</a><a href="#experience">Experience</a><a href="#writing">Writing</a><a href="#contact" class="nav-contact-mobile">Contact ↗</a>
       </nav>
       <div class="nav-actions-studio">
         <button id="studio-theme-toggle" class="studio-theme-toggle" type="button" aria-label="Switch color theme" aria-pressed="false" title="Toggle light and dark mode">
@@ -110,7 +111,7 @@
           <svg class="sun-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg>
         </button>
         <a class="studio-resume-link" href="/resume/pdf/Amrishkhan-Sheik-Abdullah-Resume.pdf" download aria-label="Download resume PDF">Résumé <span aria-hidden="true">↧</span></a>
-        <a class="header-cta" href="/#contact">LET'S CONNECT <span aria-hidden="true">↗</span></a>
+        <a class="header-cta" href="#contact">LET'S CONNECT <span aria-hidden="true">↗</span></a>
         <button class="menu-toggle" id="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" aria-label="Open navigation"><span></span><span></span></button>
       </div>
     </div>
