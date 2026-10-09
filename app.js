@@ -152,6 +152,7 @@ const normalizeDevArticle = (article) => {
     readingTimeMinutes: article?.reading_time_minutes || null,
     wordCount: getArticleWordCount(article),
     coverImage: article?.cover_image || article?.social_image || null,
+    coverImageFallback: article?.social_image && article?.social_image !== article?.cover_image ? article.social_image : null,
     url: `/blog/${devSlug}`,
     devUrl: article?.url || null,
     source: "dev",
@@ -458,9 +459,11 @@ const renderTagList = (tags) => (Array.isArray(tags) ? tags : []).map((tag) => `
 const injectBlogDetailContent = (html, article) => {
   const tags = Array.isArray(article.tags) ? article.tags : [];
   const metaItems = [formatPublishedDate(article.publishedAt), article.readingTimeMinutes ? `${article.readingTimeMinutes} min read` : null].filter(Boolean);
-  const coverImage = article.coverImage
-    ? `<img class="blog-cover" id="blog-detail-cover" src="${escapeHtml(article.coverImage)}" alt="${escapeHtml(article.title)} cover image" loading="lazy" decoding="async" />`
-    : '<img class="blog-cover" id="blog-detail-cover" alt="" loading="lazy" decoding="async" hidden />';
+  const cover = typeof article.coverImage === "string" && /^https:\/\//i.test(article.coverImage) ? article.coverImage : null;
+  const backupCover = typeof article.coverImageFallback === "string" && /^https:\/\//i.test(article.coverImageFallback) ? article.coverImageFallback : null;
+  const coverImage = cover
+    ? `<img class="blog-cover" id="blog-detail-cover" src="${escapeHtml(cover)}" data-fallback-src="${escapeHtml(backupCover || "")}" alt="${escapeHtml(article.title)} cover image" loading="eager" fetchpriority="high" decoding="async" width="1200" height="675" />`
+    : '<img class="blog-cover" id="blog-detail-cover" alt="" loading="eager" decoding="async" width="1200" height="675" hidden />';
   const bodyHtml = sanitizeDevArticleHtml(article.bodyHtml) || (article.bodyMarkdown ? `<pre class="blog-markdown-source">${escapeHtml(article.bodyMarkdown)}</pre>` : "");
 
   return html
@@ -544,6 +547,7 @@ const mapFullDevArticle = (article) => {
     modifiedAt: toValidDateTime(article.edited_at || article.updated_at || article.published_at || article.published_timestamp || mappedArticle.modifiedAt),
     tags: normalizeTags(article),
     coverImage: article.cover_image || article.social_image || mappedArticle.coverImage,
+    coverImageFallback: article.social_image && article.social_image !== article.cover_image ? article.social_image : mappedArticle.coverImageFallback,
     wordCount: estimateWordCount(article),
     bodyHtml: article.body_html || "",
     bodyMarkdown: article.body_markdown || "",
@@ -619,6 +623,8 @@ const renderBlogPage = async (article) => {
       '<link rel="stylesheet" href="/site-redesign.css?v=5" />',
       ['<link rel="stylesheet" href="/styles.css?v=4" />', '<link rel="stylesheet" href="/site-redesign.css?v=5" />'].join("\n"),
     );
+  // The response already has article content: never paint a homepage/loading flash.
+  const readyHtml = indexHtml.replace('classList.add("is-blog-route", "is-blog-loading")', 'classList.add("is-blog-route", "is-blog-ready")');
   const canonicalPath = article.url;
   const description = article.description || `Read ${article.title} by Amrish Khan on amrishkhan.dev.`;
   const image = article.coverImage || siteImageUrl;
@@ -653,7 +659,7 @@ const renderBlogPage = async (article) => {
 
   return injectBlogDetailContent(
     replaceSeoHead(
-      indexHtml,
+      readyHtml,
       buildSeoTags({
         title: `${article.title} | amrishkhan.dev`,
         description,

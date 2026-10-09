@@ -7,7 +7,7 @@ const base = 'http://127.0.0.1:3333';
 const output = path.join(__dirname, '..', 'browser-artifacts');
 fs.mkdirSync(output, { recursive: true });
 const sample = [
-  {id:1,title:'Sometimes the fastest system is the one willing to stop',description:'How manufacturing inspired resilient systems.',publishedAt:'2026-09-20T10:00:00Z',tags:['architecture','engineering'],url:'/blog/fixture',devSlug:'fixture',readingTimeMinutes:7,coverImage:null},
+  {id:1,title:'Sometimes the fastest system is the one willing to stop',description:'How manufacturing inspired resilient systems.',publishedAt:'2026-09-20T10:00:00Z',tags:['architecture','engineering'],url:'/blog/fixture',devSlug:'fixture',readingTimeMinutes:7,coverImage:'https://media.invalid/cover-fail.webp',coverImageFallback:'https://media.invalid/backup-fail.webp'},
   ...Array.from({length:8},(_,i)=>({id:i+2,title:'Article on systems and engineering '+(i+2),description:'Practical notes for engineers and builders.',publishedAt:'2026-09-'+String(18-i).padStart(2,'0')+'T10:00:00Z',tags:i%2?['javascript']:['architecture'],url:'/blog/sample-'+(i+2),devSlug:'sample-'+(i+2),readingTimeMinutes:5,coverImage:null}))
 ];
 (async()=>{
@@ -18,6 +18,13 @@ const errors=[];page.on('pageerror',e=>errors.push(e.message));
 await page.route('**/api/blogs*',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({blogs:sample,count:sample.length})}));
 await page.goto(base+'/',{waitUntil:'domcontentloaded'});
 await page.locator('#journal-grid .journal-card').first().waitFor({timeout:20000});
+await page.route('**/media.invalid/**',route=>route.abort());
+await page.waitForTimeout(250);
+const listImageFallback=await page.locator('#journal-feature .journal-art').evaluate(el=>({count:el.querySelectorAll('img').length,fallback:!!el.querySelector('.journal-art-fallback'),height:el.getBoundingClientRect().height}));
+assert.equal(listImageFallback.count,0,'broken original and backup covers are removed');
+assert.equal(listImageFallback.fallback,true,'cover fallback artwork stays visible');
+assert.ok(listImageFallback.height>=180,'cover image failure does not collapse the layout');
+
 assert.equal(await page.locator('#studio-theme-toggle').count(),1,'one theme toggle');
 assert.equal(await page.locator('#back-to-top').count(),1,'one back-to-top button');
 assert.ok(await page.locator('.hero h1').isVisible(),'hero heading shown');
@@ -209,6 +216,8 @@ const articleHtml=pageSource
  .replace('<link rel="stylesheet" href="/site-redesign.css?v=5" />', ['<link rel="stylesheet" href="/styles.css?v=4" />', '<link rel="stylesheet" href="/site-redesign.css?v=5" />'].join("\n"))
  .replace('<div class="blog-detail-content" id="blog-detail-content" hidden>','<div class="blog-detail-content" id="blog-detail-content">')
  .replace('<div class="blog-detail-status" id="blog-detail-status">Loading...</div>','<div class="blog-detail-status" id="blog-detail-status" hidden></div>')
+ .replace('classList.add("is-blog-route", "is-blog-loading")','classList.add("is-blog-route", "is-blog-ready")')
+ .replace('<img class="blog-cover" id="blog-detail-cover" alt="" loading="eager" fetchpriority="high" decoding="async" width="1200" height="675" hidden />','<img class="blog-cover" id="blog-detail-cover" alt="" src="https://media.invalid/article-cover.webp" loading="eager" decoding="async" width="1200" height="675" />')
  .replace('<h1 id="blog-detail-title"></h1>','<h1 id="blog-detail-title">Sometimes the fastest system is the one willing to stop</h1>')
  .replace('<div class="blog-body" id="blog-detail-body"></div>','<div class="blog-body" id="blog-detail-body"><p>Engineering is about thoughtful decisions in complex systems.</p></div>');
 await page.route('**/blog/fixture',route=>route.fulfill({status:200,contentType:'text/html',body:articleHtml}));
@@ -217,6 +226,12 @@ await page.goto(base+'/blog/fixture',{waitUntil:'domcontentloaded'});
 await page.locator('#blog-detail-title').waitFor({state:'visible',timeout:20000});
 assert.equal(await page.evaluate(()=>document.documentElement.dataset.theme),'dark','theme persists to article');
 assert.ok(await page.locator('#blog-detail-body').isVisible(),'article body is visible');
+await page.waitForTimeout(250);
+assert.equal(await page.locator('#blog-detail-cover').isVisible(),false,'failed full-article cover hides without a broken image');
+assert.ok(await page.locator('.blog-cover-fallback').isVisible(),'branded cover fallback remains visible');
+assert.equal(await page.locator('.blog-cover-frame').evaluate(el=>Math.round(el.getBoundingClientRect().height))>150,true,'article cover keeps its dimensions after failure');
+assert.equal(await page.locator('#blog-loader-overlay').isVisible(),false,'SSR articles do not flash a loader on ready content');
+
 assert.ok((await page.locator('.blog-back-link').getAttribute('href'))==='/#writing','article back link to writing');
 const articleOverflow=await page.evaluate(()=>({
   width:document.documentElement.scrollWidth,
@@ -228,6 +243,20 @@ const articleOverflow=await page.evaluate(()=>({
 if(articleOverflow.width>articleOverflow.viewport+2)console.error('Article overflowing elements:',JSON.stringify(articleOverflow));
 assert.ok(articleOverflow.width<=articleOverflow.viewport+2,'article mobile layout does not overflow');
 await page.screenshot({path:path.join(output,'article-mobile-dark.png'),fullPage:true});
+// Loading page without SSR: no homepage flash, branded terminal loader, stable frame.
+await page.route('**/blog/slow-fixture',route=>route.fulfill({status:200,contentType:'text/html',body:pageSource}));
+await page.route('**/api/blogs/slow-fixture*',async route=>{await new Promise(done=>setTimeout(done,950));await route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({...sample[0],devSlug:'slow-fixture',coverImage:'https://media.invalid/missing.webp',bodyHtml:'<p>Article finally loaded.</p><img src="https://media.invalid/inline.webp" alt="Diagram">',bodyMarkdown:''})});});
+await page.goto(base+'/blog/slow-fixture',{waitUntil:'domcontentloaded'});
+const loaderState=await page.evaluate(()=>({home:getComputedStyle(document.querySelector('#home-content')).display,loader:getComputedStyle(document.querySelector('#blog-loader-overlay')).display,shell:document.querySelector('#blog-detail').getBoundingClientRect().height}));
+assert.equal(loaderState.home,'none','article route never paints the home layout');
+assert.equal(loaderState.loader,'grid','terminal loader visible while data fetch is pending');
+assert.ok(loaderState.shell>200,'article route maintains reserved layout space');
+assert.ok(await page.locator('.code-loader-prompt').isVisible(),'terminal progress UI is shown');
+await page.locator('#blog-detail-body').getByText('Article finally loaded.').waitFor({timeout:8000});
+await page.waitForTimeout(300);
+assert.equal(await page.locator('#blog-loader-overlay').isVisible(),false,'terminal loader disappears when article is ready');
+assert.equal(await page.locator('.blog-media-unavailable').count(),1,'unavailable inline image becomes branded placeholder');
+assert.ok(await page.locator('.blog-cover-fallback').isVisible(),'slow article broken cover shows fallback');
 assert.deepEqual(errors,[],'no browser JavaScript errors');
 await browser.close();
 console.log('Browser regression checks passed on desktop, mobile, theme persistence, Aruvix, article reader and resume downloads.');

@@ -801,6 +801,11 @@ const cleanBlogMedia = () => {
       return;
     }
 
+    const deferredSrc = image.getAttribute("data-src");
+    const currentSrc = image.getAttribute("src");
+    if (deferredSrc && /^https:\/\//i.test(deferredSrc) && (!currentSrc || /^data:/i.test(currentSrc))) {
+      image.src = deferredSrc;
+    }
     image.loading = "lazy";
     image.decoding = "async";
     image.removeAttribute("data-src");
@@ -1021,6 +1026,42 @@ blogDetailBody?.addEventListener("click", async (event) => {
   }
 });
 
+// React to late and early image failures, including images from DEV.to HTML.
+const recoverFailedArticleImage = image => {
+  if (!image || image.dataset.imageRecovered === "1") return;
+  const backup = image.dataset.fallbackSrc;
+  if (backup && !image.dataset.backupTried && /^https:\/\//i.test(backup)) {
+    image.dataset.backupTried = "1";
+    image.src = backup;
+    return;
+  }
+  image.dataset.imageRecovered = "1";
+  if (image.id === "blog-detail-cover") {
+    image.hidden = true;
+    image.removeAttribute("src"); // Permanent editorial cover underneath.
+  } else if (image.closest(".blog-body")) {
+    const box = document.createElement("div");
+    box.className = "blog-media-unavailable";
+    box.setAttribute("role", "img");
+    box.setAttribute("aria-label", image.alt ? "Image unavailable: " + image.alt : "Article illustration unavailable");
+    box.innerHTML = '<span aria-hidden="true">{ /* IMAGE UNAVAILABLE */ }</span><small>The article text is still here.</small>';
+    image.replaceWith(box);
+  }
+};
+document.addEventListener("error", event => {
+  const node = event.target;
+  if (node instanceof HTMLImageElement && (node.id === "blog-detail-cover" || node.closest(".blog-body"))) {
+    recoverFailedArticleImage(node);
+  }
+}, true);
+const recoverArticleImages = () => {
+  document.querySelectorAll("#blog-detail-cover, .blog-body img").forEach(image => {
+    if (!image.hidden && image.complete && image.naturalWidth === 0 && image.getAttribute("src")) {
+      recoverFailedArticleImage(image);
+    }
+  });
+};
+
 const renderBlogDetail = async () => {
   if (!blogSlug || !blogDetail) {
     renderBlogList();
@@ -1036,6 +1077,26 @@ const renderBlogDetail = async () => {
   blogDetail.hidden = false;
   const startTime = Date.now();
   const hasServerRenderedArticle = Boolean(blogDetailContent && !blogDetailContent.hidden && blogDetailBody?.textContent.trim());
+
+  // SSR is already a complete page. Re-fetching and rewriting it was causing
+  // the title, cover, sidebar and content to jump after navigation.
+  if (hasServerRenderedArticle) {
+    setBlogLoading(false);
+    cleanBlogMedia();
+    recoverArticleImages();
+    enhanceBlogTables();
+    enhanceBlogCodeBlocks();
+    buildBlogToc();
+    recoverArticleImages();
+    fetchFreshJson(`/api/blogs/${encodeURIComponent(blogSlug)}`)
+      .then(article => {
+        if (article && typeof article === "object") {
+          renderRelatedTools(article);
+          renderRelatedArticles(article);
+        }
+      }).catch(() => {});
+    return;
+  }
 
   setBlogLoading(!hasServerRenderedArticle);
 
@@ -1063,7 +1124,9 @@ const renderBlogDetail = async () => {
     }
     blogDetailTags.innerHTML = tags.map((tag) => `<span>${escapeHtml(tag)}</span>`).join("");
 
-    if (article.coverImage) {
+    if (typeof article.coverImage === "string" && /^https:\/\//i.test(article.coverImage)) {
+      blogDetailCover.dataset.fallbackSrc = typeof article.coverImageFallback === "string" && /^https:\/\//i.test(article.coverImageFallback) ? article.coverImageFallback : "";
+      blogDetailCover.removeAttribute("data-backup-tried");
       blogDetailCover.src = article.coverImage;
       blogDetailCover.hidden = false;
     } else {

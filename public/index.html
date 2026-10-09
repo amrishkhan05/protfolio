@@ -93,6 +93,7 @@
   <script>if (/^\/blog\//.test(location.pathname)) {var icons=document.createElement('link'); icons.rel='stylesheet'; icons.href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css'; document.head.appendChild(icons)}</script>
   <link rel="stylesheet" href="/site-redesign.css?v=5" />
   <link rel="stylesheet" href="/site-polish.css?v=4" />
+  <link rel="stylesheet" href="/article-experience.css?v=1" />
 </head>
 
 <body>
@@ -278,7 +279,10 @@
         <div class="blog-detail-status" id="blog-detail-status">Loading...</div>
         <div class="blog-detail-content" id="blog-detail-content" hidden>
           <header class="blog-hero">
-            <img class="blog-cover" id="blog-detail-cover" alt="" loading="lazy" decoding="async" width="1200" height="675" hidden />
+            <div class="blog-cover-frame" id="blog-cover-frame">
+              <div class="blog-cover-fallback" aria-hidden="true"><span class="blog-cover-code">/**</span><span class="blog-cover-design">ENGINEERING<br>FIELD NOTES<span class="blog-cover-design-dot">.</span></span><span class="blog-cover-end">*/ &nbsp; WHO SAW THE CONNECTION?</span></div>
+              <img class="blog-cover" id="blog-detail-cover" alt="" loading="eager" fetchpriority="high" decoding="async" width="1200" height="675" hidden />
+            </div>
             <h1 id="blog-detail-title"></h1>
             <div class="blog-meta-row" id="blog-detail-meta"></div>
             <div class="blog-tags" id="blog-detail-tags"></div>
@@ -328,17 +332,16 @@
     <svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.9"><path d="M12 19V5m-6 6 6-6 6 6"/></svg>
     <span aria-hidden="true">TOP</span>
   </button>
-  <div class="blog-loader-overlay" id="blog-loader-overlay" hidden>
-    <div class="ai-matrix-loader">
-      <div class="digit">0</div>
-      <div class="digit">1</div>
-      <div class="digit">0</div>
-      <div class="digit">1</div>
-      <div class="digit">1</div>
-      <div class="digit">0</div>
-      <div class="digit">0</div>
-      <div class="digit">1</div>
-      <div class="glow"></div>
+  <div class="blog-loader-overlay" id="blog-loader-overlay" role="status" aria-live="polite" aria-label="Opening engineering article" hidden>
+    <div class="code-loader" aria-hidden="true">
+      <div class="code-loader-top"><span class="code-loader-lights"><i></i><i></i><i></i></span><span>~/amrishkhan/writing</span><span class="code-loader-mode">READ</span></div>
+      <div class="code-loader-main">
+        <span class="code-loader-prompt"><span>➜</span> open article.md<span class="code-loader-cursor">_</span></span>
+        <span class="code-loader-output"><span>✔</span> Connecting ideas across disciplines</span>
+        <span class="code-loader-output"><span>✔</span> Preparing the reading experience</span>
+        <span class="code-loader-progress"><span></span></span>
+        <span class="code-loader-caption">COMPILING CURIOSITY<span class="code-loader-dots">...</span></span>
+      </div>
     </div>
   </div>
   <script defer src="/site-redesign.js?v=4"></script><script defer src="/site-polish.js?v=4"></script><script>if (/^\/blog\//.test(location.pathname)) {const s=document.createElement("script");s.src="/script.js?v=4";s.defer=true;document.body.appendChild(s);}</script>

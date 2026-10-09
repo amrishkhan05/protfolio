@@ -23,7 +23,32 @@ if(!grid)return;
 let articles=[],term='',tag='All',visible=6;
 const normalTags=a=>Array.isArray(a.tags)?a.tags.filter(Boolean):[];
 const date=a=>{const d=new Date(a.publishedAt);return Number.isNaN(+d)?'RECENT':d.toLocaleDateString('en-US',{month:'short',year:'numeric'}).toUpperCase();};
-function card(a,featured=false){const image=typeof a.coverImage==='string'&&/^https:\/\//.test(a.coverImage)?'<img loading="lazy" decoding="async" src="'+escape(a.coverImage)+'" alt="">':'';const href=typeof a.url==='string'&&/^\/blog\/[a-zA-Z0-9-]+\/?$/.test(a.url)?a.url:'/blog/'+encodeURIComponent(a.devSlug||'');return '<a class="journal-card" href="'+escape(href)+'"><div class="journal-art">'+(image||'<span class="journal-art-fallback" aria-hidden="true">a.k ↗</span>')+'</div><div class="journal-copy"><div class="journal-meta"><span>'+escape(date(a))+'</span><span>'+escape(a.readingTimeMinutes?a.readingTimeMinutes+' MIN READ':'ENGINEERING')+'</span></div><h3>'+escape(a.title||'Untitled article')+'</h3><p>'+escape(a.description||'Notes on building better systems.')+'</p><div class="journal-read">READ STORY ↗</div></div></a>';}
+const validImage = (value) => typeof value === 'string' && /^https:\/\//i.test(value);
+const journalCoverFallback = '<span class="journal-art-fallback" aria-hidden="true"><span class="cover-comment">/* FIELD NOTES */</span><span class="cover-glyph">{ ↗ }</span><span class="cover-signature">WHO SAW THE CONNECTION?</span></span>';
+function card(a,featured=false){
+  const image=validImage(a.coverImage)?'<img loading="'+(featured?'eager':'lazy')+'" decoding="async" src="'+escape(a.coverImage)+'" data-fallback-src="'+escape(validImage(a.coverImageFallback)?a.coverImageFallback:'')+'" alt="">':'';
+  const href=typeof a.url==='string'&&/^\/blog\/[a-zA-Z0-9-]+\/?$/.test(a.url)?a.url:'/blog/'+encodeURIComponent(a.devSlug||'');
+  return '<a class="journal-card" href="'+escape(href)+'"><div class="journal-art">'+journalCoverFallback+image+'</div><div class="journal-copy"><div class="journal-meta"><span>'+escape(date(a))+'</span><span>'+escape(a.readingTimeMinutes?a.readingTimeMinutes+' MIN READ':'ENGINEERING')+'</span></div><h3>'+escape(a.title||'Untitled article')+'</h3><p>'+escape(a.description||'Notes on building better systems.')+'</p><div class="journal-read">READ STORY ↗</div></div></a>';
+}
+document.addEventListener('error', event => {
+  const img=event.target;
+  if(!(img instanceof HTMLImageElement)||!img.closest('.journal-art'))return;
+  const alt=img.dataset.fallbackSrc;
+  if(alt&&!img.dataset.backupTried&&validImage(alt)){
+    img.dataset.backupTried='1';
+    img.src=alt;
+  }else{
+    img.remove(); // Reveal the reserved editorial fallback, never a broken icon.
+  }
+},true);
+document.addEventListener('click',event=>{
+  const link=event.target.closest?.('a.journal-card[href^="/blog/"]');
+  if(!link||event.defaultPrevented||event.button!==0||event.metaKey||event.ctrlKey||event.altKey||event.shiftKey)return;
+  event.preventDefault();
+  const overlay=q('#blog-loader-overlay');
+  if(overlay){overlay.hidden=false;document.documentElement.classList.add('is-opening-article');}
+  requestAnimationFrame(()=>setTimeout(()=>{location.assign(link.href);},90));
+},true);
 function filtered(){return articles.filter(a=>(tag==='All'||normalTags(a).some(t=>String(t).toLowerCase()===tag.toLowerCase()))&&(!term||(a.title+' '+a.description+' '+normalTags(a).join(' ')).toLowerCase().includes(term))).sort((a,b)=>(sort?.value==='oldest'?1:-1)*(new Date(a.publishedAt||0)-new Date(b.publishedAt||0)));}
 function render(){const list=filtered(),first=!term&&tag==='All'&&sort?.value!=='oldest'?list[0]:null;feature.innerHTML=first?card(first,true):'';const other=first?list.slice(1):list;grid.innerHTML=other.length?other.slice(0,visible).map(a=>card(a)).join(''):'<p class="journal-status">No matching stories. Try another topic or search.</p>';if(shown)shown.textContent=list.length?('Showing '+Math.min(visible+(first?1:0),list.length)+' of '+list.length+' stories'):'';if(more)more.hidden=other.length<=visible;if(counter)counter.textContent=articles.length+' stories from DEV.to';}
 function buildFilters(){const tags=[...new Set(articles.flatMap(normalTags).map(String).filter(Boolean))];const count=t=>articles.filter(a=>normalTags(a).some(s=>String(s).toLowerCase()===t.toLowerCase())).length;tags.sort((a,b)=>count(b)-count(a));const choices=['All',...tags.slice(0,8)];filters.innerHTML=choices.map(t=>'<button type="button" data-tag="'+escape(t)+'" aria-pressed="'+String(t===tag)+'">'+escape(t==='All'?'All stories':t)+'</button>').join('');}

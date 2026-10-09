@@ -1,0 +1,62 @@
+/* Article covers + navigation: editorial fallbacks, stable layout, terminal loader. */
+html.is-blog-route #home-content{display:none!important}
+html.is-blog-route #blog-detail[hidden]{display:block!important}
+html.is-blog-route .blog-detail-shell{min-height:calc(100svh - 100px)}
+html.is-blog-route .blog-detail-layout{align-items:start}
+html.is-blog-route #blog-detail .blog-article{min-width:0}
+html.is-blog-route .blog-detail-content[hidden]{display:none!important}
+html.is-blog-route.is-blog-ready #blog-loader-overlay{display:none!important}
+html.is-blog-route.is-blog-loading #blog-loader-overlay[hidden],
+html.is-opening-article #blog-loader-overlay[hidden]{display:grid!important}
+html.is-blog-route #blog-detail-status:not([hidden]){min-height:220px}
+.journal-art{position:relative;isolation:isolate;overflow:hidden;aspect-ratio:16/9;background:#202d32!important}
+.journal-feature .journal-art{aspect-ratio:16/9;min-height:260px}
+.journal-art .journal-art-fallback{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;gap:18px;padding:clamp(19px,3vw,38px);background:radial-gradient(circle at 88% 20%,#486759,#233436 45%,#152126 95%);color:#d5f478;font-family:'DM Mono',monospace;pointer-events:none;z-index:0}
+.journal-art .cover-comment{font-size:11px;letter-spacing:.14em;color:#afc6b3}
+.journal-art .cover-glyph{align-self:center;font:600 clamp(48px,7vw,102px)/1 'Space Grotesk',system-ui,sans-serif;letter-spacing:-.08em}
+.journal-art .cover-signature{font-size:10px;letter-spacing:.055em;color:#abc1b5}
+.journal-art img{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:cover;z-index:1}
+html.is-blog-route .blog-cover-frame{position:relative;isolation:isolate;width:100%;aspect-ratio:16/9;max-height:480px;margin:0 0 clamp(26px,3vw,42px);border:1px solid var(--line-soft);border-radius:13px;overflow:hidden;background:#1b2a2e}
+html.is-blog-route .blog-cover-fallback{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(20px,5%,54px);background:radial-gradient(circle at 80% 15%,#3a5347,#18272c 68%);color:#d5f478;font-family:'DM Mono',monospace}
+html.is-blog-route .blog-cover-code{font-size:clamp(17px,2vw,27px);color:#90b1a0}
+html.is-blog-route .blog-cover-design{align-self:center;font:650 clamp(27px,5vw,62px)/1.05 'Space Grotesk',system-ui,sans-serif;letter-spacing:-.06em;text-align:center}
+html.is-blog-route .blog-cover-design-dot{color:#f1b1a0}
+html.is-blog-route .blog-cover-end{font-size:clamp(8px,1vw,12px);letter-spacing:.08em;color:#b9d0ba}
+html.is-blog-route .blog-cover-frame .blog-cover{position:absolute;inset:0;width:100%;height:100%;max-height:none;margin:0;object-fit:cover;border:0;border-radius:0;z-index:1}
+html.is-blog-route .blog-cover[hidden]{display:none!important}
+html.is-blog-route .blog-body img{display:block;max-width:100%;height:auto;margin-inline:auto;object-fit:contain}
+html.is-blog-route .blog-media-unavailable{width:100%;min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:11px;border:1px dashed var(--line);border-radius:12px;background:var(--surface-low);color:var(--muted);margin:22px 0;padding:25px 16px;text-align:center}
+html.is-blog-route .blog-media-unavailable>span{font:600 clamp(15px,2.6vw,22px) 'DM Mono',monospace}
+html.is-blog-route .blog-media-unavailable small{font:400 13px 'DM Sans',system-ui,sans-serif}
+#blog-loader-overlay{position:fixed;inset:0;width:100%;height:100dvh;display:none;place-items:center;padding:clamp(16px,4vw,38px);z-index:500;background:rgba(17,28,31,.97);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);color:#e8f4e6}
+#blog-loader-overlay[hidden]{display:none!important}
+html.is-opening-article #blog-loader-overlay[hidden],html.is-blog-route.is-blog-loading #blog-loader-overlay[hidden]{display:grid!important}
+#blog-loader-overlay .code-loader{width:min(480px,100%);border:1px solid #557368;border-radius:14px;background:#111e21;box-shadow:0 32px 100px #0007;overflow:hidden;font-family:'DM Mono',monospace}
+#blog-loader-overlay .code-loader-top{display:flex;align-items:center;gap:13px;padding:16px 20px;border-bottom:1px solid #304a44;color:#b1c7be;font-size:11px}
+#blog-loader-overlay .code-loader-lights{display:flex;gap:6px}
+#blog-loader-overlay .code-loader-lights i{display:block;width:9px;height:9px;border-radius:50%;background:#e9a491}
+#blog-loader-overlay .code-loader-lights i:nth-child(2){background:#e9cc92}
+#blog-loader-overlay .code-loader-lights i:nth-child(3){background:#9fd4a6}
+#blog-loader-overlay .code-loader-mode{margin-left:auto;color:#d5f478}
+#blog-loader-overlay .code-loader-main{display:flex;flex-direction:column;gap:17px;padding:32px clamp(20px,4vw,36px) 28px}
+#blog-loader-overlay .code-loader-prompt{font-size:clamp(16px,3vw,22px);color:#f0f6e9;white-space:nowrap}
+#blog-loader-overlay .code-loader-prompt>span:first-child{color:#d5f478;padding-right:9px}
+#blog-loader-overlay .code-loader-cursor{color:#d5f478;animation:code-cursor .75s steps(2,end) infinite}
+#blog-loader-overlay .code-loader-output{font-size:12px;line-height:1.5;color:#b8cec0}
+#blog-loader-overlay .code-loader-output>span{color:#d5f478;margin-right:12px}
+#blog-loader-overlay .code-loader-progress{width:100%;height:5px;background:#2d443c;overflow:hidden;border-radius:20px;margin-top:10px}
+#blog-loader-overlay .code-loader-progress span{display:block;width:40%;height:100%;border-radius:20px;background:linear-gradient(90deg,#85b5a2,#d5f478);animation:code-scan 1.4s ease-in-out infinite alternate}
+#blog-loader-overlay .code-loader-caption{font-size:10px;letter-spacing:.13em;color:#9fb8aa}
+#blog-loader-overlay .code-loader-dots{color:#d5f478}
+@keyframes code-scan{from{transform:translateX(-110%)}to{transform:translateX(280%)}}
+@keyframes code-cursor{50%{opacity:0}}
+@media(max-width:760px){
+ .journal-art .journal-art-fallback{padding:20px}
+ .journal-art .cover-glyph{font-size:clamp(40px,15vw,66px)}
+ html.is-blog-route .blog-cover-frame{max-height:none}
+ #blog-loader-overlay .code-loader-main{gap:14px;padding:24px 20px}
+ #blog-loader-overlay .code-loader-prompt{font-size:16px}
+}
+@media(prefers-reduced-motion:reduce){
+ #blog-loader-overlay .code-loader-progress span,#blog-loader-overlay .code-loader-cursor{animation:none}
+}

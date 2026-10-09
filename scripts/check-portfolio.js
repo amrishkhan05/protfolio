@@ -16,6 +16,9 @@ const check = (name, valid) => { assert.ok(valid, name); process.stdout.write('P
 check('Legacy homepage CSS excluded to avoid grid and section collisions', !home.includes('href="/styles.css') && backend.includes('href="/styles.css?v=4"'));
 check('Full-bleed section layout no longer inherits legacy sizing', baseCss.includes('body{margin:0') && baseCss.includes('.experience-layout{display:grid;'));
 check('Experience heading is sticky only on desktop', baseCss.includes('.experience-heading{position:sticky') && baseCss.includes('.experience-heading{position:static'));
+check('Article cover fallback and loader are present', home.includes('blog-cover-fallback') && home.includes('code-loader-prompt') && home.includes('/article-experience.css'));
+check('Secondary article cover and first-paint SSR ready state', backend.includes('coverImageFallback:') && backend.includes('const readyHtml = indexHtml.replace'));
+check('Image failure handlers and no SSR rehydration flicker', homeScript.includes('data-fallback-src') && read('public/script.js').includes('recoverFailedArticleImage') && read('public/script.js').includes('if (hasServerRenderedArticle)'));
 check('Single homepage main landmark', count(home, /<main\s/gi) === 1);
 check('Single back-to-top control', count(home, /id="back-to-top"/g) === 1);
 check('Consistent theme control on homepage and Aruvix', home.includes('id="studio-theme-toggle"') && aruvix.includes('id="studio-theme-toggle"'));
