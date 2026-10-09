@@ -217,6 +217,7 @@ const contactAnchor=await page.evaluate(()=>{
     maxScroll:document.documentElement.scrollHeight-innerHeight,scrollY
   };
 });
+console.log('CONTACT ANCHOR GEOMETRY',JSON.stringify(contactAnchor));
 assert.ok(Math.abs(contactAnchor.contactTop-contactAnchor.navBottom)<=32,'contact starts directly below sticky desktop navigation');
 assert.ok(contactAnchor.writingBottom<=contactAnchor.navBottom+33,'writing cards cannot peek below sticky navigation at contact anchor');
 assert.ok(contactAnchor.writingPaddingBottom<=33,'no oversized blank writing-to-contact band');
