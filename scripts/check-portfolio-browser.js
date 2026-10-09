@@ -24,6 +24,31 @@ await page.locator('#journal-grid .journal-card').first().waitFor({timeout:20000
 assert.equal(await page.locator('#journal-feature .journal-loading-feature').count(),0,'featured loading placeholder is replaced after DEV.to response');
 assert.equal(await page.locator('#journal-grid .journal-loading-card').count(),0,'story placeholders are replaced as one render');
 
+assert.equal((await page.locator('#journal-total').innerText()).trim(),'9','archive prominently displays complete published article total');
+assert.equal((await page.locator('#journal-match-summary').innerText()).trim(),'9 stories to explore','archive exposes current result count beside the search');
+assert.equal(await page.locator('#journal-filters button[data-tag="All"] .journal-tag-count').innerText(),'9','All topic chip carries article count');
+const archiveGeo=await page.locator('.journal-discovery').evaluate(el=>{
+ const intro=el.querySelector('.journal-discovery-identity').getBoundingClientRect();
+ const controls=el.querySelector('.journal-discovery-controls').getBoundingClientRect();
+ return {introRight:intro.right,controlsLeft:controls.left,overflow:document.documentElement.scrollWidth-innerWidth,height:el.getBoundingClientRect().height};
+});
+assert.ok(Math.abs(archiveGeo.introRight-archiveGeo.controlsLeft)<3,'archive count rail and search controls share one desktop composition');
+assert.ok(archiveGeo.height<370,'editorial search panel is compact rather than another full-height section');
+await page.locator('.journal-discovery').screenshot({path:path.join(output,'journal-archive-desktop.png')});
+await page.locator('#journal-search').fill('manufacturing');
+assert.equal((await page.locator('#journal-match-summary').innerText()).trim(),'1 matching / 9 published','search updates live matching count');
+assert.equal((await page.locator('#journal-showing').innerText()).trim(),'Showing 1 of 1 stories','search matches existing story filters');
+await page.locator('#journal-search').clear();
+await page.locator('#journal-filters button[data-tag="javascript"]').click();
+assert.equal((await page.locator('#journal-match-summary').innerText()).trim(),'4 matching / 9 published','topic chips update live matching counts');
+assert.equal(await page.locator('#journal-filters button[data-tag="javascript"]').getAttribute('aria-pressed'),'true','active topic is exposed to assistive technology');
+await page.locator('#journal-filters button[data-tag="All"]').click();
+assert.equal((await page.locator('#journal-match-summary').innerText()).trim(),'9 stories to explore','clearing topic restores full count');
+await page.locator('#journal-order').selectOption('oldest');
+assert.equal((await page.locator('#journal-match-summary').innerText()).trim(),'9 stories to explore','sort does not change total article count');
+await page.locator('#journal-order').selectOption('newest');
+
+
 const contextBar=page.locator('#writing-context');
 assert.equal(await contextBar.isVisible(),false,'writing contextual bar stays hidden before entering Writing');
 await page.evaluate(()=>{
@@ -610,6 +635,21 @@ assert.equal(await page.locator('#work .oss-package-index-type:visible').count()
 assert.ok(mobileOss.height<=540,'open source panel stays concise on mobile');
 assert.ok(mobileOss.width<=390,'open source does not overflow mobile viewport');
 await page.locator('#work .project-oss').screenshot({path:path.join(output,'open-source-compact-mobile.png')});
+const archiveMobile=await page.locator('.journal-discovery').evaluate(el=>{
+ const panel=el.getBoundingClientRect();
+ const rail=el.querySelector('.journal-discovery-identity').getBoundingClientRect();
+ const controls=el.querySelector('.journal-discovery-controls').getBoundingClientRect();
+ const search=el.querySelector('#journal-search').getBoundingClientRect();
+ const sort=el.querySelector('#journal-order').getBoundingClientRect();
+ return {width:panel.width,viewport:innerWidth,railBottom:rail.bottom,controlsTop:controls.top,
+         searchBottom:search.bottom,sortTop:sort.top,documentWidth:document.documentElement.scrollWidth};
+});
+assert.ok(archiveMobile.width<=archiveMobile.viewport+2&&archiveMobile.documentWidth<=archiveMobile.viewport+2,'article archive has no mobile horizontal overflow');
+assert.ok(archiveMobile.controlsTop>=archiveMobile.railBottom-1,'mobile search controls stack below story count');
+assert.ok(archiveMobile.sortTop>=archiveMobile.searchBottom-2,'mobile sort sits below search without overlap');
+assert.equal((await page.locator('#journal-total').innerText()).trim(),'9','mobile archive shows story count');
+await page.locator('.journal-discovery').screenshot({path:path.join(output,'journal-archive-mobile.png')});
+
 const mobileRhythm=await checkVerticalRhythm(390,844);
 assert.ok(mobileRhythm.sections.every(s=>s.paddingTop<=60),'mobile sections do not have desktop-sized gaps');
 assert.equal(await page.locator('#work .oss-package').count(),3,'all published packages remain available on mobile');
