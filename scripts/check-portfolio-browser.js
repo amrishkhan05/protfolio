@@ -54,6 +54,8 @@ assert.equal(sectionGeometry.introColumns,2,'intro uses editorial two-column gri
 assert.equal(sectionGeometry.experiencePosition,'sticky','experience heading stays pinned on desktop');
 assert.notEqual(sectionGeometry.timelineOverflow,'scroll','timeline uses natural page scrolling');
 assert.equal(sectionGeometry.workColumns,2,'work cards use two-column layout');
+assert.equal(await page.locator('.project-aruvix').evaluate(el=>getComputedStyle(el).backgroundColor),'rgb(213, 244, 120)','flagship matches lime prototype treatment');
+assert.equal(await page.locator('.project-aruvix h3').evaluate(el=>getComputedStyle(el).color),'rgb(17, 22, 29)','flagship heading contrasts against lime');
 assert.equal(sectionGeometry.contactDisplay,'block','contact is full-width rather than legacy grid');
 assert.ok(sectionGeometry.contactWidth >= sectionGeometry.viewportWidth - 2,'contact band is edge to edge');
 await page.evaluate(() => {

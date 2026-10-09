@@ -103,7 +103,7 @@ html.is-blog-route .blog-loader-overlay[hidden]{display:none!important}
 .hero .hero-copy h1 em{color:#d5f478}
 .redesign-main .intro-section .display-heading,.redesign-main .work-section .display-heading,.redesign-main .experience-section .display-heading,.redesign-main .thinking-section .display-heading{color:#11161d!important}
 .redesign-main .intro-section h3,.redesign-main .work-section h3,.redesign-main .experience-section h3,.redesign-main .thinking-section h3{color:#182520}
-.redesign-main .project-aruvix h3,.redesign-main .journal-feature h3{color:#f7f8ee!important}
+.redesign-main .project-aruvix h3{color:#11161d!important}.redesign-main .journal-feature h3{color:#f7f8ee!important}
 .redesign-main .contact-section h2,.redesign-main .contact-section h3{color:#11161d!important}
 [data-theme="dark"] .redesign-main .intro-section .display-heading,[data-theme="dark"] .redesign-main .work-section .display-heading,[data-theme="dark"] .redesign-main .experience-section .display-heading,[data-theme="dark"] .redesign-main .thinking-section .display-heading{color:#f4f6ec!important}
 [data-theme="dark"] .redesign-main .intro-section h3,[data-theme="dark"] .redesign-main .experience-section h3,[data-theme="dark"] .redesign-main .work-section h3,[data-theme="dark"] .redesign-main .thinking-section h3{color:#f4f6ec}
