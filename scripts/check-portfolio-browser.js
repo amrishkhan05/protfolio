@@ -361,6 +361,9 @@ await page.setViewportSize({width:1536,height:960});
 await page.goto(base+'/',{waitUntil:'domcontentloaded'});
 await page.locator('#journal-grid .journal-card').first().waitFor({timeout:20000});
 await page.evaluate(()=>document.getElementById('contact').scrollIntoView({behavior:'instant',block:'start'}));
+// Wait for the header-collapse transition and lazy journal layout to settle.
+await page.waitForTimeout(550);
+await page.evaluate(()=>document.getElementById('contact').scrollIntoView({behavior:'instant',block:'start'}));
 await page.waitForTimeout(120);
 const contactAnchor=await page.evaluate(()=>{
   const nav=document.querySelector('.site-header').getBoundingClientRect();
