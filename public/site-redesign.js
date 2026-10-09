@@ -10,7 +10,7 @@ toggle?.addEventListener('click',()=>{const open=toggle.getAttribute('aria-expan
 qa('#primary-nav a').forEach(a=>a.addEventListener('click',()=>{nav?.classList.remove('open');toggle?.setAttribute('aria-expanded','false');}));
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){nav?.classList.remove('open');toggle?.setAttribute('aria-expanded','false');}});
 // Context navigation is a reading shortcut, not a second permanent header.
-const writing=q('#writing'),writingHeader=writing?.querySelector('.section-top'),writingContext=q('#writing-context'),contextSearch=q('#writing-context-search'),contextCount=q('#writing-context-count');
+const writing=q('#writing'),writingHeader=writing?.querySelector('.journal-toolbar'),writingContext=q('#writing-context'),contextSearch=q('#writing-context-search'),contextCount=q('#writing-context-count');
 const desktopWriting=matchMedia('(min-width:1051px)');
 function updateWritingContext(){
   if(!writingContext||!writingHeader||!writing)return;

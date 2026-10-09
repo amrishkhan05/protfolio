@@ -26,7 +26,7 @@ const contextBar=page.locator('#writing-context');
 assert.equal(await contextBar.isVisible(),false,'writing contextual bar stays hidden before entering Writing');
 await page.evaluate(()=>{
  const writing=document.getElementById('writing');
- const barHeading=writing.querySelector('.section-top');
+ const barHeading=writing.querySelector('.journal-toolbar');
  const header=document.querySelector('.site-header');
  scrollTo({top:scrollY+barHeading.getBoundingClientRect().bottom+40,behavior:'instant'});
 });
@@ -37,6 +37,12 @@ assert.ok(contextGeo.height>=40&&contextGeo.height<=52,'context bar is a compact
 console.log('WRITING CONTEXT GEOMETRY',JSON.stringify(contextGeo));
 assert.ok(Math.abs(contextGeo.top-contextGeo.headerBottom)<4,'context bar sits beneath fixed navigation, without overlap');
 assert.equal((await page.locator('#writing-context-count').innerText()).trim(),'9 stories','contextual count follows API response');
+const contextLightColor=await contextBar.evaluate(el=>getComputedStyle(el).color);
+await page.evaluate(()=>document.documentElement.dataset.theme='dark');
+const contextDarkColor=await contextBar.evaluate(el=>getComputedStyle(el).color);
+assert.notEqual(contextDarkColor,contextLightColor,'context strip follows the portfolio dark theme');
+await page.evaluate(()=>document.documentElement.dataset.theme='light');
+
 await contextBar.locator('#writing-context-search').click();
 await page.waitForTimeout(750);
 assert.equal(await page.locator('#journal-search').evaluate(el=>document.activeElement===el),true,'Find a story focuses the real article search');
