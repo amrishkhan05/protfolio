@@ -659,6 +659,7 @@ assert.equal(await page.locator('#blog-loader-overlay').isVisible(),false,'termi
 assert.ok(await page.locator('#blog-detail-title').isVisible(),'article title and body are visible together after loading');
 assert.equal(await page.evaluate(()=>document.documentElement.classList.contains('is-blog-ready')),true,'slow API route reveals only after complete');
 assert.ok(await page.locator('#blog-detail-content').isVisible(),'article body is visible on the ready frame');
+await page.locator('#blog-related .blog-related-card').first().waitFor({state:'visible',timeout:8000});
 assert.equal(await page.locator('#blog-related .blog-related-card').count(),4,'four editorial related stories appear after the loader');
 assert.ok(await page.locator('#blog-related .related-card-index').first().isVisible(),'related cards include editorial index');
 const relatedLayout=await page.locator('#blog-related .blog-related-grid').evaluate(el=>({
