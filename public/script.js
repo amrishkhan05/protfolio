@@ -486,7 +486,7 @@ const renderBlogPage = () => {
   }
   if (blogPagination && journalLoadMore) {
     blogPagination.hidden = listing.length <= journalVisibleCount;
-    journalLoadMore.textContent = `Show more stories (${listing.length - journalVisibleCount} remaining) ↓`;
+    journalLoadMore.innerHTML = `Show more stories (${listing.length - journalVisibleCount} remaining) <svg class="ui-arrow-svg" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v16m-6-6 6 6 6-6"/></svg>`;
   }
   for (const button of journalFilters?.querySelectorAll("[data-journal-tag]") || []) {
     const selected = button.dataset.journalTag === journalActiveTag;
@@ -912,7 +912,7 @@ const renderRelatedArticles = async (currentArticle) => {
       .map((blog, index) => `<a class="blog-related-card" href="${escapeHtml(blog.url)}">
           <span class="related-card-meta"><span class="related-card-index">${String(index + 1).padStart(2, "0")} / FIELD NOTE</span><time datetime="${escapeHtml(blog.publishedAt || "")}">${escapeHtml(formatPublishedDate(blog.publishedAt).replace("Published: ", ""))}</time></span>
           <strong>${escapeHtml(blog.title)}</strong>
-          <span class="related-card-tail">READ STORY <span aria-hidden="true">↗</span></span>
+          <span class="related-card-tail">READ STORY <span aria-hidden="true"><svg class="ui-arrow-svg" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19 19 5M9 5h10v10"/></svg></span></span>
         </a>`)
       .join("");
     blogRelated.querySelector(".blog-related-editorial")?.removeAttribute("hidden");
@@ -964,7 +964,7 @@ const renderRelatedTools = (article) => {
     .map((tool) => `<a class="blog-tool-link" href="${escapeHtml(tool.href)}" target="_blank" rel="noopener noreferrer">
         <span class="blog-tool-glyph" aria-hidden="true">${escapeHtml(tool.glyph)}</span>
         <span class="blog-tool-content"><strong>${escapeHtml(tool.name)}</strong><small>${escapeHtml(tool.summary)}</small></span>
-        <span class="blog-tool-arrow" aria-hidden="true">↗</span>
+        <span class="blog-tool-arrow" aria-hidden="true"><svg class="ui-arrow-svg" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19 19 5M9 5h10v10"/></svg></span>
       </a>`)
     .join("");
   blogToolsPanel.hidden = false;

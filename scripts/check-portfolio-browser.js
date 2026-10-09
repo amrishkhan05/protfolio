@@ -168,6 +168,16 @@ await assertHoverContrast('.site-header .header-cta','Header contact button');
 await assertHoverContrast('#work .filter-tab.active','Selected Work active filter');
 
 assert.ok(await page.locator('.hero h1').isVisible(),'hero heading shown');
+assert.equal(await page.locator('.site-header .studio-resume-link .resume-download-symbol svg.ui-arrow-svg').count(),1,'resume download uses a true SVG arrow');
+assert.equal(await page.locator('.site-header .header-cta .ui-arrow-svg').count(),1,'header CTA arrow cannot turn into an iOS emoji');
+assert.equal(await page.locator('#contact .contact-mail svg.ui-arrow-svg').count(),1,'contact email arrow uses SVG instead of a Unicode emoji');
+const contactArrow=await page.locator('#contact .contact-mail svg.ui-arrow-svg').evaluate(el=>{
+ const rect=el.getBoundingClientRect(),style=getComputedStyle(el);
+ return {width:rect.width,height:rect.height,color:style.color,stroke:el.getAttribute('stroke')};
+});
+assert.ok(contactArrow.width>=14&&contactArrow.height>=14&&contactArrow.stroke==='currentColor','email arrow is visible at mobile-safe size and follows text color');
+assert.equal(await page.locator('link[href="/ui-arrows.css?v=1"]').count(),1,'shared cross-platform SVG arrow styles loaded');
+
 const identity=page.locator('.site-header');
 assert.equal(await identity.locator('.brand-mark svg').count(),1,'custom vector AK monogram displayed');
 assert.ok(await identity.locator('.brand-name').isVisible(),'new editorial wordmark is visible');
@@ -581,6 +591,9 @@ assert.equal(await page.locator('.site-header .brand-mark svg').count(),1,'Aruvi
 assert.ok(await page.locator('.site-header .brand-name').isVisible(),'Aruvix uses the same brand wordmark');
 
 assert.equal(await page.locator('.aru-hero h1').count(),1,'one clear Aruvix case study headline');
+assert.equal(await page.locator('.aru-hero .aru-button svg.ui-arrow-svg').count(),1,'Aruvix CTA uses SVG arrow on all platforms');
+assert.equal(await page.locator('body.is-aruvix-view .back-to-top svg.ui-arrow-svg').count(),1,'Aruvix back-to-top uses SVG arrow');
+
 assert.ok((await page.locator('.aru-hero-note').innerText()).includes('750+ users'),'Aruvix case study reflects updated usage');
 assert.equal(await page.locator('.aru-tool').count(),6,'current six tool families documented');
 assert.equal(await page.locator('link[href^="/styles.css"]').count(),0,'new Aruvix page does not load legacy stylesheet');

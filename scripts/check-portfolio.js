@@ -36,16 +36,23 @@ check('Aruvix current products, privacy boundaries and desktop scope documented'
 check('No theme-toggle controls remain on homepage or Aruvix', !home.includes('studio-theme-toggle') && !aruvix.includes('studio-theme-toggle'));
 check('Shared stylesheet on all page types', home.includes('/site-polish.css') && aruvix.includes('/site-polish.css'));
 check('No persisted theme overrides the editorial palette', !common.includes('portfolio-theme') && !home.includes('portfolio-theme') && !aruvix.includes('portfolio-theme') && !read('public/script.js').includes('portfolio-theme'));
-check('Article reader uses refreshed theme-free script', home.includes('/script.js?v=6'));
+check('Article reader uses refreshed theme-free script', home.includes('/script.js?v=7'));
 check('Resume PDF path exists', fs.existsSync(path.join(root, 'public/resume/pdf/Amrishkhan-Sheik-Abdullah-Resume.pdf')));
+check('iOS-safe SVG arrow icons replace Unicode arrow glyphs in navigation and articles',
+  ['public/index.html','public/aruvix.html','public/site-redesign.js','public/script.js'].every(file=>!/[↗↘↧↑↓←]/.test(read(file)))
+  && home.includes('href="/ui-arrows.css?v=1"')
+  && aruvix.includes('href="/ui-arrows.css?v=1"')
+  && count(home,/class="ui-arrow-svg"/g)>25
+  && read('public/ui-arrows.css').includes('color:inherit')
+  && !polish.includes('content:"CV ↧"'));
 check('Only PDF resume is offered', !home.includes('resume/doc/') && !aruvix.includes('resume/doc/'));
 check('PDF resume links remain in the UI', home.includes('/resume/pdf/Amrishkhan-Sheik-Abdullah-Resume.pdf') && aruvix.includes('/resume/pdf/Amrishkhan-Sheik-Abdullah-Resume.pdf'));
 check('No resume generation workflow remains', !fs.existsSync(path.join(root,'.github/workflows/build-resume.yml')) && !fs.existsSync(path.join(root,'scripts/build-resume.py')));
 check('Selected Work ticket artwork and original Aruvix branding', home.includes('class="boarding-pass"') && !home.includes('class="project-star"') && polish.includes('SELECTED WORK · Restore prototype visual fidelity') && polish.includes('#work .bar-code'));
-check('Compact open-source package panel without oversized illustration', home.includes('oss-compact-body') && !/<div class="oss-visual"/.test(home) && polish.includes('OSS COMPACT PANEL') && home.includes('site-polish.css?v=11'));
+check('Compact open-source package panel without oversized illustration', home.includes('oss-compact-body') && !/<div class="oss-visual"/.test(home) && polish.includes('OSS COMPACT PANEL') && home.includes('site-polish.css?v=12'));
 check('Three published npm packages linked inside selected work', ['%40amrishkhan05/frankly','%40amrishkhan05/hallpass','sql-select-query-generator'].every(name=>home.includes('https://www.npmjs.com/package/'+name)) && (home.match(/class="oss-package"/g)||[]).length===3);
 check('Viewport-aware section spacing instead of fixed 110px bands', polish.includes('2026 viewport rhythm pass') && polish.includes('--section-y:clamp(42px,6vh,80px)') && polish.includes('#home-content>.section{padding-top:var(--section-y)'));
-check('Contact finishes flush to viewport beneath sticky header', polish.includes('CONTACT FINISH / HASH ANCHOR') && polish.includes('min-height:calc(100svh - 68px)') && home.includes('site-polish.css?v=11'));
+check('Contact finishes flush to viewport beneath sticky header', polish.includes('CONTACT FINISH / HASH ANCHOR') && polish.includes('min-height:calc(100svh - 68px)') && home.includes('site-polish.css?v=12'));
 check('Writing contextual navigation is accessible and desktop-only', home.includes('id="writing-context"') && home.includes('aria-label="Writing quick navigation"') && home.includes('id="writing-context-search"') && homeScript.includes('function updateWritingContext') && homeScript.includes('field.focus({preventScroll:true})') && read('public/writing-context.css').includes('@media(max-width:1050px)'));
 check('Writing keeps live counts and understated custom topic and sort controls', home.includes('id="journal-total"') && home.includes('id="journal-match-summary"') && home.includes('journal-discovery.css?v=4') && home.includes('id="journal-topic-trigger"') && home.indexOf('id="journal-topic-trigger"') < home.indexOf('id="journal-order"') && home.includes('id="journal-filters" class="journal-topic-menu" role="listbox"') && !home.includes('class="journal-filters"') && homeScript.includes('function chooseSort(value)') && homeScript.includes('function chooseTopic(value)') && !home.includes('<select id="journal-order"'));
 check('Homepage section navigation and writing feed', home.includes('id="writing"') && home.includes('id="work"') && homeScript.includes('/api/blogs'));
@@ -54,8 +61,8 @@ check('Article sidebar and related editorial cards', home.includes('class="blog-
 check('Only destination article owns the terminal loader', !homeScript.includes("document.documentElement.classList.add('is-opening-article')") && !homeScript.includes('location.assign(link.href)') && read('public/article-experience.css').includes('SINGLE ARTICLE LOADER / stable geometry'));
 check('Article reader does not expose uninitialized sidebars', read('public/article-experience.css').includes('ATOMIC ARTICLE REVEAL') && read('public/article-experience.css').includes('#blog-toc[hidden]') && read('public/script.js').includes('prepareArticleFirstPaint') && read('app.js').includes('const readyHtml = indexHtml'));
 check('Blog article reader and canonical metadata', home.includes('id="blog-detail"') && home.includes('rel="canonical"'));
-check('SEO: Aruvix navigation links use destination-specific text', home.includes('>Aruvix case study <span aria-hidden="true">↗</span>') && !home.includes('class="project-action">Learn more'));
-check('Aruvix product has distinct internal case-study and external launch actions', home.includes('href="/aruvix" class="project-action">Aruvix case study') && home.includes('class="aruvix-visit-link"') && aruvix.includes('href="/#work">← Back to selected work') && polish.includes('#home-content #work .aruvix-action-row'));
+check('SEO: Aruvix navigation links use destination-specific text', home.includes('>Aruvix case study <span aria-hidden="true"><svg class="ui-arrow-svg"') && !home.includes('class="project-action">Learn more'));
+check('Aruvix product has distinct internal case-study and external launch actions', home.includes('href="/aruvix" class="project-action">Aruvix case study') && home.includes('class="aruvix-visit-link"') && aruvix.includes('href="/#work"><svg class="ui-arrow-svg"') && polish.includes('#home-content #work .aruvix-action-row'));
 check('Blog and Aruvix Express routes preserved', backend.includes('app.get("/blog/:slug"') && backend.includes('app.get("/aruvix"'));
 check('DEV.to article payload sanitized', backend.includes('bodyHtml: sanitizeDevArticleHtml(article.bodyHtml)'));
 check('Article first-paint routing and fixed light palette', home.includes('classList.add("is-blog-route", "is-blog-loading")') && polish.includes('html.is-blog-route #blog-detail[hidden]'));
