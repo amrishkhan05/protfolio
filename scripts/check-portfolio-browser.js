@@ -24,30 +24,37 @@ await page.locator('#journal-grid .journal-card').first().waitFor({timeout:20000
 assert.equal(await page.locator('#journal-feature .journal-loading-feature').count(),0,'featured loading placeholder is replaced after DEV.to response');
 assert.equal(await page.locator('#journal-grid .journal-loading-card').count(),0,'story placeholders are replaced as one render');
 
-assert.equal((await page.locator('#journal-total').innerText()).trim(),'9','archive prominently displays complete published article total');
-assert.equal((await page.locator('#journal-match-summary').innerText()).trim(),'9 stories to explore','archive exposes current result count beside the search');
-assert.equal(await page.locator('#journal-filters button[data-tag="All"] .journal-tag-count').innerText(),'9','All topic chip carries article count');
-const archiveGeo=await page.locator('.journal-discovery').evaluate(el=>{
- const intro=el.querySelector('.journal-discovery-identity').getBoundingClientRect();
- const controls=el.querySelector('.journal-discovery-controls').getBoundingClientRect();
- return {introRight:intro.right,controlsLeft:controls.left,overflow:document.documentElement.scrollWidth-innerWidth,height:el.getBoundingClientRect().height};
-});
-assert.ok(Math.abs(archiveGeo.introRight-archiveGeo.controlsLeft)<3,'archive count rail and search controls share one desktop composition');
-assert.ok(archiveGeo.height<370,'editorial search panel is compact rather than another full-height section');
+assert.equal((await page.locator('#journal-total').innerText()).trim(),'9','visible article count');
+assert.equal((await page.locator('#journal-match-summary').innerText()).trim(),'All stories','default article status');
+const archiveGeo=await page.locator('.journal-discovery').evaluate(el=>{const a=el.querySelector('#journal-search').getBoundingClientRect(),b=el.querySelector('#journal-order').getBoundingClientRect();return {searchRight:a.right,sortLeft:b.left,height:el.getBoundingClientRect().height};});
+assert.ok(archiveGeo.sortLeft>=archiveGeo.searchRight-1,'desktop sort follows search on same row');
+assert.ok(archiveGeo.height<260,'archive stays light and compact');
 await page.locator('.journal-discovery').screenshot({path:path.join(output,'journal-archive-desktop.png')});
 await page.locator('#journal-search').fill('manufacturing');
-assert.equal((await page.locator('#journal-match-summary').innerText()).trim(),'1 matching / 9 published','search updates live matching count');
-assert.equal((await page.locator('#journal-showing').innerText()).trim(),'Showing 1 of 1 stories','search matches existing story filters');
+assert.equal((await page.locator('#journal-match-summary').innerText()).trim(),'1 of 9 matching','live search results');
 await page.locator('#journal-search').clear();
 await page.locator('#journal-filters button[data-tag="javascript"]').click();
-assert.equal((await page.locator('#journal-match-summary').innerText()).trim(),'4 matching / 9 published','topic chips update live matching counts');
-assert.equal(await page.locator('#journal-filters button[data-tag="javascript"]').getAttribute('aria-pressed'),'true','active topic is exposed to assistive technology');
+assert.equal((await page.locator('#journal-match-summary').innerText()).trim(),'4 of 9 matching','live filtered count');
 await page.locator('#journal-filters button[data-tag="All"]').click();
-assert.equal((await page.locator('#journal-match-summary').innerText()).trim(),'9 stories to explore','clearing topic restores full count');
-await page.locator('#journal-order').selectOption('oldest');
-assert.equal((await page.locator('#journal-match-summary').innerText()).trim(),'9 stories to explore','sort does not change total article count');
-await page.locator('#journal-order').selectOption('newest');
-
+assert.equal((await page.locator('#journal-match-summary').innerText()).trim(),'All stories','clear filter');
+const sortTrigger=page.locator('#journal-order'),sortMenu=page.locator('#journal-sort-options');
+assert.equal(await sortTrigger.evaluate(el=>el.tagName),'BUTTON','custom sort replaces system select');
+assert.equal(await sortMenu.isVisible(),false,'sort popup initially closed');
+await sortTrigger.click();
+assert.equal(await sortMenu.isVisible(),true,'custom sort popup opens');
+await sortMenu.locator('[data-sort="oldest"]').click();
+assert.equal((await page.locator('#journal-order-text').innerText()).trim(),'Oldest first','custom option chosen');
+assert.equal(await sortMenu.isVisible(),false,'selection closes menu');
+await sortTrigger.focus();
+await page.keyboard.press('ArrowDown');
+assert.equal(await sortMenu.isVisible(),true,'arrow opens accessible popup');
+await page.keyboard.press('Home');
+assert.equal(await sortMenu.locator(':focus').getAttribute('data-sort'),'newest','Home focuses first sort option');
+await page.keyboard.press('Enter');
+assert.equal((await page.locator('#journal-order-text').innerText()).trim(),'Newest first','Enter selects option');
+await sortTrigger.click();
+await page.keyboard.press('Escape');
+assert.equal(await sortMenu.isVisible(),false,'Escape closes custom sort');
 
 const contextBar=page.locator('#writing-context');
 await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
@@ -637,19 +644,14 @@ assert.equal(await page.locator('#work .oss-package-index-type:visible').count()
 assert.ok(mobileOss.height<=540,'open source panel stays concise on mobile');
 assert.ok(mobileOss.width<=390,'open source does not overflow mobile viewport');
 await page.locator('#work .project-oss').screenshot({path:path.join(output,'open-source-compact-mobile.png')});
-const archiveMobile=await page.locator('.journal-discovery').evaluate(el=>{
- const panel=el.getBoundingClientRect();
- const rail=el.querySelector('.journal-discovery-identity').getBoundingClientRect();
- const controls=el.querySelector('.journal-discovery-controls').getBoundingClientRect();
- const search=el.querySelector('#journal-search').getBoundingClientRect();
- const sort=el.querySelector('#journal-order').getBoundingClientRect();
- return {width:panel.width,viewport:innerWidth,railBottom:rail.bottom,controlsTop:controls.top,
-         searchBottom:search.bottom,sortTop:sort.top,documentWidth:document.documentElement.scrollWidth};
-});
-assert.ok(archiveMobile.width<=archiveMobile.viewport+2&&archiveMobile.documentWidth<=archiveMobile.viewport+2,'article archive has no mobile horizontal overflow');
-assert.ok(archiveMobile.controlsTop>=archiveMobile.railBottom-1,'mobile search controls stack below story count');
-assert.ok(archiveMobile.sortTop>=archiveMobile.searchBottom-2,'mobile sort sits below search without overlap');
-assert.equal((await page.locator('#journal-total').innerText()).trim(),'9','mobile archive shows story count');
+const archiveMobile=await page.locator('.journal-discovery').evaluate(el=>{const a=el.querySelector('#journal-search').getBoundingClientRect(),b=el.querySelector('#journal-order').getBoundingClientRect();return {width:el.getBoundingClientRect().width,viewport:innerWidth,searchBottom:a.bottom,sortTop:b.top,documentWidth:document.documentElement.scrollWidth};});
+assert.ok(archiveMobile.width<=archiveMobile.viewport+2&&archiveMobile.documentWidth<=archiveMobile.viewport+2,'no mobile overflow');
+assert.ok(archiveMobile.sortTop>=archiveMobile.searchBottom-2,'mobile sort stacks beneath search');
+assert.equal((await page.locator('#journal-total').innerText()).trim(),'9','count visible on mobile');
+await page.locator('#journal-order').click();
+assert.equal(await page.locator('#journal-sort-options').isVisible(),true,'mobile custom popup opens');
+await page.locator('#journal-sort-options [data-sort="oldest"]').click();
+assert.equal((await page.locator('#journal-order-text').innerText()).trim(),'Oldest first','mobile sort selection works');
 await page.locator('.journal-discovery').screenshot({path:path.join(output,'journal-archive-mobile.png')});
 
 const mobileRhythm=await checkVerticalRhythm(390,844);

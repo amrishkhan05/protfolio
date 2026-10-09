@@ -86,7 +86,7 @@
   <link rel="stylesheet" href="/hero-switchboard.css?v=1" />
   <link rel="stylesheet" href="/experience-refined.css?v=3" />
   <link rel="stylesheet" href="/identity-nav.css?v=2" />
-  <link rel="stylesheet" href="/journal-discovery.css?v=1" />
+  <link rel="stylesheet" href="/journal-discovery.css?v=2" />
 </head>
 
 <body>
@@ -375,31 +375,26 @@
 <div class="thinking-intro"><div><span class="thinking-label">WHO SAW THE CONNECTION? / ENGINEERING JOURNAL</span><h2 class="display-heading" id="writing-title">Curiosity is<br>a <span class="serif-italic">feature.</span></h2></div><p>Good engineering ideas show up in unexpected places — on factory floors, at pit stops, and sometimes in a failed deploy.</p></div>
 <div class="journal-toolbar"><div><span class="journal-kicker">PUBLISHED STORIES</span><p id="journal-count" aria-live="polite">Connecting to DEV.to...</p></div><a href="https://dev.to/amrishkhan05" rel="noopener noreferrer" target="_blank">EXPLORE ON DEV.TO ↗</a></div>
 <div id="journal-feature" class="journal-feature" aria-live="polite"><div class="journal-card journal-loading-feature" aria-hidden="true"><div class="journal-loading-art"></div><div class="journal-loading-copy"><span></span><span></span><span></span><span></span></div></div></div>
-<div class="journal-discovery" aria-label="Discover articles">
-  <div class="journal-discovery-identity">
-    <div class="journal-discovery-overline"><span class="journal-discovery-indicator" aria-hidden="true"></span> FIELD NOTES / INDEX</div>
-    <div class="journal-discovery-stat"><strong id="journal-total">—</strong><span>PUBLISHED<br>STORIES</span></div>
-    <p>Ideas from the edges of engineering.</p>
-    <span class="journal-discovery-source">SYNCED FROM DEV.TO <span aria-hidden="true">↗</span></span>
+<div class="journal-discovery" aria-label="Browse articles">
+ <div class="journal-discovery-heading">
+  <div class="journal-discovery-title"><h3>Browse articles</h3><span class="journal-discovery-count"><strong id="journal-total">—</strong> stories</span></div>
+  <p id="journal-match-summary" class="journal-match-summary" role="status" aria-live="polite">Loading stories…</p>
+ </div>
+ <div class="journal-actions">
+  <label class="journal-search-box" for="journal-search">
+   <svg viewBox="0 0 24 24" width="19" height="19" fill="none" aria-hidden="true" focusable="false"><circle cx="10.8" cy="10.8" r="6.6" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 4.5 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+   <input id="journal-search" type="search" placeholder="Search stories or topics…" aria-label="Search articles and topics" autocomplete="off">
+  </label>
+  <div class="journal-sort-field">
+   <span class="sr-only" id="journal-sort-label">Sort articles by</span>
+   <button type="button" class="journal-sort-trigger" id="journal-order" aria-haspopup="listbox" aria-expanded="false" aria-controls="journal-sort-options" aria-labelledby="journal-sort-label journal-order-text"><span id="journal-order-text">Newest first</span><svg viewBox="0 0 24 24" width="15" height="15" fill="none" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+   <div id="journal-sort-options" class="journal-sort-menu" role="listbox" aria-labelledby="journal-sort-label" hidden>
+    <button type="button" role="option" data-sort="newest" aria-selected="true" tabindex="-1"><span>Newest first</span><span aria-hidden="true">✓</span></button>
+    <button type="button" role="option" data-sort="oldest" aria-selected="false" tabindex="-1"><span>Oldest first</span><span aria-hidden="true">✓</span></button>
+   </div>
   </div>
-  <div class="journal-discovery-controls">
-    <div class="journal-discovery-heading">
-      <div><span class="journal-discovery-kicker">EXPLORE THE ARCHIVE / 01</span><h3>Find your next read<span>.</span></h3></div>
-      <p id="journal-match-summary" class="journal-match-summary" role="status" aria-live="polite">Loading stories…</p>
-    </div>
-    <div class="journal-actions">
-      <label class="journal-search-box" for="journal-search">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true" focusable="false"><circle cx="10.8" cy="10.8" r="6.6" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 4.5 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-        <input id="journal-search" type="search" placeholder="Search stories, ideas, technologies…" aria-label="Search articles and topics" autocomplete="off">
-      </label>
-      <div class="journal-sort-field">
-        <label for="journal-order">SORT BY</label>
-        <select id="journal-order" aria-label="Sort articles"><option value="newest">Newest first</option><option value="oldest">Oldest first</option></select>
-        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </div>
-    </div>
-    <div class="journal-topic-row"><span class="journal-topic-label">TOPICS <span aria-hidden="true">↗</span></span><div id="journal-filters" class="journal-filters" role="group" aria-label="Filter article topics"></div></div>
-  </div>
+ </div>
+ <div class="journal-topic-row"><span class="journal-topic-label">Topics</span><div id="journal-filters" class="journal-filters" role="group" aria-label="Filter article topics"></div></div>
 </div>
 <div id="journal-grid" class="journal-grid" aria-live="polite"><div class="journal-loading-card" aria-hidden="true"><div class="journal-loading-image"></div><div class="journal-loading-lines"><i></i><i></i><i></i></div></div><div class="journal-loading-card" aria-hidden="true"><div class="journal-loading-image"></div><div class="journal-loading-lines"><i></i><i></i><i></i></div></div><div class="journal-loading-card" aria-hidden="true"><div class="journal-loading-image"></div><div class="journal-loading-lines"><i></i><i></i><i></i></div></div></div>
 <div class="journal-footer"><p id="journal-showing"></p><button id="journal-more" type="button" hidden>SHOW MORE STORIES ↓</button></div>
@@ -503,7 +498,7 @@
       </div>
     </div>
   </div>
-  <script defer src="/site-redesign.js?v=9"></script><script defer src="/site-polish.js?v=6"></script><script>if (/^\/blog\//.test(location.pathname)) {const s=document.createElement("script");s.src="/script.js?v=6";s.defer=true;document.body.appendChild(s);}</script>
+  <script defer src="/site-redesign.js?v=10"></script><script defer src="/site-polish.js?v=6"></script><script>if (/^\/blog\//.test(location.pathname)) {const s=document.createElement("script");s.src="/script.js?v=6";s.defer=true;document.body.appendChild(s);}</script>
 </body>
 
 </html>

@@ -84,6 +84,7 @@ qa('.filter-tab').forEach(tab=>tab.addEventListener('click',()=>{const kind=tab.
 q('#format-btn')?.addEventListener('click',()=>{const area=q('#json-input'),status=q('#json-status');if(!area)return;try{area.value=JSON.stringify(JSON.parse(area.value),null,2);if(status)status.textContent='✓ Valid JSON · Formatted locally';}catch(e){if(status)status.textContent='Please enter valid JSON: '+e.message;}});
 q('#copy-email')?.addEventListener('click',async()=>{const addr=q('.contact-mail')?.getAttribute('href')?.replace(/^mailto:/,'')||'amrishkhansheikabdullah@gmail.com';try{await navigator.clipboard.writeText(addr);if(q('#copy-feedback'))q('#copy-feedback').textContent='Email address copied';}catch(e){if(q('#copy-feedback'))q('#copy-feedback').textContent='Copy unavailable. Use the email link above.';}});
 const feature=q('#journal-feature'),grid=q('#journal-grid'),filters=q('#journal-filters'),search=q('#journal-search'),sort=q('#journal-order'),more=q('#journal-more'),counter=q('#journal-count'),shown=q('#journal-showing');
+const sortMenu=q('#journal-sort-options'),sortText=q('#journal-order-text'),sortField=sort?.closest('.journal-sort-field');let sortOrder='newest';
 const total=q('#journal-total'),matchSummary=q('#journal-match-summary');
 if(!grid)return;
 let articles=[],term='',tag='All',visible=6;
@@ -110,12 +111,36 @@ document.addEventListener('error', event => {
 // Use normal browser navigation for story links. The article document owns
 // exactly one loader until SSR content and reader enhancements are ready.
 // Do not launch a second terminal from the homepage before navigation.
-function filtered(){return articles.filter(a=>(tag==='All'||normalTags(a).some(t=>String(t).toLowerCase()===tag.toLowerCase()))&&(!term||(a.title+' '+a.description+' '+normalTags(a).join(' ')).toLowerCase().includes(term))).sort((a,b)=>(sort?.value==='oldest'?1:-1)*(new Date(a.publishedAt||0)-new Date(b.publishedAt||0)));}
-function render(){const list=filtered(),first=!term&&tag==='All'&&sort?.value!=='oldest'?list[0]:null;feature.innerHTML=first?card(first,true):'';const other=first?list.slice(1):list;grid.innerHTML=other.length?other.slice(0,visible).map(a=>card(a)).join(''):'<p class="journal-status">No matching stories. Try another topic or search.</p>';if(shown)shown.textContent=list.length?('Showing '+Math.min(visible+(first?1:0),list.length)+' of '+list.length+' stories'):'';if(more)more.hidden=other.length<=visible;if(counter)counter.textContent=articles.length+' stories from DEV.to';if(total)total.textContent=String(articles.length);if(matchSummary){const narrowed=Boolean(term)||tag!=='All';matchSummary.textContent=narrowed?list.length+' matching / '+articles.length+' published':articles.length+' stories to explore';}}
-function buildFilters(){const tags=[...new Set(articles.flatMap(normalTags).map(String).filter(Boolean))];const count=t=>articles.filter(a=>normalTags(a).some(s=>String(s).toLowerCase()===t.toLowerCase())).length;tags.sort((a,b)=>count(b)-count(a));const choices=['All',...tags.slice(0,8)];filters.innerHTML=choices.map(t=>'<button type="button" data-tag="'+escape(t)+'" aria-pressed="'+String(t===tag)+'"><span>'+escape(t==='All'?'All stories':t)+'</span><span class="journal-tag-count">'+(t==='All'?articles.length:count(t))+'</span></button>').join('');}
+function filtered(){return articles.filter(a=>(tag==='All'||normalTags(a).some(t=>String(t).toLowerCase()===tag.toLowerCase()))&&(!term||(a.title+' '+a.description+' '+normalTags(a).join(' ')).toLowerCase().includes(term))).sort((a,b)=>(sortOrder==='oldest'?1:-1)*(new Date(a.publishedAt||0)-new Date(b.publishedAt||0)));}
+function render(){const list=filtered(),first=!term&&tag==='All'&&sortOrder!=='oldest'?list[0]:null;feature.innerHTML=first?card(first,true):'';const other=first?list.slice(1):list;grid.innerHTML=other.length?other.slice(0,visible).map(a=>card(a)).join(''):'<p class="journal-status">No matching stories. Try another topic or search.</p>';if(shown)shown.textContent=list.length?('Showing '+Math.min(visible+(first?1:0),list.length)+' of '+list.length+' stories'):'';if(more)more.hidden=other.length<=visible;if(counter)counter.textContent=articles.length+' stories from DEV.to';if(total)total.textContent=String(articles.length);if(matchSummary){const narrowed=Boolean(term)||tag!=='All';matchSummary.textContent=narrowed?list.length+' of '+articles.length+' matching':'All stories';}}
+function buildFilters(){const tags=[...new Set(articles.flatMap(normalTags).map(String).filter(Boolean))];const count=t=>articles.filter(a=>normalTags(a).some(s=>String(s).toLowerCase()===t.toLowerCase())).length;tags.sort((a,b)=>count(b)-count(a));const choices=['All',...tags.slice(0,8)];filters.innerHTML=choices.map(t=>'<button type="button" data-tag="'+escape(t)+'" aria-pressed="'+String(t===tag)+'">'+escape(t==='All'?'All stories':t)+'</button>').join('');}
 filters?.addEventListener('click',e=>{const b=e.target.closest('button[data-tag]');if(!b)return;tag=b.dataset.tag;visible=6;buildFilters();render();});
 search?.addEventListener('input',e=>{term=e.target.value.trim().toLowerCase();visible=6;render();});
-sort?.addEventListener('change',()=>{visible=6;render();});more?.addEventListener('click',()=>{visible+=6;render();});
+// Site-designed sort popup with click, arrows, Home/End, Enter, Escape and outside click.
+const sortOptions=[...(sortMenu?.querySelectorAll('[role="option"]')||[])];
+function closeSort(focus=false){if(sortMenu)sortMenu.hidden=true;sort?.setAttribute('aria-expanded','false');if(focus)sort?.focus();}
+function openSort(step=0){if(!sortMenu)return;sortMenu.hidden=false;sort?.setAttribute('aria-expanded','true');
+ const selected=Math.max(0,sortOptions.findIndex(x=>x.dataset.sort===sortOrder));
+ sortOptions[Math.max(0,Math.min(sortOptions.length-1,selected+step))]?.focus();}
+function chooseSort(value){if(value!=='newest'&&value!=='oldest')return;sortOrder=value;
+ if(sortText)sortText.textContent=value==='newest'?'Newest first':'Oldest first';
+ for(const option of sortOptions)option.setAttribute('aria-selected',String(option.dataset.sort===value));
+ closeSort(true);visible=6;render();}
+sort?.addEventListener('click',()=>{if(sortMenu?.hidden)openSort();else closeSort();});
+sort?.addEventListener('keydown',e=>{if(['ArrowDown','ArrowUp','Home','End'].includes(e.key)){
+ e.preventDefault();openSort(e.key==='ArrowDown'?1:e.key==='ArrowUp'?-1:0);
+ if(e.key==='Home')sortOptions[0]?.focus();
+ if(e.key==='End')sortOptions.at(-1)?.focus();
+ }else if(e.key==='Escape'&&!sortMenu?.hidden){e.preventDefault();closeSort(true);}});
+sortMenu?.addEventListener('click',e=>{const option=e.target.closest('[role="option"][data-sort]');if(option&&sortMenu.contains(option))chooseSort(option.dataset.sort);});
+sortMenu?.addEventListener('keydown',e=>{const i=sortOptions.indexOf(document.activeElement);if(i<0)return;
+ if(['ArrowDown','ArrowUp','Home','End'].includes(e.key)){e.preventDefault();
+ const n=e.key==='Home'?0:e.key==='End'?sortOptions.length-1:(i+(e.key==='ArrowDown'?1:-1)+sortOptions.length)%sortOptions.length;sortOptions[n]?.focus();
+ }else if(e.key==='Escape'){e.preventDefault();closeSort(true);}
+ else if(e.key==='Tab')closeSort();});
+sortField?.addEventListener('focusout',e=>{if(!sortField.contains(e.relatedTarget))closeSort();});
+document.addEventListener('pointerdown',e=>{if(sortField&&!sortField.contains(e.target))closeSort();});
+more?.addEventListener('click',()=>{visible+=6;render();});
 async function load(){try{const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),12000);let res;try{res=await fetch('/api/blogs',{headers:{Accept:'application/json'},signal:controller.signal});}finally{clearTimeout(timer);}if(!res.ok)throw Error('Feed unavailable');const json=await res.json();if(json.warning&&!Array.isArray(json.blogs))throw Error('Feed unavailable');articles=Array.isArray(json.blogs)?json.blogs.filter(a=>a&&a.title):[];if(!articles.length)throw Error('No articles available');buildFilters();render();}catch(e){if(feature)feature.innerHTML='';if(counter)counter.textContent='DEV.to is temporarily unavailable';if(total)total.textContent='—';if(matchSummary)matchSummary.textContent='Archive temporarily unavailable';grid.innerHTML='<div class="journal-status"><p>Could not load the latest stories right now.</p><button type="button" id="journal-retry">TRY AGAIN ↗</button><p><a href="https://dev.to/amrishkhan05" target="_blank" rel="noopener noreferrer">Read directly on DEV.to ↗</a></p></div>';q('#journal-retry')?.addEventListener('click',load,{once:true});}}
 load();
 })();
