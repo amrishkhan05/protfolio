@@ -5,6 +5,21 @@ const q=s=>document.querySelector(s);
 const reduce=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
 const subpage=/^\/blog\//.test(location.pathname)||body.classList.contains('is-aruvix-view');
 const nav=q('#primary-nav'),menu=q('#menu-toggle'),header=q('.site-header'),top=q('#back-to-top'),bar=q('#reading-progress');
+// Article routes share the homepage masthead, but their section targets live
+// on /. A local '#skills' hash would point into the hidden homepage DOM.
+if(/^\/blog\//.test(location.pathname)){
+ nav?.querySelectorAll('a[href^="#"]').forEach(link=>{
+   const fragment=link.getAttribute('href');
+   if(fragment&&fragment!=='#')link.setAttribute('href','/'+fragment);
+ });
+ const contactLink=header?.querySelector('.header-cta[href="#contact"]');
+ if(contactLink)contactLink.setAttribute('href','/#contact');
+ const brand=header?.querySelector('.brand[href="#top"]');
+ if(brand)brand.setAttribute('href','/');
+ const skip=q('.skip-link[href="#home-content"]');
+ if(skip)skip.setAttribute('href','#blog-detail');
+ nav?.querySelector('a[href="/#writing"]')?.setAttribute('aria-current','location');
+}
 if(subpage){
   menu?.addEventListener('click',()=>{
     const next=menu.getAttribute('aria-expanded')!=='true';
