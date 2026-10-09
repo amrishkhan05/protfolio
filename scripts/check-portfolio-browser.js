@@ -34,6 +34,7 @@ await page.waitForTimeout(180);
 assert.ok(await contextBar.isVisible(),'slim Field Notes bar appears once Writing heading leaves view');
 const contextGeo=await contextBar.evaluate(el=>({height:el.getBoundingClientRect().height,top:el.getBoundingClientRect().top,headerBottom:document.querySelector('.site-header').getBoundingClientRect().bottom}));
 assert.ok(contextGeo.height>=40&&contextGeo.height<=52,'context bar is a compact 46px band');
+console.log('WRITING CONTEXT GEOMETRY',JSON.stringify(contextGeo));
 assert.ok(Math.abs(contextGeo.top-contextGeo.headerBottom)<4,'context bar sits beneath fixed navigation, without overlap');
 assert.equal((await page.locator('#writing-context-count').innerText()).trim(),'9 stories','contextual count follows API response');
 await contextBar.locator('#writing-context-search').click();

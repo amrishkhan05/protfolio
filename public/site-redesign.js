@@ -45,6 +45,9 @@ if(storyCounter&&contextCount){
   syncCount();
 }
 addEventListener('resize',updateWritingContext,{passive:true});
+// The primary header animates from tall to compact: keep the contextual bar
+// attached during the CSS transition, not just when scroll events fire.
+if(header&&typeof ResizeObserver!=='undefined')new ResizeObserver(updateWritingContext).observe(header);
 
 function updateScroll(){const y=scrollY,max=document.documentElement.scrollHeight-innerHeight;header?.classList.toggle('is-scrolled',y>25);top?.classList.toggle('is-visible',y>490);if(progress)progress.style.width=(max>0?Math.min(100,y/max*100):0)+'%';updateWritingContext();}
 addEventListener('scroll',updateScroll,{passive:true});updateScroll();
