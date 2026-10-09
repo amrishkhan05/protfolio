@@ -4,12 +4,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#f8f9ff" />
+  <meta name="theme-color" content="#11161d" />
   <meta name="color-scheme" content="only light" />
   <script>
     (function () {
-      var lightThemeColor = "#f8f9ff";
-      var darkThemeColor = "#111418";
+      var lightThemeColor = "#11161d";
+      var darkThemeColor = "#11161d";
       var saved = null;
       try {
         saved = localStorage.getItem("portfolio-theme");
@@ -26,12 +26,11 @@
       }
     })();
   </script>
-  <title>amrishkhan.dev | Amrish Khan</title>
-  <meta name="description"
-    content="Portfolio of Amrish Khan, Full Stack AI Engineer, TypeScript Architect, and Founder of Aruvix building scalable products, developer tools, and high-performance systems." />
+  <title>Amrish Khan — Technology Lead, Systems Architect & Builder</title>
+  <meta name="description" content="Amrish Khan is a Dubai-based Technology Lead and Systems Architect with 10+ years building resilient APIs, airline platforms, payments and privacy-first developer tools. Creator of Aruvix." />
   <meta name="author" content="Amrish Khan" />
   <link rel="canonical" href="https://www.amrishkhan.dev/" />
-  <meta property="og:title" content="amrishkhan.dev | Amrish Khan" />
+  <meta property="og:title" content="Amrish Khan — Systems Architect & Product Builder" />
   <meta property="og:description"
     content="Full Stack AI Engineer, TypeScript Architect, and Founder of Aruvix building scalable products, backend systems, and developer tools." />
   <meta property="og:url" content="https://www.amrishkhan.dev/" />
@@ -39,7 +38,7 @@
   <meta property="og:image" content="https://www.amrishkhan.dev/assets/og-image.png" />
   <meta property="og:site_name" content="amrishkhan.dev" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="amrishkhan.dev | Amrish Khan" />
+  <meta name="twitter:title" content="Amrish Khan — Systems Architect & Product Builder" />
   <meta name="twitter:description" content="Full Stack AI Engineer, TypeScript Architect, and Founder of Aruvix." />
   <meta name="twitter:image" content="https://www.amrishkhan.dev/assets/og-image.png" />
   <script type="application/ld+json">
@@ -89,27 +88,31 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap"
     rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
-  <link rel="stylesheet" href="/styles.css?v=20260603-stitch-final" />
-  <link rel="stylesheet" href="/site-redesign.css?v=2" />
+  
+  <link rel="stylesheet" href="/styles.css?v=4" />
+  <link rel="stylesheet" href="/site-redesign.css?v=4" />
+  <link rel="stylesheet" href="/site-polish.css?v=4" />
 </head>
 
 <body>
   <a class="skip-link" href="#home-content">Skip to main content</a>
-  <div class="scroll-progress" aria-hidden="true"></div>
+  
 
   <header class="site-header" id="top">
     <div class="nav-wrap container">
-      <a href="#top" class="brand" aria-label="Amrish Khan, go to top"><span class="brand-mark">a<span>.</span>k</span><span class="brand-label">AMRISH KHAN <small>ENGINEER BY INSTINCT</small></span></a>
+      <a href="/#top" class="brand" aria-label="Amrish Khan — Portfolio home"><span class="brand-mark" aria-hidden="true">AK</span><span class="brand-label">AMRISH KHAN<small>ENGINEER · ARCHITECT · BUILDER</small></span></a>
       <nav id="primary-nav" class="nav-links" aria-label="Main navigation">
-        <a href="#work">Work</a>
-        <a href="#approach">Approach</a>
-        <a href="#experience">Experience</a>
-        <a href="#writing">Writing</a>
-        <a class="nav-contact-mobile" href="#contact">Get in touch <span aria-hidden="true">↗</span></a>
+        <a href="/#work">Work</a><a href="/#approach">Approach</a><a href="/#experience">Experience</a><a href="/#writing">Writing</a><a href="/#contact" class="nav-contact-mobile">Contact ↗</a>
       </nav>
-      <a href="#contact" class="header-cta">LET'S CONNECT <span aria-hidden="true">↗</span></a>
-      <button class="menu-toggle" id="menu-toggle" type="button" aria-controls="primary-nav" aria-expanded="false" aria-label="Open menu"><span></span><span></span></button>
+      <div class="nav-actions-studio">
+        <button id="studio-theme-toggle" class="studio-theme-toggle" type="button" aria-label="Switch color theme" aria-pressed="false" title="Toggle light and dark mode">
+          <svg class="moon-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.3A8.5 8.5 0 0 1 9.7 3.5 8.5 8.5 0 1 0 20.5 14.3Z"/></svg>
+          <svg class="sun-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg>
+        </button>
+        <a class="studio-resume-link" href="/resume/pdf/Amrishkhan-Sheik-Abdullah-Resume.pdf" download aria-label="Download resume PDF">Résumé <span aria-hidden="true">↧</span></a>
+        <a class="header-cta" href="/#contact">LET'S CONNECT <span aria-hidden="true">↗</span></a>
+        <button class="menu-toggle" id="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" aria-label="Open navigation"><span></span><span></span></button>
+      </div>
     </div>
   </header>
 
@@ -124,7 +127,7 @@
           <p class="hero-description">I'm <strong>Amrish Khan</strong> — I turn intricate systems into intuitive experiences. From enterprise platforms to tools developers genuinely love using.</p>
           <div class="hero-actions">
             <a class="btn btn-lime" href="#work">Explore my work <span class="arrow-circle" aria-hidden="true">↗</span></a>
-            <a class="text-link white-link" href="#contact">Start a conversation <span aria-hidden="true">↗</span></a>
+            <a class="text-link white-link" href="#contact">Start a conversation <span aria-hidden="true">↗</span></a><a class="hero-resume" href="/resume/pdf/Amrishkhan-Sheik-Abdullah-Resume.pdf" download>Download CV <span aria-hidden="true">↧</span></a>
           </div>
         </div>
         <div class="hero-art" aria-label="Illustrated systems map connecting client interfaces, services, data, and the developer experience">
@@ -217,10 +220,10 @@
 <div id="journal-grid" class="journal-grid" aria-live="polite"><p class="journal-status">Loading the latest stories…</p></div>
 <div class="journal-footer"><p id="journal-showing"></p><button id="journal-more" type="button" hidden>SHOW MORE STORIES ↓</button></div>
 </div></section>
-<section class="contact-section" id="contact" aria-labelledby="contact-title"><div class="container"><div class="contact-top"><span>05 / LET'S BUILD SOMETHING GOOD</span><span class="live-indicator"><i></i> BASED IN DUBAI · CONNECT WORLDWIDE</span></div><div class="contact-grid"><div><p class="contact-preline">THE NEXT GOOD IDEA STARTS WITH A CONVERSATION.</p><h2 id="contact-title">Have a complex<br>problem<span>?</span><br><em>Let's talk.</em></h2></div><div class="contact-right"><p>Whether it's architecture, a product idea, or a collaboration, I'd love to hear what you're working on.</p><a class="contact-mail" href="mailto:amrishkhansheikabdullah@gmail.com">Send an email <span>↗</span></a><button id="copy-email" type="button" class="copy-email">COPY EMAIL ADDRESS <span aria-hidden="true">⧉</span></button><span id="copy-feedback" class="copy-feedback" role="status" aria-live="polite"></span></div></div><footer class="footer"><a class="footer-brand" href="#top" aria-label="Back to top">a.k<span>✳</span></a><span>© <span id="current-year">2026</span> AMRISH KHAN. DESIGNED WITH INTENT.</span><div class="footer-social"><a href="https://github.com/amrishkhan05" target="_blank" rel="noopener noreferrer">GITHUB ↗</a><a href="https://www.linkedin.com/in/amrishkhan/" target="_blank" rel="noopener noreferrer">LINKEDIN ↗</a><a href="https://dev.to/amrishkhan05" target="_blank" rel="noopener noreferrer">DEV.TO ↗</a><a href="#top">BACK TO TOP ↑</a></div></footer></div></section>
+<section class="contact-section" id="contact" aria-labelledby="contact-title"><div class="container"><div class="contact-top"><span>05 / LET'S BUILD SOMETHING GOOD</span><span class="live-indicator"><i></i> BASED IN DUBAI · CONNECT WORLDWIDE</span></div><div class="contact-grid"><div><p class="contact-preline">THE NEXT GOOD IDEA STARTS WITH A CONVERSATION.</p><h2 id="contact-title">Have a complex<br>problem<span>?</span><br><em>Let's talk.</em></h2></div><div class="contact-right"><p>Whether it's architecture, a product idea, or a collaboration, I'd love to hear what you're working on.</p><a class="contact-mail" href="mailto:amrishkhansheikabdullah@gmail.com">Send an email <span>↗</span></a><div class="studio-resume-panel" aria-label="Download resume"><a href="/resume/pdf/Amrishkhan-Sheik-Abdullah-Resume.pdf" download>Resume · PDF ↧</a><a href="/resume/doc/Amrishkhan-Sheik-Abdullah-Resume.docx" download>Resume · Word ↧</a></div><button id="copy-email" type="button" class="copy-email">COPY EMAIL ADDRESS <span aria-hidden="true">⧉</span></button><span id="copy-feedback" class="copy-feedback" role="status" aria-live="polite"></span></div></div><footer class="footer"><a class="footer-brand" href="#top" aria-label="Back to top">a.k<span>✳</span></a><span>© <span id="current-year">2026</span> AMRISH KHAN. DESIGNED WITH INTENT.</span><div class="footer-social"><a href="https://github.com/amrishkhan05" target="_blank" rel="noopener noreferrer">GITHUB ↗</a><a href="https://www.linkedin.com/in/amrishkhan/" target="_blank" rel="noopener noreferrer">LINKEDIN ↗</a><a href="https://dev.to/amrishkhan05" target="_blank" rel="noopener noreferrer">DEV.TO ↗</a><a href="#top">BACK TO TOP ↑</a></div></footer></div></section>
   </main>
 
-  <main class="blog-detail-shell" id="blog-detail" hidden>
+  <div class="blog-detail-shell" id="blog-detail" hidden>
     <div class="blog-detail-layout">
       <aside class="blog-toc" id="blog-toc" aria-label="Article table of contents" hidden>
         <div class="blog-sidebar-panel">
@@ -239,12 +242,12 @@
         </div>
       </aside>
       <article class="blog-article" aria-live="polite">
-        <a class="blog-back-link" href="/#blogs">Articles <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
-          <span id="blog-detail-category">Tech Writing</span></a>
+        <a class="blog-back-link" href="/#writing">Articles <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+          <span id="blog-detail-category">Writing</span></a>
         <div class="blog-detail-status" id="blog-detail-status">Loading...</div>
         <div class="blog-detail-content" id="blog-detail-content" hidden>
           <header class="blog-hero">
-            <img class="blog-cover" id="blog-detail-cover" alt="" loading="lazy" decoding="async" hidden />
+            <img class="blog-cover" id="blog-detail-cover" alt="" loading="lazy" decoding="async" width="1200" height="675" hidden />
             <h1 id="blog-detail-title"></h1>
             <div class="blog-meta-row" id="blog-detail-meta"></div>
             <div class="blog-tags" id="blog-detail-tags"></div>
@@ -273,12 +276,12 @@
         </div>
       </aside>
     </div>
-  </main>
+  </div>
 
-  <footer class="footer">
+  <footer class="footer article-footer">
     <div>
       <strong>amrishkhan<span>.dev</span></strong>
-      <p>© 2024 Amrish Khan. Built for performance.</p>
+      <p>© 2026 Amrish Khan. Engineered with care.</p>
     </div>
     <nav aria-label="Footer links">
       <a href="https://www.linkedin.com/in/amrishkhan" target="_blank" rel="noreferrer">LinkedIn</a>
@@ -307,7 +310,7 @@
       <div class="glow"></div>
     </div>
   </div>
-  <script defer src="/site-redesign.js?v=2"></script><script>if (/^\/blog\//.test(location.pathname)) {const s=document.createElement("script");s.src="/script.js?v=20260603-stitch-final";s.defer=true;document.body.appendChild(s);}</script>
+  <script defer src="/site-redesign.js?v=4"></script><script defer src="/site-polish.js?v=4"></script><script>if (/^\/blog\//.test(location.pathname)) {const s=document.createElement("script");s.src="/script.js?v=4";s.defer=true;document.body.appendChild(s);}</script>
 </body>
 
 </html>

@@ -69,42 +69,32 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap"
     rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
-  <link rel="stylesheet" href="/styles.css?v=20260603-stitch-final" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" media="print" onload="this.media='all'" />
+  <link rel="stylesheet" href="/styles.css?v=4" />
+  <link rel="stylesheet" href="/site-redesign.css?v=4" />
+  <link rel="stylesheet" href="/site-polish.css?v=4" />
 </head>
 
-<body>
+<body class="is-aruvix-view">
   <a class="skip-link" href="#case-study">Skip to main content</a>
   <div class="scroll-progress" aria-hidden="true"></div>
 
-  <header class="site-header">
-    <nav class="top-nav" aria-label="Primary navigation">
-      <a class="brand" href="/" aria-label="amrishkhan.dev home">amrishkhan<span>.dev</span></a>
-      <div class="nav-links">
-        <a href="/">Portfolio</a>
-        <a href="/#experience">Experience</a>
-        <a href="/#blogs">Writing</a>
-        <a href="/#contact">Contact</a>
-      </div>
-      <div class="nav-actions">
-        <button class="theme-toggle icon-button desktop-theme-toggle" type="button" aria-label="Switch color theme"
-          aria-pressed="false">
-          <i class="fa-solid fa-moon" aria-hidden="true"></i>
+  <header class="site-header" id="top">
+    <div class="nav-wrap container">
+      <a href="/" class="brand" aria-label="Amrish Khan — Portfolio home"><span class="brand-mark" aria-hidden="true">AK</span><span class="brand-label">AMRISH KHAN<small>ENGINEER · ARCHITECT · BUILDER</small></span></a>
+      <nav id="primary-nav" class="nav-links" aria-label="Main navigation">
+        <a href="/#work">Work</a><a href="/#approach">Approach</a><a href="/#experience">Experience</a><a href="/#writing">Writing</a><a href="/#contact" class="nav-contact-mobile">Contact ↗</a>
+      </nav>
+      <div class="nav-actions-studio">
+        <button id="studio-theme-toggle" class="studio-theme-toggle" type="button" aria-label="Switch color theme" aria-pressed="false" title="Toggle light and dark mode">
+          <svg class="moon-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.3A8.5 8.5 0 0 1 9.7 3.5 8.5 8.5 0 1 0 20.5 14.3Z"/></svg>
+          <svg class="sun-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg>
         </button>
-        <a class="btn btn-primary" href="https://www.aruvix.com/" target="_blank" rel="noreferrer">Open Aruvix</a>
-        <button class="menu-toggle icon-button" type="button" aria-label="Open menu" aria-expanded="false"
-          aria-controls="mobile-menu">
-          <i class="fa-solid fa-bars" aria-hidden="true"></i>
-        </button>
+        <a class="studio-resume-link" href="/resume/pdf/Amrishkhan-Sheik-Abdullah-Resume.pdf" download aria-label="Download resume PDF">Résumé <span aria-hidden="true">↧</span></a>
+        <a class="header-cta" href="/#contact">LET'S CONNECT <span aria-hidden="true">↗</span></a>
+        <button class="menu-toggle" id="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" aria-label="Open navigation"><span></span><span></span></button>
       </div>
-      <div class="mobile-menu" id="mobile-menu" hidden>
-        <a href="/">Portfolio</a>
-        <a href="/#experience">Experience</a>
-        <a href="/#blogs">Writing</a>
-        <a href="/#contact">Contact</a>
-        <a href="https://www.aruvix.com/" target="_blank" rel="noreferrer">Open Aruvix</a>
-      </div>
-    </nav>
+    </div>
   </header>
 
   <main id="case-study" class="case-study-shell">
@@ -450,9 +440,8 @@ status: ready</code></pre>
     </nav>
   </footer>
 
-  <button class="back-to-top icon-button" id="back-to-top" type="button" aria-label="Back to top"><i
-      class="fa-solid fa-arrow-up" aria-hidden="true"></i></button>
-  <script src="/script.js?v=20260603-stitch-final"></script>
+  <button id="back-to-top" class="back-to-top" type="button" aria-label="Back to top"><span aria-hidden="true">↑ TOP</span></button>
+  <script src="/script.js?v=4"></script><script defer src="/site-polish.js?v=4"></script>
 </body>
 
 </html>
