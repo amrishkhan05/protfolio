@@ -71,3 +71,58 @@
  #home-content .skills-ledger-foot{padding:17px 0;align-items:flex-start;flex-direction:column}
 }
 @media(prefers-reduced-motion:reduce){#home-content .skills-group{transition:none}}
+
+
+/* SKILLS VIEWPORT COMPOSITION
+   Only this short, information-dense section opts into a viewport-sized page.
+   At desktop heights that can fit the full content, it fills the available
+   screen beneath the collapsed fixed nav. At short heights, narrow widths,
+   enlarged text or browser zoom, intrinsic height remains authoritative. */
+@media(min-width:1101px){
+ #home-content #skills{scroll-margin-top:-28px}
+}
+@media(min-width:1101px) and (min-height:820px){
+ #home-content #skills{
+   min-height:calc(100svh - 72px);
+   height:auto;
+   padding-block:clamp(16px,2.35svh,26px);
+ }
+ #home-content #skills>.container{
+   min-height:calc(100svh - 72px - 2 * clamp(16px,2.35svh,26px));
+   display:flex;
+   flex-direction:column;
+ }
+ #home-content #skills .skills-section-top{
+   flex:0 0 auto;
+   margin-bottom:clamp(10px,1.5svh,16px);
+   padding-top:8px;
+ }
+ #home-content #skills .skills-studio{
+   flex:1 0 auto;
+ }
+ #home-content #skills .skills-studio-intro{
+   padding:clamp(22px,2.2vw,34px);
+   gap:17px;
+ }
+ #home-content #skills .skills-intro-center h2{
+   font-size:clamp(33px,3vw,47px);
+ }
+ #home-content #skills .skills-overline{margin-bottom:10px}
+ #home-content #skills .skills-intro-copy{margin-top:14px;font-size:13px;line-height:1.6}
+ #home-content #skills .skills-intro-bottom{margin-top:5px}
+ #home-content #skills .skills-practice-note{padding-top:10px}
+ #home-content #skills .skills-case-link{margin-top:10px;min-height:32px}
+ #home-content #skills .skills-group{
+   padding-block:clamp(10px,1.3svh,15px);
+   row-gap:6px;
+ }
+ #home-content #skills .skills-group h3{font-size:clamp(19px,1.5vw,22px);margin-bottom:2px}
+ #home-content #skills .skills-group p{font-size:11px;line-height:1.4}
+ #home-content #skills .skills-group li{font-size:10px;line-height:1.35;padding-inline:7px}
+ #home-content #skills .skills-ledger-foot{padding-block:10px}
+}
+/* At shorter laptop heights, respect the content instead of shrinking
+   type, hiding rows or setting a fixed-height overflow container. */
+@media(min-width:761px) and (max-height:819px){
+ #home-content #skills{min-height:0;height:auto}
+}

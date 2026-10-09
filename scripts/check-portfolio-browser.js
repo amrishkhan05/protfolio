@@ -137,6 +137,47 @@ assert.ok(skillsDesktop.rows.every(r=>r.height>=80&&r.height<=155),'skill rows s
 assert.ok(skillsDesktop.rows.every((r,i,all)=>!i||r.top>=all[i-1].bottom-1),'skills ledger rows never overlap');
 assert.equal(await skills.locator('.skills-ledger-foot a[href$=".pdf"]').count(),1,'direct résumé link preserved');
 assert.equal(await skills.locator('.skills-group ul li').count(),32,'all 32 selected technologies remain visible');
+
+// Verify the Skills anchor composes as ONE screen when there is sufficient
+// viewport height, without hiding technology rows or covering the last footer.
+for (const {width,height} of [{width:1440,height:900},{width:1536,height:960}]){
+ await page.setViewportSize({width,height});
+ await page.goto(base+'/',{waitUntil:'domcontentloaded'});
+ await page.locator('#skills .skills-group').last().waitFor();
+ await page.locator('#primary-nav a[href="#skills"]').click();
+ await page.waitForFunction(()=>{
+  const section=document.getElementById('skills').getBoundingClientRect();
+  const nav=document.querySelector('.site-header').getBoundingClientRect();
+  return Math.abs(section.top-nav.bottom)<18;
+ },{timeout:5000});
+ const fit=await page.evaluate(()=>{
+  const section=document.getElementById('skills').getBoundingClientRect();
+  const nav=document.querySelector('.site-header').getBoundingClientRect();
+  const footer=document.querySelector('#skills .skills-ledger-foot').getBoundingClientRect();
+  const intro=document.querySelector('#skills .skills-studio-intro').getBoundingClientRect();
+  return {top:section.top,bottom:section.bottom,navBottom:nav.bottom,
+    viewport:innerHeight,footerBottom:footer.bottom,introBottom:intro.bottom,
+    height:section.height,scrollWidth:document.documentElement.scrollWidth,viewportWidth:innerWidth};
+ });
+ assert.ok(fit.top>=fit.navBottom-12&&fit.top<=fit.navBottom+18,'skills header aligns below fixed nav on '+width+'x'+height);
+ assert.ok(fit.bottom<=fit.viewport+3,'skills section fits entirely within '+width+'x'+height+' viewport: '+JSON.stringify(fit));
+ assert.ok(fit.footerBottom<=fit.viewport-4,'skills footer and resume link remain visible without scrolling');
+ assert.ok(fit.scrollWidth<=fit.viewportWidth+2,'no horizontal overflow in skills viewport');
+ await page.screenshot({path:path.join(output,'skills-fit-'+width+'x'+height+'.png')});
+}
+await page.setViewportSize({width:1280,height:700});
+await page.goto(base+'/#skills',{waitUntil:'domcontentloaded'});
+await page.locator('#skills .skills-group').last().waitFor();
+const compactLaptop=await page.locator('#skills').evaluate(el=>{
+ const rect=el.getBoundingClientRect();
+ const last=el.querySelector('.skills-ledger-foot').getBoundingClientRect();
+ return {height:rect.height,contentEnd:last.bottom,sectionEnd:rect.bottom,scrollHeight:el.scrollHeight,clientHeight:el.clientHeight};
+});
+assert.ok(compactLaptop.scrollHeight<=compactLaptop.clientHeight+2,'short laptop skills section keeps natural height, no internal clipping');
+assert.ok(compactLaptop.contentEnd<=compactLaptop.sectionEnd,'short laptop can scroll to every technology and footer');
+await page.setViewportSize({width:1440,height:900});
+await page.goto(base+'/',{waitUntil:'domcontentloaded'});
+
 await skills.screenshot({path:path.join(output,'skills-desktop-light.png')});
 
 assert.ok((await page.locator('a[href$=".pdf"]').count())>0,'resume PDF available');
@@ -388,6 +429,10 @@ const mobileSkills=await page.locator('#skills .skills-studio').evaluate(el=>{
 assert.ok(mobileSkills.width<=390&&mobileSkills.ledgerWidth<=390,'skills fits mobile viewport without overflow');
 assert.ok(mobileSkills.ledgerTop>=mobileSkills.panelBottom-1,'mobile skills ledger stacks below editorial intro');
 assert.equal(mobileSkills.labelsOverflow,false,'long technical skill names do not run off mobile viewport');
+const mobileNatural=await page.locator('#skills').evaluate(el=>({height:el.getBoundingClientRect().height,contentHeight:el.scrollHeight,boxHeight:el.clientHeight}));
+assert.ok(mobileNatural.contentHeight<=mobileNatural.boxHeight+2,'mobile skills remain fully scrollable without an inner scrollbar');
+assert.ok(mobileNatural.height>500,'mobile skills keep natural document flow rather than compressing to a single screen');
+
 await page.locator('#skills').screenshot({path:path.join(output,'skills-mobile.png')});
 
 await page.locator('#menu-toggle').click();
