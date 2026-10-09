@@ -659,17 +659,6 @@ assert.equal(await page.locator('#blog-loader-overlay').isVisible(),false,'termi
 assert.ok(await page.locator('#blog-detail-title').isVisible(),'article title and body are visible together after loading');
 assert.equal(await page.evaluate(()=>document.documentElement.classList.contains('is-blog-ready')),true,'slow API route reveals only after complete');
 assert.ok(await page.locator('#blog-detail-content').isVisible(),'article body is visible on the ready frame');
-await page.waitForTimeout(1100);
-console.log('ARTICLE RELATED DIAGNOSTICS',JSON.stringify(await page.evaluate(()=>({
-  relatedHidden:document.querySelector('#blog-related')?.hidden,
-  relatedSectionHidden:document.querySelector('.blog-related-editorial')?.hidden,
-  relatedCount:document.querySelectorAll('.blog-related-card').length,
-  relatedMarkup:document.querySelector('#blog-related-list')?.innerHTML.slice(0,240),
-  articleReady:document.documentElement.classList.contains('is-blog-ready'),
-  title:document.querySelector('#blog-detail-title')?.textContent,
-  body:document.querySelector('#blog-detail-body')?.textContent.slice(0,100),
-  script:!!window.fetch,
-}))));
 await page.locator('#blog-related .blog-related-card').first().waitFor({state:'visible',timeout:8000});
 assert.equal(await page.locator('#blog-related .blog-related-card').count(),4,'four editorial related stories appear after the loader');
 assert.ok(await page.locator('#blog-related .related-card-index').first().isVisible(),'related cards include editorial index');
@@ -685,6 +674,10 @@ assert.ok(await page.locator('.blog-cover-fallback').isVisible(),'slow article b
 const sidebarHtml=articleHtml
  .replace('<div class="blog-body" id="blog-detail-body"><p>Engineering is about thoughtful decisions in complex systems.</p></div>',
  '<div class="blog-body" id="blog-detail-body"><h2>Understanding APIs</h2><p>Inspect API JSON responses.</p><h2>Testing requests</h2><p>Import cURL and test endpoints.</p></div>');
+await page.route('**/api/blogs/sidebar-fixture*',route=>route.fulfill({
+ status:200,contentType:'application/json',
+ body:JSON.stringify({...sample[0],devSlug:'sidebar-fixture',localSlug:'sidebar-fixture',title:'Understanding APIs and JSON responses',description:'Testing API requests with JSON and cURL',tags:['api','json','curl']})
+}));
 await page.route('**/blog/sidebar-fixture',route=>route.fulfill({status:200,contentType:'text/html',body:sidebarHtml}));
 await page.goto(base+'/blog/sidebar-fixture',{waitUntil:'domcontentloaded'});
 await page.locator('.blog-toc-link').first().waitFor({state:'visible',timeout:10000});
