@@ -98,7 +98,10 @@ await page.locator('#primary-nav a[href="#writing"]').click();
 assert.equal(await page.locator('#menu-toggle').getAttribute('aria-expanded'),'false','mobile menu closes');
 await page.screenshot({path:path.join(output,'mobile-dark.png'),fullPage:true});
 const pageSource=fs.readFileSync(path.join(__dirname,'..','public','index.html'),'utf8');
+// Mirror app.js renderBlogPage(), which injects the legacy article reader CSS
+// exclusively for server-rendered /blog/:slug pages.
 const articleHtml=pageSource
+ .replace('<link rel="stylesheet" href="/site-redesign.css?v=5" />', '<link rel="stylesheet" href="/styles.css?v=4" />\\n  <link rel="stylesheet" href="/site-redesign.css?v=5" />')
  .replace('<div class="blog-detail-content" id="blog-detail-content" hidden>','<div class="blog-detail-content" id="blog-detail-content">')
  .replace('<div class="blog-detail-status" id="blog-detail-status">Loading...</div>','<div class="blog-detail-status" id="blog-detail-status" hidden></div>')
  .replace('<h1 id="blog-detail-title"></h1>','<h1 id="blog-detail-title">Sometimes the fastest system is the one willing to stop</h1>')
@@ -110,7 +113,15 @@ await page.locator('#blog-detail-title').waitFor({state:'visible',timeout:20000}
 assert.equal(await page.evaluate(()=>document.documentElement.dataset.theme),'dark','theme persists to article');
 assert.ok(await page.locator('#blog-detail-body').isVisible(),'article body is visible');
 assert.ok((await page.locator('.blog-back-link').getAttribute('href'))==='/#writing','article back link to writing');
-assert.ok((await page.evaluate(()=>document.documentElement.scrollWidth))<=392,'article mobile layout does not overflow');
+const articleOverflow=await page.evaluate(()=>({
+  width:document.documentElement.scrollWidth,
+  viewport:innerWidth,
+  offenders:Array.from(document.querySelectorAll('body *')).map(el=>({el,rect:el.getBoundingClientRect()}))
+   .filter(({rect})=>rect.width&&rect.right>innerWidth+3)
+   .slice(0,8).map(({el,rect})=>({tag:el.tagName,cls:el.className?.baseVal??String(el.className||''),right:Math.round(rect.right)}))
+}));
+if(articleOverflow.width>articleOverflow.viewport+2)console.error('Article overflowing elements:',JSON.stringify(articleOverflow));
+assert.ok(articleOverflow.width<=articleOverflow.viewport+2,'article mobile layout does not overflow');
 await page.screenshot({path:path.join(output,'article-mobile-dark.png'),fullPage:true});
 assert.deepEqual(errors,[],'no browser JavaScript errors');
 await browser.close();
