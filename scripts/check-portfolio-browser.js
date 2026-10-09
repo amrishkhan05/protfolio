@@ -172,6 +172,16 @@ assert.ok(fit.top>=fit.navBottom-12&&fit.top<=fit.navBottom+18,'skills header al
  });
  assert.ok(rhythm.emptyBottom<=22,'skills ledger has no large dead space beneath resume link: '+JSON.stringify(rhythm));
  assert.ok(rhythm.maxHeight-rhythm.minHeight<=22,'technology rows fill their screen evenly: '+JSON.stringify(rhythm));
+ const footerCollision=await page.evaluate(()=>{
+  const link=document.querySelector('#skills .skills-ledger-foot a').getBoundingClientRect();
+  const fixed=document.querySelector('#back-to-top').getBoundingClientRect();
+  return {linkRight:link.right,linkTop:link.top,linkBottom:link.bottom,topLeft:fixed.left,topTop:fixed.top,topBottom:fixed.bottom};
+ });
+ assert.ok(footerCollision.linkRight<=footerCollision.topLeft-5 ||
+  footerCollision.linkBottom<=footerCollision.topTop ||
+  footerCollision.linkTop>=footerCollision.topBottom,
+  'back-to-top control does not collide with Skills résumé link');
+
 
  assert.ok(fit.scrollWidth<=fit.viewportWidth+2,'no horizontal overflow in skills viewport');
  await page.screenshot({path:path.join(output,'skills-fit-'+width+'x'+height+'.png')});

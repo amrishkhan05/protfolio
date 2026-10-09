@@ -111,6 +111,7 @@
  #home-content #skills .skills-ledger-foot{
    flex:0 0 auto;
    margin-top:auto;
+   padding-right:clamp(67px,5.3vw,88px);
  }
  #home-content #skills .skills-studio-intro{
    padding:clamp(22px,2.2vw,34px);
