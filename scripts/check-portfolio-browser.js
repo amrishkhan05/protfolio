@@ -160,7 +160,8 @@ for (const {width,height} of [{width:1440,height:900},{width:1536,height:960}]){
     viewport:innerHeight,footerBottom:footer.bottom,introBottom:intro.bottom,
     height:section.height,scrollWidth:document.documentElement.scrollWidth,viewportWidth:innerWidth};
  });
- assert.ok(fit.top>=fit.navBottom-12&&fit.top<=fit.navBottom+18,'skills header aligns below fixed nav on '+width+'x'+height);
+ console.log('SKILLS VIEWPORT DEBUG',JSON.stringify({...fit,scrollY:await page.evaluate(()=>scrollY),scrollPadding:await page.evaluate(()=>getComputedStyle(document.documentElement).scrollPaddingTop),scrollMargin:await page.locator('#skills').evaluate(el=>getComputedStyle(el).scrollMarginTop)}));
+assert.ok(fit.top>=fit.navBottom-12&&fit.top<=fit.navBottom+18,'skills header aligns below fixed nav on '+width+'x'+height);
  assert.ok(fit.bottom<=fit.viewport+3,'skills section fits entirely within '+width+'x'+height+' viewport: '+JSON.stringify(fit));
  assert.ok(fit.footerBottom<=fit.viewport-4,'skills footer and resume link remain visible without scrolling');
  assert.ok(fit.scrollWidth<=fit.viewportWidth+2,'no horizontal overflow in skills viewport');
