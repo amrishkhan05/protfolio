@@ -1,7 +1,7 @@
 
 /* Complete Systems Studio redesign: original portfolio visual language plus dynamic journal. */
 :root{--ink:#11161d;--paper:#f6f4ee;--lime:#d5f478;--lav:#b7c7ff;--peach:#f4aa91;--muted:#667070;--edge:#d5d8d1;--mono:'DM Mono',monospace;--display:'Space Grotesk',Arial,sans-serif;--sans:'DM Sans',Arial,sans-serif;scroll-behavior:smooth;scroll-padding-top:95px}
-body{margin:0;background:var(--paper);font:16px/1.6 var(--sans);color:var(--ink);overflow-x:hidden}
+body{margin:0;background:var(--paper);font:16px/1.6 var(--sans);color:var(--ink);overflow-x:clip}
 *{box-sizing:border-box}a{color:inherit;text-decoration:none}button,input,select,textarea{font:inherit}button{cursor:pointer}
 #home-content{display:block;max-width:none;width:100%;margin:0;padding:0}#home-content[hidden],#blog-detail[hidden]{display:none!important}
 body:not(.is-blog-view)>.footer{display:none}
