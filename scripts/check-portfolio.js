@@ -25,7 +25,8 @@ check('Hero architecture modes are accessible and respect reduced motion', count
 check('Readable dark ink on lime button hovers', polish.includes('ONE EDITORIAL THEME') && polish.includes('#home-content #journal-more:hover') && polish.includes('color:#11161d'));
 check('Single homepage main landmark', count(home, /<main\s/gi) === 1);
 check('Single back-to-top control', count(home, /id="back-to-top"/g) === 1);
-check('Skills section is deep-linkable and grouped', home.includes('id="skills"') && home.includes('aria-labelledby="skills-title"') && count(home, /class="skills-group"/g)===6 && home.includes('href="#skills"') && fs.existsSync(path.join(root,'public/studio-skills.css')));
+check('Skills index has six semantic rows and remains deep-linkable', home.includes('id="skills"') && home.includes('aria-labelledby="skills-title"') && count(home, /class="skills-group"/g)===6 && home.includes('href="#skills"') && home.includes('studio-skills.css?v=2'));
+check('Skills uses editorial ledger rather than repetitive cards', home.includes('skills-studio-intro') && home.includes('skills-ledger-foot') && read('public/studio-skills.css').includes('.skills-studio{display:grid') && !read('public/studio-skills.css').includes('repeat(3,minmax(0,1fr))'));
 check('Aruvix rebuilt using the shared studio design without legacy CSS', aruvix.includes('class="aru-case"') && aruvix.includes('href="/aruvix-case.css?v=1"') && !aruvix.includes('href="/styles.css?v=4"') && count(aruvix, /class="aru-tool"/g)===6);
 check('Aruvix current products, privacy boundaries and desktop scope documented', aruvix.includes('API Client') && aruvix.includes('CSS Variables Extractor') && aruvix.includes('macOS and Windows') && aruvix.includes('Browser security rules'));
 check('No theme-toggle controls remain on homepage or Aruvix', !home.includes('studio-theme-toggle') && !aruvix.includes('studio-theme-toggle'));

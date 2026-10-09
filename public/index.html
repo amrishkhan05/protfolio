@@ -80,7 +80,7 @@
   <link rel="stylesheet" href="/site-redesign.css?v=5" />
   <link rel="stylesheet" href="/site-polish.css?v=9" />
   <link rel="stylesheet" href="/article-experience.css?v=2" />
-  <link rel="stylesheet" href="/studio-skills.css?v=1" />
+  <link rel="stylesheet" href="/studio-skills.css?v=2" />
   <link rel="stylesheet" href="/writing-context.css?v=1" />
   <link rel="stylesheet" href="/hero-switchboard.css?v=1" />
 </head>
@@ -185,26 +185,31 @@
 
     <section class="skills-band section" id="skills" aria-labelledby="skills-title">
       <div class="container">
-        <div class="section-top"><span class="section-index">THE TOOLKIT / TECHNICAL EXPERTISE</span><span class="section-side">TOOLS CHANGE. ENGINEERING JUDGMENT DOESN'T.</span></div>
-        <div class="skills-band-head">
-          <div>
-            <p class="skills-kicker"><span class="skills-led" aria-hidden="true"></span> PRACTICAL EXPERIENCE, NOT PROFICIENCY BARS</p>
-            <h2 id="skills-title" class="display-heading">The tools behind<br><span class="serif-italic">the thinking.</span></h2>
+        <div class="section-top skills-section-top"><span class="section-index">03 / TECHNICAL PRACTICE</span><span class="section-side">A WORKING SET OF TOOLS. NOT A COLLECTION OF BADGES.</span></div>
+        <div class="skills-studio">
+          <div class="skills-studio-intro">
+            <div class="skills-intro-top"><span><span class="skills-live-led" aria-hidden="true"></span> THE ENGINEERING INDEX</span><span>VOL. 01 — 06</span></div>
+            <div class="skills-intro-center">
+              <p class="skills-overline">THE WORK IS MORE THAN THE STACK.</p>
+              <h2 id="skills-title">Good systems<br>aren't built from<br><em>logos.</em></h2>
+              <p class="skills-intro-copy">They're built from trade-offs, clear interfaces, and knowing which tool belongs where. Here's my working toolkit.</p>
+            </div>
+            <div class="skills-intro-bottom">
+              <div class="skills-practice-note"><span>10+ YEARS IN PRACTICE</span><span>BACKEND → PRODUCT → DELIVERY</span></div>
+              <a class="skills-case-link" href="#work">See the work behind the tools <span aria-hidden="true">↗</span></a>
+            </div>
+            <div class="skills-studio-ornament" aria-hidden="true"><span>06</span><i></i></div>
           </div>
-          <div class="skills-intro">
-            <p>From distributed services to product interfaces, these are the technologies I use to take work from a diagram to a dependable release.</p>
-            <a href="#work" class="skills-proof-link">See them in practice <span aria-hidden="true">↗</span></a>
+          <div class="skills-categories" aria-label="Technical skills by discipline">
+            <article class="skills-group" aria-labelledby="skill-backend"><span class="skills-group-no">01 <small>/ SERVICE LAYER</small></span><div class="skills-group-body"><h3 id="skill-backend">Backend &amp; APIs</h3><p>Reliable contracts, orchestration, and the services behind the product.</p></div><ul aria-label="Backend technologies"><li>Node.js</li><li>NestJS</li><li>Express</li><li>Java / Spring Boot</li><li>REST &amp; GraphQL</li></ul></article>
+            <article class="skills-group" aria-labelledby="skill-architecture"><span class="skills-group-no">02 <small>/ SYSTEM DESIGN</small></span><div class="skills-group-body"><h3 id="skill-architecture">Architecture</h3><p>Building for change, not just the first deployment.</p></div><ul aria-label="Architecture practices"><li>Microservices</li><li>Event-driven</li><li>BFF</li><li>API orchestration</li><li>Distributed systems</li></ul></article>
+            <article class="skills-group" aria-labelledby="skill-frontend"><span class="skills-group-no">03 <small>/ EXPERIENCE LAYER</small></span><div class="skills-group-body"><h3 id="skill-frontend">Frontend</h3><p>Interfaces that make complicated workflows feel simple.</p></div><ul aria-label="Frontend technologies"><li>TypeScript</li><li>React</li><li>Next.js</li><li>Angular</li><li>Vue</li><li>Vite</li></ul></article>
+            <article class="skills-group" aria-labelledby="skill-data"><span class="skills-group-no">04 <small>/ DATA LAYER</small></span><div class="skills-group-body"><h3 id="skill-data">Data &amp; persistence</h3><p>Models, queries, and the performance details that matter.</p></div><ul aria-label="Data technologies"><li>PostgreSQL</li><li>MongoDB</li><li>MySQL</li><li>Indexing</li><li>Query tuning</li></ul></article>
+            <article class="skills-group" aria-labelledby="skill-cloud"><span class="skills-group-no">05 <small>/ SHIPPING LAYER</small></span><div class="skills-group-body"><h3 id="skill-cloud">Cloud &amp; delivery</h3><p>Moving systems safely from local build to production.</p></div><ul aria-label="Delivery technologies"><li>AWS</li><li>Azure</li><li>Docker</li><li>CI/CD</li><li>Nginx</li><li>Testing</li></ul></article>
+            <article class="skills-group" aria-labelledby="skill-edge"><span class="skills-group-no">06 <small>/ THE EDGES</small></span><div class="skills-group-body"><h3 id="skill-edge">Security &amp; tooling</h3><p>Trust boundaries, payment flows, and developer tools worth building.</p></div><ul aria-label="Security and tooling practices"><li>RBAC / OIDC</li><li>Payments</li><li>Webhooks</li><li>RAG / MCP</li><li>Tauri / Rust</li></ul></article>
+            <div class="skills-ledger-foot"><span>SELECTED TECHNOLOGIES, USED IN REAL WORK.</span><a href="/resume/pdf/Amrishkhan-Sheik-Abdullah-Resume.pdf" download>Full experience <span aria-hidden="true">↗</span></a></div>
           </div>
         </div>
-        <div class="skills-categories" aria-label="Technical skills by discipline">
-          <article class="skills-group"><span class="skills-group-no">01 / SYSTEMS</span><h3>Backend &amp; APIs</h3><p>Services, contracts, and reliable integration layers.</p><ul><li>Node.js</li><li>NestJS</li><li>Express</li><li>Java / Spring Boot</li><li>REST</li><li>GraphQL</li></ul></article>
-          <article class="skills-group"><span class="skills-group-no">02 / STRUCTURE</span><h3>Architecture</h3><p>Making complex systems easier to reason about.</p><ul><li>Microservices</li><li>Event-driven</li><li>BFF patterns</li><li>API orchestration</li><li>Distributed systems</li></ul></article>
-          <article class="skills-group"><span class="skills-group-no">03 / EXPERIENCE</span><h3>Frontend</h3><p>Production interfaces built for real users.</p><ul><li>TypeScript</li><li>React</li><li>Next.js</li><li>Angular</li><li>Vue</li><li>Vite</li></ul></article>
-          <article class="skills-group"><span class="skills-group-no">04 / INFORMATION</span><h3>Data</h3><p>Query design, modeling, and predictable performance.</p><ul><li>PostgreSQL</li><li>MongoDB</li><li>MySQL</li><li>SQL tuning</li><li>Indexing</li></ul></article>
-          <article class="skills-group"><span class="skills-group-no">05 / DELIVERY</span><h3>Cloud &amp; reliability</h3><p>From local build to monitored production systems.</p><ul><li>AWS</li><li>Docker</li><li>Azure</li><li>CI/CD</li><li>Nginx</li><li>Automated testing</li></ul></article>
-          <article class="skills-group"><span class="skills-group-no">06 / EXPLORATION</span><h3>Security &amp; tooling</h3><p>Safer APIs, integrations, and new developer workflows.</p><ul><li>RBAC / OIDC</li><li>Payment gateways</li><li>Webhooks</li><li>RAG / MCP</li><li>Tauri / Rust</li></ul></article>
-        </div>
-        <div class="skills-foot"><span>SELECTED CAPABILITIES · BUILT THROUGH HANDS-ON PROJECT WORK</span><a href="/resume/pdf/Amrishkhan-Sheik-Abdullah-Resume.pdf" download>Full experience in my résumé <span aria-hidden="true">↗</span></a></div>
       </div>
     </section>
 

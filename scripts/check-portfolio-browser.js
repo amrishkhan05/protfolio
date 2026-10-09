@@ -124,9 +124,19 @@ assert.equal(await skills.locator('.skills-group').count(),6,'six carefully cura
 assert.ok(await page.locator('#primary-nav a[href="#skills"]').isVisible(),'skills navigation is discoverable');
 assert.ok((await skills.innerText()).includes('PostgreSQL'),'database experience is indexed');
 assert.ok((await skills.innerText()).includes('NestJS'),'backend stack is indexed');
-const skillsDesktop=await skills.evaluate(el=>({cols:getComputedStyle(el.querySelector('.skills-categories')).gridTemplateColumns.trim().split(/\s+/).length,width:el.getBoundingClientRect().width,height:el.getBoundingClientRect().height}));
-assert.equal(skillsDesktop.cols,3,'desktop skills grouped into three columns');
-assert.ok(skillsDesktop.height<1000,'skills section remains concise on desktop');
+const skillsDesktop=await skills.evaluate(el=>{
+ const wrap=el.querySelector('.skills-studio').getBoundingClientRect();
+ const intro=el.querySelector('.skills-studio-intro').getBoundingClientRect();
+ const ledger=el.querySelector('.skills-categories').getBoundingClientRect();
+ const rows=[...el.querySelectorAll('.skills-group')].map(r=>r.getBoundingClientRect());
+ return {height:el.getBoundingClientRect().height,width:wrap.width,introWidth:intro.width,ledgerWidth:ledger.width,rows:rows.map(r=>({top:r.top,bottom:r.bottom,height:r.height}))};
+});
+assert.ok(skillsDesktop.introWidth>330&&skillsDesktop.ledgerWidth>520,'desktop uses an editorial side panel alongside the skills ledger');
+assert.ok(skillsDesktop.height<1050,'skills section remains concise on desktop');
+assert.ok(skillsDesktop.rows.every(r=>r.height>=80&&r.height<=155),'skill rows stay compact and readable');
+assert.ok(skillsDesktop.rows.every((r,i,all)=>!i||r.top>=all[i-1].bottom-1),'skills ledger rows never overlap');
+assert.equal(await skills.locator('.skills-ledger-foot a[href$=".pdf"]').count(),1,'direct résumé link preserved');
+assert.equal(await skills.locator('.skills-group ul li').count(),33,'all 33 selected technologies remain visible');
 await skills.screenshot({path:path.join(output,'skills-desktop-light.png')});
 
 assert.ok((await page.locator('a[href$=".pdf"]').count())>0,'resume PDF available');
@@ -369,9 +379,15 @@ assert.ok(mobileBoard.result>=100,'hero result text remains readable on mobile')
 await page.locator('.hero-switchboard').screenshot({path:path.join(output,'hero-switchboard-mobile.png')});
 
 assert.equal(await page.locator('#writing-context').isVisible(),false,'secondary bar never crowds the mobile viewport');
-const mobileSkills=await page.locator('#skills .skills-categories').evaluate(el=>({columns:getComputedStyle(el).gridTemplateColumns.trim().split(/\s+/).length,width:el.getBoundingClientRect().width}));
-assert.equal(mobileSkills.columns,1,'mobile technical expertise uses single-column layout');
-assert.ok(mobileSkills.width<=390,'mobile technical expertise fits viewport');
+const mobileSkills=await page.locator('#skills .skills-studio').evaluate(el=>{
+ const panel=el.querySelector('.skills-studio-intro').getBoundingClientRect();
+ const ledger=el.querySelector('.skills-categories').getBoundingClientRect();
+ const labels=[...el.querySelectorAll('.skills-group li')].map(x=>x.getBoundingClientRect());
+ return {width:el.getBoundingClientRect().width,panelBottom:panel.bottom,ledgerTop:ledger.top,ledgerWidth:ledger.width,labelsOverflow:labels.some(b=>b.right>innerWidth+2)};
+});
+assert.ok(mobileSkills.width<=390&&mobileSkills.ledgerWidth<=390,'skills fits mobile viewport without overflow');
+assert.ok(mobileSkills.ledgerTop>=mobileSkills.panelBottom-1,'mobile skills ledger stacks below editorial intro');
+assert.equal(mobileSkills.labelsOverflow,false,'long technical skill names do not run off mobile viewport');
 await page.locator('#skills').screenshot({path:path.join(output,'skills-mobile.png')});
 
 await page.locator('#menu-toggle').click();
