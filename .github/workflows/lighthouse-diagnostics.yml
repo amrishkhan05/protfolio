@@ -23,7 +23,7 @@ jobs:
       - name: Install production server and Lighthouse
         run: |
           npm ci
-          npm install --no-save lighthouse@12.8.2
+          npm install --no-save lighthouse@13.5.0
           google-chrome --version || chromium --version
       - name: Start local site
         run: |
@@ -46,19 +46,24 @@ jobs:
             node -e 'require("fs").writeFileSync(process.argv[1],JSON.stringify({"x-vercel-protection-bypass":process.env.VERCEL_AUTOMATION_BYPASS_SECRET}))' "$HEADER_FILE"
             chmod 600 "$HEADER_FILE"
           fi
-          for case in homepage-local aruvix-local homepage-preview homepage-production; do
+          for case in homepage-local aruvix-local homepage-preview homepage-production homepage-local-desktop aruvix-local-desktop homepage-production-desktop; do
             case "$case" in
               homepage-local) URL="http://127.0.0.1:3333/" ;;
               aruvix-local) URL="http://127.0.0.1:3333/aruvix" ;;
               homepage-preview) URL="https://protfolio-git-feature-editorial-w-d67f8c-amrishkhan05s-projects.vercel.app/" ;;
               homepage-production) URL="https://www.amrishkhan.dev/" ;;
+              homepage-local-desktop) URL="http://127.0.0.1:3333/" ;;
+              aruvix-local-desktop) URL="http://127.0.0.1:3333/aruvix" ;;
+              homepage-production-desktop) URL="https://www.amrishkhan.dev/" ;;
             esac
             echo "::group::Lighthouse $case $URL"
             extra=()
             if [ "$case" = "homepage-preview" ] && [ -s "$HEADER_FILE" ]; then
               extra+=(--extra-headers="$HEADER_FILE")
             fi
-            npx lighthouse "$URL" "${extra[@]}" \
+            preset=()
+            if [[ "$case" == *-desktop ]]; then preset+=(--preset=desktop); fi
+            npx lighthouse "$URL" "${extra[@]}" "${preset[@]}" \
               --chrome-flags="--headless --no-sandbox --disable-dev-shm-usage" \
               --only-categories=best-practices,seo \
               --output=json --output-path="lighthouse-reports/$case.json" \
@@ -83,7 +88,7 @@ jobs:
             }
           }
           console.log("CONSOLE",r.audits["errors-in-console"]?.details?.items?.slice(0,10)||[]);
-          if(label.endsWith('-local')&&(r.categories['best-practices']?.score<1||r.categories.seo?.score<1)){
+          if((label.endsWith("-local")||label.endsWith("-local-desktop"))&&(r.categories["best-practices"]?.score<1||r.categories.seo?.score<1)){
             console.error('LOCAL_100_GATE_FAILED',label);process.exitCode=1;
           }
           NODE
