@@ -5,7 +5,7 @@ html.is-blog-route .blog-detail-shell{min-height:calc(100svh - 100px)}
 html.is-blog-route .blog-detail-layout{align-items:start}
 html.is-blog-route #blog-detail .blog-article{min-width:0}
 html.is-blog-route .blog-detail-content[hidden]{display:none!important}
-html.is-blog-route.is-blog-ready #blog-loader-overlay{display:none!important}
+/* Reader overlay fades away only after article layout commits. */
 html.is-blog-route.is-blog-loading #blog-loader-overlay[hidden],
 html.is-opening-article #blog-loader-overlay[hidden]{display:grid!important}
 html.is-blog-route.is-blog-loading #blog-loader-overlay:not([hidden]),
