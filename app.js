@@ -617,7 +617,7 @@ const renderBlogPage = async (article) => {
   const indexHtml = (await fs.readFile(path.join(__dirname, "public", "index.html"), "utf8"))
     .replace(
       '<link rel="stylesheet" href="/site-redesign.css?v=5" />',
-      '<link rel="stylesheet" href="/styles.css?v=4" />\\n  <link rel="stylesheet" href="/site-redesign.css?v=5" />',
+      ['<link rel="stylesheet" href="/styles.css?v=4" />', '<link rel="stylesheet" href="/site-redesign.css?v=5" />'].join("\n"),
     );
   const canonicalPath = article.url;
   const description = article.description || `Read ${article.title} by Amrish Khan on amrishkhan.dev.`;
