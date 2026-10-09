@@ -38,7 +38,7 @@ assert.equal(await topicTrigger.getAttribute('aria-expanded'),'false','topic sel
 assert.equal(await topicMenu.isVisible(),false,'no row of chips is exposed by default');
 await topicTrigger.click();
 assert.equal(await topicMenu.isVisible(),true,'custom topic menu opens');
-assert.equal(await topicMenu.locator('[data-tag="webdev"] span').first().innerText(),'Web development','DEV.to tag has a human-readable label');
+assert.equal(await topicMenu.locator('[data-tag="javascript"] span').first().innerText(),'JavaScript','DEV.to tag is displayed with human-readable capitalization');
 await topicMenu.locator('[data-tag="javascript"]').click();
 assert.equal((await page.locator('#journal-topic-current').innerText()).trim(),'JavaScript','topic selector displays the selected category');
 assert.equal((await page.locator('#journal-match-summary').innerText()).trim(),'4 of 9 matching','topic selection filters stories');
