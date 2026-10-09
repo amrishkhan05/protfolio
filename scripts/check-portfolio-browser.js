@@ -246,7 +246,9 @@ assert.ok(await page.locator('#blog-detail-body').isVisible(),'article body is v
 await page.waitForTimeout(250);
 assert.equal(await page.locator('#blog-detail-cover').isVisible(),false,'failed full-article cover hides without a broken image');
 assert.ok(await page.locator('.blog-cover-fallback').isVisible(),'branded cover fallback remains visible');
-assert.equal(await page.locator('.blog-cover-frame').evaluate(el=>Math.round(el.getBoundingClientRect().height))>150,true,'article cover keeps its dimensions after failure');
+const failedCoverFrame=await page.locator('.blog-cover-frame').evaluate(el=>({w:el.getBoundingClientRect().width,h:el.getBoundingClientRect().height}));
+assert.ok(failedCoverFrame.h>120,'failed cover still reserves vertical space');
+assert.ok(Math.abs(failedCoverFrame.w/failedCoverFrame.h-1000/420)<0.07,'failed cover retains wide banner aspect ratio');
 assert.equal(await page.locator('#blog-loader-overlay').isVisible(),false,'SSR articles do not flash a loader on ready content');
 
 assert.ok((await page.locator('.blog-back-link').getAttribute('href'))==='/#writing','article back link to writing');
