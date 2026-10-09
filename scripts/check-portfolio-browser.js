@@ -678,8 +678,8 @@ const loaderGeometry=await page.locator('#blog-loader-overlay').evaluate(el=>{
 });
 assert.ok(Math.abs(loaderGeometry.surfaceHeight-loaderGeometry.viewportHeight)<3,
   'only article loader covers whole viewport');
-assert.ok(loaderGeometry.width>=380&&loaderGeometry.width<=480,
-  'destination terminal keeps stable desktop width, not a small spinner');
+assert.ok(loaderGeometry.width>=Math.min(380,loaderGeometry.viewportWidth-48)&&loaderGeometry.width<=480,
+  'destination terminal keeps a responsive, stable width instead of shrinking to a fallback spinner');
 
 const atomicPending=await page.evaluate(()=>({
   ready:document.documentElement.classList.contains('is-blog-ready'),
