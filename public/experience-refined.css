@@ -9,9 +9,9 @@
 #home-content #experience .experience-heading p{font:400 15px/1.72 var(--sans);color:#485b51;margin:0 0 22px;max-width:450px}
 #home-content #experience .experience-stat-line{display:flex;justify-content:space-between;max-width:380px;gap:14px;border-block:1px solid #bbc9bd;padding:11px 0;margin-bottom:22px;color:#476b55;font:600 11px/1.5 var(--mono)}
 #home-content #experience .timeline{display:flex;flex-direction:column;gap:0;overflow:visible!important}
-#home-content #experience .timeline-row{display:grid;grid-template-columns:84px 14px minmax(0,1fr);column-gap:clamp(10px,1.5vw,20px);min-height:0!important;height:auto;padding:0 0 clamp(29px,3.9vh,44px);margin:0 0 clamp(30px,4vh,46px);position:relative}
+#home-content #experience .timeline-row{display:grid;grid-template-columns:155px 14px minmax(0,1fr);column-gap:clamp(10px,1.5vw,20px);min-height:0!important;height:auto;padding:0 0 clamp(29px,3.9vh,44px);margin:0 0 clamp(30px,4vh,46px);position:relative}
 #home-content #experience .timeline-row:last-child{margin-bottom:0;padding-bottom:0}
-#home-content #experience .timeline-date{display:flex;flex-direction:column;gap:5px;font:500 10px/1.4 var(--mono);letter-spacing:.01em;color:#637366;padding-top:3px}
+#home-content #experience .timeline-date{display:flex;flex-direction:row;align-items:baseline;flex-wrap:nowrap;white-space:nowrap;gap:4px;font:500 10px/1.4 var(--mono);letter-spacing:0;color:#637366;padding-top:3px}
 #home-content #experience .timeline-date strong{font-weight:750;color:#264b36}
 #home-content #experience .timeline-dot{position:relative}
 #home-content #experience .timeline-dot::before{width:11px;height:11px;margin:3px 0 0;background:#244533}
@@ -46,7 +46,7 @@
 }
 @media(max-width:760px){
  #home-content #experience .timeline-row{grid-template-columns:16px minmax(0,1fr);column-gap:14px;padding-bottom:27px;margin-bottom:29px}
- #home-content #experience .timeline-date{grid-column:2;grid-row:1;flex-direction:row;gap:5px;flex-wrap:wrap;margin-bottom:10px}
+ #home-content #experience .timeline-date{grid-column:2;grid-row:1;flex-direction:row;gap:5px;flex-wrap:nowrap;margin-bottom:10px}
  #home-content #experience .timeline-dot{grid-column:1;grid-row:1 / span 2}
  #home-content #experience .timeline-content{grid-column:2;grid-row:2}
  #home-content #experience .timeline-dot::after{bottom:-36px}

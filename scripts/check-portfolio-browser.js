@@ -234,6 +234,23 @@ assert.equal(sectionGeometry.introColumns,2,'intro uses editorial two-column gri
 assert.equal(sectionGeometry.experiencePosition,'sticky','experience heading stays pinned on desktop');
 assert.notEqual(sectionGeometry.timelineOverflow,'scroll','timeline uses natural page scrolling');
 assert.equal(await page.locator('#experience .timeline-row').count(),4,'four detailed employment chapters');
+const dateAlignment=await page.locator('#experience').evaluate(el=>{
+ return [...el.querySelectorAll('.timeline-row')].map(row=>{
+  const gutter=row.querySelector('.timeline-date');
+  const start=gutter.querySelector('strong').getBoundingClientRect();
+  const end=gutter.querySelector('span').getBoundingClientRect();
+  const line=row.querySelector('.timeline-dot').getBoundingClientRect();
+  const box=gutter.getBoundingClientRect();
+  return {label:gutter.textContent.trim(),gutterWidth:box.width,contentWidth:gutter.scrollWidth,
+    topGap:Math.abs(start.top-end.top),startRight:start.right,endLeft:end.left,
+    endRight:end.right,dotLeft:line.left};
+ });
+});
+assert.ok(dateAlignment.every(x=>x.topGap<3),'every experience date range stays on one line');
+assert.ok(dateAlignment.every(x=>x.contentWidth<=x.gutterWidth+2),'experience dates fit their left column without overflow');
+assert.ok(dateAlignment.every(x=>x.endRight<x.dotLeft-3),'timeline date labels never overlap the vertical track');
+assert.ok(dateAlignment.some(x=>x.label.includes('MAY 2021')&&x.label.includes('AUG 2022')),'the reported 2021–2022 role duration stays intact');
+
 assert.equal(await page.locator('#experience .timeline-points li').count(),16,'detailed experience restored from the original portfolio and résumé');
 assert.equal(await page.locator('#experience .experience-credential').count(),2,'education and certifications restored');
 const spacing=await page.locator('#experience .timeline').evaluate(el=>{
@@ -474,6 +491,14 @@ const mobileExperience=await page.locator('#experience').evaluate(el=>({
 }));
 assert.ok(mobileExperience.width<=mobileExperience.viewport+2,'experience fits mobile width');
 assert.notEqual(mobileExperience.timelineScroll,'scroll','experience continues with natural mobile scrolling');
+const mobileDateAlignment=await page.locator('#experience').evaluate(el=>
+ [...el.querySelectorAll('.timeline-date')].map(node=>{
+  const start=node.querySelector('strong').getBoundingClientRect();
+  const end=node.querySelector('span').getBoundingClientRect();
+  return {width:node.getBoundingClientRect().width,used:node.scrollWidth,topGap:Math.abs(start.top-end.top)};
+ }));
+assert.ok(mobileDateAlignment.every(x=>x.topGap<3&&x.used<=x.width+2),'experience durations stay on one line without mobile overflow');
+
 await page.locator('#experience').screenshot({path:path.join(output,'experience-detailed-mobile.png')});
 const mobileSkills=await page.locator('#skills .skills-studio').evaluate(el=>{
  const panel=el.querySelector('.skills-studio-intro').getBoundingClientRect();
