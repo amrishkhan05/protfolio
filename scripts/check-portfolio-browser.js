@@ -659,8 +659,36 @@ assert.equal(await page.locator('#blog-loader-overlay').isVisible(),false,'termi
 assert.ok(await page.locator('#blog-detail-title').isVisible(),'article title and body are visible together after loading');
 assert.equal(await page.evaluate(()=>document.documentElement.classList.contains('is-blog-ready')),true,'slow API route reveals only after complete');
 assert.ok(await page.locator('#blog-detail-content').isVisible(),'article body is visible on the ready frame');
+assert.equal(await page.locator('#blog-related .blog-related-card').count(),4,'four editorial related stories appear after the loader');
+assert.ok(await page.locator('#blog-related .related-card-index').first().isVisible(),'related cards include editorial index');
+const relatedLayout=await page.locator('#blog-related .blog-related-grid').evaluate(el=>({
+ columns:getComputedStyle(el).gridTemplateColumns.split(' ').length,
+ articleVisible:!!document.querySelector('#blog-detail-content')?.getBoundingClientRect().height
+}));
+assert.ok(relatedLayout.columns>=1&&relatedLayout.articleVisible,'recommendations remain beneath the completed article');
+
 assert.equal(await page.locator('.blog-media-unavailable').count(),1,'unavailable inline image becomes branded placeholder');
 assert.ok(await page.locator('.blog-cover-fallback').isVisible(),'slow article broken cover shows fallback');
+// A sectioned article exposes the new contents rail and context-specific tool cards.
+const sidebarHtml=articleHtml
+ .replace('<div class="blog-body" id="blog-detail-body"><p>Engineering is about thoughtful decisions in complex systems.</p></div>',
+ '<div class="blog-body" id="blog-detail-body"><h2>Understanding APIs</h2><p>Inspect API JSON responses.</p><h2>Testing requests</h2><p>Import cURL and test endpoints.</p></div>');
+await page.route('**/blog/sidebar-fixture',route=>route.fulfill({status:200,contentType:'text/html',body:sidebarHtml}));
+await page.goto(base+'/blog/sidebar-fixture',{waitUntil:'domcontentloaded'});
+await page.locator('.blog-toc-link').first().waitFor({state:'visible',timeout:10000});
+assert.equal(await page.locator('.blog-toc-link').count(),2,'two section links populate the reader guide');
+assert.ok(await page.locator('.blog-reading-guide h2').isVisible(),'reading guide heading is displayed');
+await page.locator('#blog-tool-list .blog-tool-link').first().waitFor({state:'visible',timeout:10000});
+assert.ok(await page.locator('#blog-tool-list .blog-tool-link').count()>=2,'relevant tools are recommended');
+assert.ok((await page.locator('#blog-tool-list .blog-tool-link').first().getAttribute('href')).startsWith('https://www.aruvix.com/'),'tool cards lead to working Aruvix tool routes');
+await page.screenshot({path:path.join(output,'article-reader-editorial-desktop.png'),fullPage:true});
+await page.setViewportSize({width:390,height:844});
+await page.goto(base+'/blog/sidebar-fixture',{waitUntil:'domcontentloaded'});
+await page.locator('.blog-toc-link').first().waitFor({state:'visible',timeout:10000});
+await page.locator('.blog-related-card').first().waitFor({state:'visible',timeout:10000});
+assert.ok(await page.locator('.blog-reading-guide').isVisible(),'mobile reading guide is visible');
+assert.ok((await page.evaluate(()=>document.documentElement.scrollWidth))<=392,'mobile article with tools and story cards has no horizontal overflow');
+await page.screenshot({path:path.join(output,'article-reader-editorial-mobile.png'),fullPage:true});
 assert.deepEqual(errors,[],'no browser JavaScript errors');
 await browser.close();
 console.log('Browser regression checks passed on desktop, mobile, single editorial theme, Aruvix, article reader and resume downloads.');

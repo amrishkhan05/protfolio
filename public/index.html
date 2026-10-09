@@ -80,7 +80,7 @@
   <script>if (/^\/blog\//.test(location.pathname)) {var icons=document.createElement('link'); icons.rel='stylesheet'; icons.href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css'; document.head.appendChild(icons)}</script>
   <link rel="stylesheet" href="/site-redesign.css?v=5" />
   <link rel="stylesheet" href="/site-polish.css?v=10" />
-  <link rel="stylesheet" href="/article-experience.css?v=3" />
+  <link rel="stylesheet" href="/article-experience.css?v=4" />
   <link rel="stylesheet" href="/studio-skills.css?v=3" />
   <link rel="stylesheet" href="/writing-context.css?v=1" />
   <link rel="stylesheet" href="/hero-switchboard.css?v=1" />
@@ -385,18 +385,20 @@
   <div class="blog-detail-shell" id="blog-detail" hidden>
     <div class="blog-detail-layout">
       <aside class="blog-toc" id="blog-toc" aria-label="Article table of contents" hidden>
-        <div class="blog-sidebar-panel">
-          <h2>Contents</h2>
-          <nav id="blog-toc-list"></nav>
+        <div class="blog-sidebar-panel blog-reading-guide">
+          <span class="blog-sidebar-eyebrow"><span aria-hidden="true">/</span> READING GUIDE</span>
+          <h2>On this page<span aria-hidden="true">↘</span></h2>
+          <nav id="blog-toc-list" aria-label="Jump to article section"></nav>
         </div>
         <div class="blog-sidebar-panel share-panel">
-          <h2>Share Technical Insight</h2>
-          <p>Help your peers optimize their functional chains.</p>
-          <div>
+          <span class="blog-sidebar-eyebrow">PASS IT ON</span>
+          <h2>Worth sharing?</h2>
+          <p>Good ideas travel further together.</p>
+          <div class="blog-share-actions">
             <button id="blog-share-btn" type="button" aria-label="Share article"><i class="fa-solid fa-share-nodes"
-                aria-hidden="true"></i></button>
+                aria-hidden="true"></i><span>Share</span></button>
             <button id="blog-copy-link-btn" type="button" aria-label="Copy article link"><i class="fa-solid fa-link"
-                aria-hidden="true"></i></button>
+                aria-hidden="true"></i><span>Copy link</span></button>
           </div>
         </div>
       </aside>
@@ -427,15 +429,22 @@
           </section>
         </div>
       </article>
-      <aside class="blog-related" id="blog-related" aria-label="Related articles and tools" hidden>
-        <div class="blog-sidebar-panel">
-          <h2>Continue Reading</h2>
-          <div id="blog-related-list"></div>
-        </div>
-        <div class="blog-sidebar-panel blog-tools-panel" id="blog-tools-panel" hidden>
-          <h2>Useful tools</h2>
-          <div id="blog-tool-list"></div>
-        </div>
+      <aside class="blog-related" id="blog-related" aria-label="More stories and developer resources" hidden>
+        <section class="blog-sidebar-panel blog-related-editorial" aria-labelledby="continue-reading-title">
+          <div class="blog-section-heading">
+            <div><span class="blog-section-kicker">THE NEXT CONNECTION / 01</span><h2 id="continue-reading-title">Continue <em>reading.</em></h2></div>
+            <a href="/#writing" class="blog-all-stories">All stories <span aria-hidden="true">↗</span></a>
+          </div>
+          <div id="blog-related-list" class="blog-related-grid"></div>
+        </section>
+        <section class="blog-sidebar-panel blog-tools-panel" id="blog-tools-panel" aria-labelledby="blog-tools-title" hidden>
+          <div class="blog-section-heading">
+            <div><span class="blog-section-kicker">FROM THE WORKBENCH / 02</span><h2 id="blog-tools-title">Useful <em>tools.</em></h2></div>
+            <a class="blog-all-stories" href="https://www.aruvix.com/" target="_blank" rel="noopener noreferrer">Explore Aruvix <span aria-hidden="true">↗</span></a>
+          </div>
+          <p class="blog-tool-intro">A few practical browser-first tools for when inspiration turns into implementation.</p>
+          <div id="blog-tool-list" class="blog-tool-grid"></div>
+        </section>
       </aside>
     </div>
   </div>

@@ -897,22 +897,25 @@ const renderRelatedArticles = async (currentArticle) => {
       .slice(0, 4);
 
     if (!related.length) {
-      blogRelated.hidden = true;
+      blogRelatedList.innerHTML = "";
+      blogRelated.querySelector(".blog-related-editorial")?.setAttribute("hidden", "");
+      blogRelated.hidden = !blogToolsPanel || blogToolsPanel.hidden;
       return;
     }
 
     blogRelatedList.innerHTML = related
-      .map(
-        (blog) => `<a class="blog-related-card" href="${escapeHtml(blog.url)}">
-          <span>${escapeHtml(formatPublishedDate(blog.publishedAt).replace("Published: ", ""))}</span>
+      .map((blog, index) => `<a class="blog-related-card" href="${escapeHtml(blog.url)}">
+          <span class="related-card-meta"><span class="related-card-index">${String(index + 1).padStart(2, "0")} / FIELD NOTE</span><time datetime="${escapeHtml(blog.publishedAt || "")}">${escapeHtml(formatPublishedDate(blog.publishedAt).replace("Published: ", ""))}</time></span>
           <strong>${escapeHtml(blog.title)}</strong>
-        </a>`,
-      )
+          <span class="related-card-tail">READ STORY <span aria-hidden="true">↗</span></span>
+        </a>`)
       .join("");
+    blogRelated.querySelector(".blog-related-editorial")?.removeAttribute("hidden");
     blogRelated.hidden = false;
   } catch (error) {
     console.error("Unable to load related DEV articles:", error);
-    blogRelated.hidden = true;
+    blogRelated.querySelector(".blog-related-editorial")?.setAttribute("hidden", "");
+    blogRelated.hidden = !blogToolsPanel || blogToolsPanel.hidden;
   }
 };
 
@@ -925,18 +928,24 @@ const renderRelatedTools = (article) => {
   const tools = [
     {
       name: "JSON Formatter",
-      href: "/aruvix#json-formatter",
+      href: "https://www.aruvix.com/json-formatter",
       keywords: ["json", "api", "payload", "response"],
+      glyph: "{ }",
+      summary: "Format, validate and inspect JSON, locally.",
     },
     {
-      name: "API Tester",
-      href: "/aruvix#api-tester",
+      name: "API Client",
+      href: "https://www.aruvix.com/api-client",
       keywords: ["api", "postman", "http", "request", "endpoint"],
+      glyph: "→_",
+      summary: "Send requests and inspect API responses.",
     },
     {
-      name: "Curl Converter",
-      href: "/aruvix#curl-converter",
+      name: "cURL Import",
+      href: "https://www.aruvix.com/api-client",
       keywords: ["curl", "terminal", "http", "request"],
+      glyph: "$_",
+      summary: "Turn cURL commands into editable requests.",
     },
   ].filter((tool) => tool.keywords.some((keyword) => text.includes(keyword)));
 
@@ -947,14 +956,14 @@ const renderRelatedTools = (article) => {
   }
 
   blogToolList.innerHTML = tools
-    .map(
-      (tool) => `<a class="blog-tool-link" href="${escapeHtml(tool.href)}">
-        <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
-        <span>${escapeHtml(tool.name)}</span>
-      </a>`,
-    )
+    .map((tool) => `<a class="blog-tool-link" href="${escapeHtml(tool.href)}" target="_blank" rel="noopener noreferrer">
+        <span class="blog-tool-glyph" aria-hidden="true">${escapeHtml(tool.glyph)}</span>
+        <span class="blog-tool-content"><strong>${escapeHtml(tool.name)}</strong><small>${escapeHtml(tool.summary)}</small></span>
+        <span class="blog-tool-arrow" aria-hidden="true">↗</span>
+      </a>`)
     .join("");
   blogToolsPanel.hidden = false;
+  if (blogRelated) blogRelated.hidden = false;
 };
 
 blogDetailBody?.addEventListener("click", async (event) => {
