@@ -234,23 +234,25 @@ assert.equal(sectionGeometry.introColumns,2,'intro uses editorial two-column gri
 assert.equal(sectionGeometry.experiencePosition,'sticky','experience heading stays pinned on desktop');
 assert.notEqual(sectionGeometry.timelineOverflow,'scroll','timeline uses natural page scrolling');
 assert.equal(await page.locator('#experience .timeline-row').count(),4,'four detailed employment chapters');
-const dateAlignment=await page.locator('#experience').evaluate(el=>{
- return [...el.querySelectorAll('.timeline-row')].map(row=>{
-  const gutter=row.querySelector('.timeline-date');
-  const start=gutter.querySelector('strong').getBoundingClientRect();
-  const end=gutter.querySelector('span').getBoundingClientRect();
-  const line=row.querySelector('.timeline-dot').getBoundingClientRect();
-  const box=gutter.getBoundingClientRect();
-  return {label:gutter.textContent.trim(),gutterWidth:box.width,contentWidth:gutter.scrollWidth,
-    topGap:Math.abs(start.top-end.top),startRight:start.right,endLeft:end.left,
-    endRight:end.right,dotLeft:line.left};
- });
-});
-assert.ok(dateAlignment.every(x=>x.topGap<3),'every experience date range stays on one line');
-assert.ok(dateAlignment.every(x=>x.contentWidth<=x.gutterWidth+2),'experience dates fit their left column without overflow');
-assert.ok(dateAlignment.every(x=>x.endRight<x.dotLeft-3),'timeline date labels never overlap the vertical track');
-assert.ok(dateAlignment.some(x=>x.label.includes('MAY 2021')&&x.label.includes('AUG 2022')),'the reported 2021–2022 role duration stays intact');
 
+const dateAlignment=await page.locator('#experience').evaluate(el=>
+ [...el.querySelectorAll('.timeline-row')].map(row=>{
+   const date=row.querySelector('.timeline-date');
+   const first=date.querySelector('strong').getBoundingClientRect();
+   const last=date.querySelector('span').getBoundingClientRect();
+   const rail=row.querySelector('.timeline-dot').getBoundingClientRect();
+   const details=row.querySelector('.timeline-content').getBoundingClientRect();
+   const rect=date.getBoundingClientRect();
+   return {label:date.textContent.trim(),used:date.scrollWidth,width:rect.width,
+     topDiff:Math.abs(first.top-last.top),dateLeft:rect.left,
+     railRight:rail.right,detailsLeft:details.left,dateBottom:rect.bottom,detailsTop:details.top};
+ }));
+assert.ok(dateAlignment.every(x=>x.topDiff<3),'all career dates remain on a single line');
+assert.ok(dateAlignment.every(x=>x.used<=x.width+2),'career dates do not overflow their column');
+assert.ok(dateAlignment.every(x=>x.dateLeft>x.railRight&&Math.abs(x.dateLeft-x.detailsLeft)<2),
+  'dates and career details share one column beside the narrow rail');
+assert.ok(dateAlignment.every(x=>x.dateBottom<=x.detailsTop+1),'dates sit directly above the role details');
+assert.ok(dateAlignment.some(x=>x.label.includes('MAY 2021')&&x.label.includes('AUG 2022')),'May 2021 to August 2022 range is preserved');
 assert.equal(await page.locator('#experience .timeline-points li').count(),16,'detailed experience restored from the original portfolio and résumé');
 assert.equal(await page.locator('#experience .experience-credential').count(),2,'education and certifications restored');
 const spacing=await page.locator('#experience .timeline').evaluate(el=>{
@@ -259,7 +261,7 @@ const spacing=await page.locator('#experience .timeline').evaluate(el=>{
  return {rowGaps:rows.slice(1).map((r,i)=>r.top-rows[i].bottom),bulletCount:bullets.length,overlap:bullets.some(b=>b.height<15),
    widths:rows.map(r=>r.width),scrollHeight:el.scrollHeight,clientHeight:el.clientHeight};
 });
-assert.ok(spacing.rowGaps.every(g=>g>=20&&g<=55),'timeline chapters have a consistent readable rhythm: '+JSON.stringify(spacing));
+assert.ok(spacing.rowGaps.every(g=>g>=17&&g<=30),'timeline rows have tight consistent separation: '+JSON.stringify(spacing));
 assert.equal(spacing.overlap,false,'experience details remain legible');
 assert.ok(spacing.scrollHeight<=spacing.clientHeight+3,'timeline is not independently scrollable');
 await page.locator('#experience').screenshot({path:path.join(output,'experience-detailed-desktop.png')});
