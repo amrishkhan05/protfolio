@@ -21,6 +21,8 @@ await page.route('**/fixture-images.test/wide-banner.svg',route=>route.fulfill({
 await page.route('**/api/blogs*',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({blogs:sample,count:sample.length})}));
 await page.goto(base+'/',{waitUntil:'domcontentloaded'});
 await page.locator('#journal-grid .journal-card').first().waitFor({timeout:20000});
+assert.equal(await page.locator('#journal-feature .journal-loading-feature').count(),0,'featured loading placeholder is replaced after DEV.to response');
+assert.equal(await page.locator('#journal-grid .journal-loading-card').count(),0,'story placeholders are replaced as one render');
 
 const contextBar=page.locator('#writing-context');
 assert.equal(await contextBar.isVisible(),false,'writing contextual bar stays hidden before entering Writing');
@@ -603,7 +605,9 @@ assert.ok(await page.locator('.blog-cover-fallback').isVisible(),'branded cover 
 const failedCoverFrame=await page.locator('.blog-cover-frame').evaluate(el=>({w:el.getBoundingClientRect().width,h:el.getBoundingClientRect().height}));
 assert.ok(failedCoverFrame.h>120,'failed cover still reserves vertical space');
 assert.ok(Math.abs(failedCoverFrame.w/failedCoverFrame.h-1000/420)<0.07,'failed cover retains wide banner aspect ratio');
-assert.equal(await page.locator('#blog-loader-overlay').isVisible(),false,'SSR articles do not flash a loader on ready content');
+assert.equal(await page.locator('#blog-loader-overlay').isVisible(),false,'SSR reader reveals after enhancements complete');
+assert.equal(await page.evaluate(()=>document.documentElement.classList.contains('is-blog-ready')),true,'SSR reader commits its ready state');
+assert.equal(await page.locator('#blog-toc').isVisible(),false,'an uninitialized contents panel cannot appear alone');
 
 assert.ok((await page.locator('.blog-back-link').getAttribute('href'))==='/#writing','article back link to writing');
 const articleOverflow=await page.evaluate(()=>({
@@ -636,12 +640,25 @@ await page.goto(base+'/blog/slow-fixture',{waitUntil:'domcontentloaded'});
 const loaderState=await page.evaluate(()=>({home:getComputedStyle(document.querySelector('#home-content')).display,loader:getComputedStyle(document.querySelector('#blog-loader-overlay')).display,shell:document.querySelector('#blog-detail').getBoundingClientRect().height}));
 assert.equal(loaderState.home,'none','article route never paints the home layout');
 assert.equal(loaderState.loader,'grid','terminal loader visible while data fetch is pending');
+const atomicPending=await page.evaluate(()=>({
+  ready:document.documentElement.classList.contains('is-blog-ready'),
+  sidebar:getComputedStyle(document.querySelector('#blog-toc')).display,
+  layout:getComputedStyle(document.querySelector('#blog-detail .blog-detail-layout')).visibility,
+  content:document.querySelector('#blog-detail-content').hidden
+}));
+assert.equal(atomicPending.ready,false,'article does not become ready while the API is pending');
+assert.equal(atomicPending.sidebar,'none','uninitialized sidebar is hidden before the loader finishes');
+assert.equal(atomicPending.layout,'hidden','whole reading grid remains hidden during loading');
+assert.equal(atomicPending.content,true,'incomplete article content stays hidden');
 assert.ok(loaderState.shell>200,'article route maintains reserved layout space');
 assert.ok(await page.locator('.code-loader-prompt').isVisible(),'terminal progress UI is shown');
 await page.screenshot({path:path.join(output,'article-terminal-loading.png')});
 await page.locator('#blog-detail-body').getByText('Article finally loaded.').waitFor({timeout:8000});
 await page.waitForTimeout(300);
 assert.equal(await page.locator('#blog-loader-overlay').isVisible(),false,'terminal loader disappears when article is ready');
+assert.ok(await page.locator('#blog-detail-title').isVisible(),'article title and body are visible together after loading');
+assert.equal(await page.evaluate(()=>document.documentElement.classList.contains('is-blog-ready')),true,'slow API route reveals only after complete');
+assert.ok(await page.locator('#blog-detail-content').isVisible(),'article body is visible on the ready frame');
 assert.equal(await page.locator('.blog-media-unavailable').count(),1,'unavailable inline image becomes branded placeholder');
 assert.ok(await page.locator('.blog-cover-fallback').isVisible(),'slow article broken cover shows fallback');
 assert.deepEqual(errors,[],'no browser JavaScript errors');
