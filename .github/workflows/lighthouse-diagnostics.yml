@@ -55,7 +55,7 @@ jobs:
           const label=process.argv[2],p="lighthouse-reports/"+label+".json";
           if(!fs.existsSync(p)){console.log(label,"NO_REPORT");process.exit(0)}
           const r=JSON.parse(fs.readFileSync(p,"utf8"));
-          if(label==="homepage-preview"&&/vercel\\.com\\/login/.test(r.finalDisplayedUrl||"")){
+          if(label==="homepage-preview"&&String(r.finalDisplayedUrl||"").startsWith("https://vercel.com/login")){
              console.log("BLOCKED_BY_VERCEL_AUTH","Preview redirected to Vercel login. Report measures the login screen, not the portfolio.");
            }
           console.log("TARGET",label,"URL",r.finalDisplayedUrl,"Lighthouse",r.lighthouseVersion,
