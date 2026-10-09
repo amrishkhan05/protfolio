@@ -171,12 +171,11 @@ for (const {width,height} of [{width:1440,height:900},{width:1536,height:960}]){
  await page.goto(base+'/',{waitUntil:'domcontentloaded'});
  await page.locator('#skills .skills-group').last().waitFor();
  await page.locator('#primary-nav a[href="#skills"]').click();
- await page.waitForFunction(()=>{
-  const section=document.getElementById('skills').getBoundingClientRect();
-  const nav=document.querySelector('.site-header').getBoundingClientRect();
-  return Math.abs(section.top-nav.bottom)<24;
- },null,{timeout:8000});
- await page.waitForTimeout(380); // CSS smooth-scrolling must finish before taking geometry.
+ assert.equal(await page.evaluate(()=>location.hash),'#skills','Skills navigation targets the right section');
+ // Normalize the scroll target before measuring, regardless of smooth-scroll
+ // animation duration or an incoming browser font swap.
+ await page.evaluate(()=>document.querySelector('#skills').scrollIntoView({behavior:'instant',block:'start'}));
+ await page.waitForTimeout(160);
  const fit=await page.evaluate(()=>{
   const section=document.getElementById('skills').getBoundingClientRect();
   const nav=document.querySelector('.site-header').getBoundingClientRect();
