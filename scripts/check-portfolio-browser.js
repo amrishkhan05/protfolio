@@ -57,6 +57,8 @@ assert.equal(await topicMenu.isVisible(),false,'Escape closes topic popup');
 await topicTrigger.click();
 await page.locator('#journal-order').click();
 assert.equal(await topicMenu.isVisible(),false,'opening sort closes topic menu');
+assert.equal(await page.locator('#journal-sort-options').isVisible(),true,'sort opens as topic closes');
+await page.locator('#journal-order').click();
 
 const sortTrigger=page.locator('#journal-order'),sortMenu=page.locator('#journal-sort-options');
 assert.equal(await sortTrigger.evaluate(el=>el.tagName),'BUTTON','custom sort replaces system select');
