@@ -26,9 +26,17 @@ assert.equal(await page.locator('#journal-grid .journal-loading-card').count(),0
 
 assert.equal((await page.locator('#journal-total').innerText()).trim(),'9','visible article count');
 assert.equal((await page.locator('#journal-match-summary').innerText()).trim(),'All stories','default article status');
-const archiveGeo=await page.locator('.journal-discovery').evaluate(el=>{const a=el.querySelector('#journal-search').getBoundingClientRect(),b=el.querySelector('#journal-order').getBoundingClientRect();return {searchRight:a.right,sortLeft:b.left,height:el.getBoundingClientRect().height};});
-assert.ok(archiveGeo.sortLeft>=archiveGeo.searchRight-1,'desktop sort follows search on same row');
-assert.ok(archiveGeo.height<260,'archive stays light and compact');
+const archiveGeo=await page.locator('.journal-discovery').evaluate(el=>{
+ const search=el.querySelector('.journal-search-box').getBoundingClientRect();
+ const topic=el.querySelector('.journal-topic-row').getBoundingClientRect();
+ const sort=el.querySelector('.journal-sort-field').getBoundingClientRect();
+ return {searchRight:search.right,searchWidth:search.width,topicLeft:topic.left,topicRight:topic.right,sortLeft:sort.left,
+   aligned:Math.max(Math.abs(search.top-topic.top),Math.abs(search.top-sort.top)),height:el.getBoundingClientRect().height,overflow:document.documentElement.scrollWidth-innerWidth};
+});
+assert.ok(archiveGeo.aligned<3,'search, topic and sort are on one desktop row');
+assert.ok(archiveGeo.searchRight<archiveGeo.topicLeft+2&&archiveGeo.topicRight<archiveGeo.sortLeft+2,'control order is search, topic, then sort');
+assert.ok(archiveGeo.searchWidth<=415,'search field is reasonably sized');
+assert.ok(archiveGeo.height<220&&archiveGeo.overflow<=2,'single-row toolbar remains compact without overflow');
 await page.locator('.journal-discovery').screenshot({path:path.join(output,'journal-archive-desktop.png')});
 await page.locator('#journal-search').fill('manufacturing');
 assert.equal((await page.locator('#journal-match-summary').innerText()).trim(),'1 of 9 matching','live search results');
@@ -667,9 +675,17 @@ assert.equal(await page.locator('#work .oss-package-index-type:visible').count()
 assert.ok(mobileOss.height<=540,'open source panel stays concise on mobile');
 assert.ok(mobileOss.width<=390,'open source does not overflow mobile viewport');
 await page.locator('#work .project-oss').screenshot({path:path.join(output,'open-source-compact-mobile.png')});
-const archiveMobile=await page.locator('.journal-discovery').evaluate(el=>{const a=el.querySelector('#journal-search').getBoundingClientRect(),b=el.querySelector('#journal-order').getBoundingClientRect();return {width:el.getBoundingClientRect().width,viewport:innerWidth,searchBottom:a.bottom,sortTop:b.top,documentWidth:document.documentElement.scrollWidth};});
+const archiveMobile=await page.locator('.journal-discovery').evaluate(el=>{
+ const search=el.querySelector('.journal-search-box').getBoundingClientRect();
+ const topic=el.querySelector('.journal-topic-row').getBoundingClientRect();
+ const sort=el.querySelector('.journal-sort-field').getBoundingClientRect();
+ return {width:el.getBoundingClientRect().width,viewport:innerWidth,searchBottom:search.bottom,
+  topicTop:topic.top,topicRight:topic.right,sortTop:sort.top,sortLeft:sort.left,
+  documentWidth:document.documentElement.scrollWidth};
+});
 assert.ok(archiveMobile.width<=archiveMobile.viewport+2&&archiveMobile.documentWidth<=archiveMobile.viewport+2,'no mobile overflow');
-assert.ok(archiveMobile.sortTop>=archiveMobile.searchBottom-2,'mobile sort stacks beneath search');
+assert.ok(archiveMobile.topicTop>=archiveMobile.searchBottom-2&&archiveMobile.sortTop>=archiveMobile.searchBottom-2,'mobile search occupies the first row');
+assert.ok(Math.abs(archiveMobile.topicTop-archiveMobile.sortTop)<3&&archiveMobile.topicRight<archiveMobile.sortLeft+2,'topic and sort share the second mobile row');
 assert.equal((await page.locator('#journal-total').innerText()).trim(),'9','count visible on mobile');
 assert.equal(await page.locator('#journal-topic-trigger').isVisible(),true,'minimal topic filter remains visible on phones');
 assert.equal(await page.locator('#journal-filters').isVisible(),false,'mobile topic options stay hidden until requested');
