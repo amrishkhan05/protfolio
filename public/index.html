@@ -86,7 +86,7 @@
   <link rel="stylesheet" href="/hero-switchboard.css?v=1" />
   <link rel="stylesheet" href="/experience-refined.css?v=3" />
   <link rel="stylesheet" href="/identity-nav.css?v=2" />
-  <link rel="stylesheet" href="/journal-discovery.css?v=2" />
+  <link rel="stylesheet" href="/journal-discovery.css?v=3" />
 </head>
 
 <body>
@@ -394,7 +394,17 @@
    </div>
   </div>
  </div>
- <div class="journal-topic-row"><span class="journal-topic-label">Topics</span><div id="journal-filters" class="journal-filters" role="group" aria-label="Filter article topics"></div></div>
+ <div class="journal-topic-row" aria-label="Filter articles by topic">
+   <span id="journal-topic-label" class="journal-topic-label">Topic</span>
+   <div class="journal-topic-field">
+    <button type="button" id="journal-topic-trigger" class="journal-topic-trigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="journal-filters" aria-labelledby="journal-topic-label journal-topic-current">
+      <span id="journal-topic-current">All topics</span>
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div id="journal-filters" class="journal-topic-menu" role="listbox" aria-labelledby="journal-topic-label" hidden></div>
+   </div>
+   <button type="button" class="journal-topic-clear" id="journal-topic-clear" hidden>Clear</button>
+  </div>
 </div>
 <div id="journal-grid" class="journal-grid" aria-live="polite"><div class="journal-loading-card" aria-hidden="true"><div class="journal-loading-image"></div><div class="journal-loading-lines"><i></i><i></i><i></i></div></div><div class="journal-loading-card" aria-hidden="true"><div class="journal-loading-image"></div><div class="journal-loading-lines"><i></i><i></i><i></i></div></div><div class="journal-loading-card" aria-hidden="true"><div class="journal-loading-image"></div><div class="journal-loading-lines"><i></i><i></i><i></i></div></div></div>
 <div class="journal-footer"><p id="journal-showing"></p><button id="journal-more" type="button" hidden>SHOW MORE STORIES ↓</button></div>
@@ -498,7 +508,7 @@
       </div>
     </div>
   </div>
-  <script defer src="/site-redesign.js?v=10"></script><script defer src="/site-polish.js?v=6"></script><script>if (/^\/blog\//.test(location.pathname)) {const s=document.createElement("script");s.src="/script.js?v=6";s.defer=true;document.body.appendChild(s);}</script>
+  <script defer src="/site-redesign.js?v=11"></script><script defer src="/site-polish.js?v=6"></script><script>if (/^\/blog\//.test(location.pathname)) {const s=document.createElement("script");s.src="/script.js?v=6";s.defer=true;document.body.appendChild(s);}</script>
 </body>
 
 </html>

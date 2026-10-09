@@ -86,6 +86,7 @@ q('#copy-email')?.addEventListener('click',async()=>{const addr=q('.contact-mail
 const feature=q('#journal-feature'),grid=q('#journal-grid'),filters=q('#journal-filters'),search=q('#journal-search'),sort=q('#journal-order'),more=q('#journal-more'),counter=q('#journal-count'),shown=q('#journal-showing');
 const sortMenu=q('#journal-sort-options'),sortText=q('#journal-order-text'),sortField=sort?.closest('.journal-sort-field');let sortOrder='newest';
 const total=q('#journal-total'),matchSummary=q('#journal-match-summary');
+const topicTrigger=q('#journal-topic-trigger'),topicText=q('#journal-topic-current'),topicClear=q('#journal-topic-clear'),topicField=q('.journal-topic-field');
 if(!grid)return;
 let articles=[],term='',tag='All',visible=6;
 const normalTags=a=>Array.isArray(a.tags)?a.tags.filter(Boolean):[];
@@ -113,13 +114,83 @@ document.addEventListener('error', event => {
 // Do not launch a second terminal from the homepage before navigation.
 function filtered(){return articles.filter(a=>(tag==='All'||normalTags(a).some(t=>String(t).toLowerCase()===tag.toLowerCase()))&&(!term||(a.title+' '+a.description+' '+normalTags(a).join(' ')).toLowerCase().includes(term))).sort((a,b)=>(sortOrder==='oldest'?1:-1)*(new Date(a.publishedAt||0)-new Date(b.publishedAt||0)));}
 function render(){const list=filtered(),first=!term&&tag==='All'&&sortOrder!=='oldest'?list[0]:null;feature.innerHTML=first?card(first,true):'';const other=first?list.slice(1):list;grid.innerHTML=other.length?other.slice(0,visible).map(a=>card(a)).join(''):'<p class="journal-status">No matching stories. Try another topic or search.</p>';if(shown)shown.textContent=list.length?('Showing '+Math.min(visible+(first?1:0),list.length)+' of '+list.length+' stories'):'';if(more)more.hidden=other.length<=visible;if(counter)counter.textContent=articles.length+' stories from DEV.to';if(total)total.textContent=String(articles.length);if(matchSummary){const narrowed=Boolean(term)||tag!=='All';matchSummary.textContent=narrowed?list.length+' of '+articles.length+' matching':'All stories';}}
-function buildFilters(){const tags=[...new Set(articles.flatMap(normalTags).map(String).filter(Boolean))];const count=t=>articles.filter(a=>normalTags(a).some(s=>String(s).toLowerCase()===t.toLowerCase())).length;tags.sort((a,b)=>count(b)-count(a));const choices=['All',...tags.slice(0,8)];filters.innerHTML=choices.map(t=>'<button type="button" data-tag="'+escape(t)+'" aria-pressed="'+String(t===tag)+'">'+escape(t==='All'?'All stories':t)+'</button>').join('');}
-filters?.addEventListener('click',e=>{const b=e.target.closest('button[data-tag]');if(!b)return;tag=b.dataset.tag;visible=6;buildFilters();render();});
+// Keep DEV.to's actual tags for filtering; improve only their human-facing names.
+function displayTopic(value){
+ const names={webdev:'Web development',javascript:'JavaScript',typescript:'TypeScript',nextjs:'Next.js',
+  mixedreality:'Mixed reality',opensource:'Open source',machinelearning:'Machine learning',
+  reactjs:'React',nodejs:'Node.js',css:'CSS',html:'HTML',api:'APIs',ai:'AI',ux:'UX'};
+ const key=String(value).toLowerCase().replace(/[-_\s]/g,'');
+ if(names[key])return names[key];
+ const words=String(value).replace(/([a-z])([A-Z])/g,'$1 $2').replace(/[-_]/g,' ').trim();
+ return words?words[0].toUpperCase()+words.slice(1):String(value);
+}
+function buildFilters(){
+ const tags=[...new Set(articles.flatMap(normalTags).map(String).filter(Boolean))];
+ const count=t=>articles.filter(a=>normalTags(a).some(s=>String(s).toLowerCase()===t.toLowerCase())).length;
+ tags.sort((a,b)=>count(b)-count(a)||displayTopic(a).localeCompare(displayTopic(b)));
+ const options=['All',...tags];
+ filters.innerHTML=options.map(t=>'<button type="button" role="option" data-tag="'+escape(t)+'" aria-selected="'+String(t===tag)+'" tabindex="-1"><span>'+escape(t==='All'?'All topics':displayTopic(t))+'</span><span aria-hidden="true">✓</span></button>').join('');
+}
+function closeTopics(refocus=false){
+ if(filters)filters.hidden=true;
+ topicTrigger?.setAttribute('aria-expanded','false');
+ if(refocus)topicTrigger?.focus();
+}
+function openTopics(direction=0){
+ if(!filters)return;
+ closeSort(); // only one menu open at a time
+ filters.hidden=false;
+ topicTrigger?.setAttribute('aria-expanded','true');
+ const items=[...filters.querySelectorAll('[role="option"]')];
+ const i=Math.max(0,items.findIndex(x=>x.dataset.tag===tag));
+ items[Math.max(0,Math.min(items.length-1,i+direction))]?.focus();
+}
+function chooseTopic(value){
+ const options=[...filters.querySelectorAll('[role="option"][data-tag]')];
+ if(!options.some(option=>option.dataset.tag===value))return;
+ tag=value;visible=6;
+ if(topicText)topicText.textContent=value==='All'?'All topics':displayTopic(value);
+ if(topicClear)topicClear.hidden=value==='All';
+ for(const option of options)option.setAttribute('aria-selected',String(option.dataset.tag===value));
+ closeTopics(true);render();
+}
+topicTrigger?.addEventListener('click',()=>{if(filters?.hidden)openTopics();else closeTopics();});
+topicTrigger?.addEventListener('keydown',e=>{
+ if(['ArrowDown','ArrowUp','Home','End'].includes(e.key)){
+  e.preventDefault();openTopics(e.key==='ArrowDown'?1:e.key==='ArrowUp'?-1:0);
+  if(e.key==='Home')filters.querySelector('[role="option"]')?.focus();
+  if(e.key==='End')filters.querySelector('[role="option"]:last-child')?.focus();
+ }else if(e.key==='Escape'&&!filters?.hidden){e.preventDefault();closeTopics(true);}
+});
+filters?.addEventListener('click',e=>{
+ const option=e.target.closest('[role="option"][data-tag]');
+ if(option&&filters.contains(option))chooseTopic(option.dataset.tag);
+});
+filters?.addEventListener('keydown',e=>{
+ const options=[...filters.querySelectorAll('[role="option"]')];
+ const i=options.indexOf(document.activeElement);
+ if(i<0)return;
+ if(['ArrowDown','ArrowUp','Home','End'].includes(e.key)){
+  e.preventDefault();
+  const n=e.key==='Home'?0:e.key==='End'?options.length-1:
+   (i+(e.key==='ArrowDown'?1:-1)+options.length)%options.length;
+  options[n]?.focus();
+ }else if(e.key==='Escape'){e.preventDefault();closeTopics(true);}
+ else if(e.key==='Tab')closeTopics();
+});
+topicClear?.addEventListener('click',()=>chooseTopic('All'));
+topicField?.addEventListener('focusout',e=>{
+ if(!topicField.contains(e.relatedTarget))closeTopics();
+});
+document.addEventListener('pointerdown',e=>{
+ if(topicField&&!topicField.contains(e.target))closeTopics();
+});
+
 search?.addEventListener('input',e=>{term=e.target.value.trim().toLowerCase();visible=6;render();});
 // Site-designed sort popup with click, arrows, Home/End, Enter, Escape and outside click.
 const sortOptions=[...(sortMenu?.querySelectorAll('[role="option"]')||[])];
 function closeSort(focus=false){if(sortMenu)sortMenu.hidden=true;sort?.setAttribute('aria-expanded','false');if(focus)sort?.focus();}
-function openSort(step=0){if(!sortMenu)return;sortMenu.hidden=false;sort?.setAttribute('aria-expanded','true');
+function openSort(step=0){if(!sortMenu)return;closeTopics();sortMenu.hidden=false;sort?.setAttribute('aria-expanded','true');
  const selected=Math.max(0,sortOptions.findIndex(x=>x.dataset.sort===sortOrder));
  sortOptions[Math.max(0,Math.min(sortOptions.length-1,selected+step))]?.focus();}
 function chooseSort(value){if(value!=='newest'&&value!=='oldest')return;sortOrder=value;
