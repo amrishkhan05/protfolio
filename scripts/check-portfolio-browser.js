@@ -613,6 +613,10 @@ await Promise.all([
 ]);
 await page.locator('#blog-detail').waitFor({state:'visible',timeout:12000});
 await page.waitForFunction(()=>document.documentElement.classList.contains('is-blog-ready'),null,{timeout:12000});
+await page.waitForFunction(()=>{
+ const overlay=document.querySelector('#blog-loader-overlay');
+ return overlay?.hidden || getComputedStyle(overlay).visibility==='hidden';
+},null,{timeout:3000});
 assert.equal(await page.locator('#blog-loader-overlay').isVisible(),false,'destination reader hides its sole loader when ready');
 await page.unroute('**/blog/loader-navigation-fixture');
 const articleHtml=pageSource
