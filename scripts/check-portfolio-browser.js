@@ -226,7 +226,7 @@ await page.goto(base+'/',{waitUntil:'domcontentloaded'});
 await skills.screenshot({path:path.join(output,'skills-desktop-light.png')});
 
 assert.ok((await page.locator('a[href$=".pdf"]').count())>0,'resume PDF available');
-assert.ok((await page.locator('a[href$=".docx"]').count())>0,'resume DOCX available');
+assert.equal(await page.locator('a[href$=".docx"]').count(),0,'Word resume download is not offered');
 assert.ok((await page.evaluate(()=>document.documentElement.scrollWidth))<=1442,'no desktop horizontal overflow');
 assert.equal(await page.locator('#approach-title').evaluate(el=>getComputedStyle(el).animationName),'none','desktop intro is not trapped in a paused animation');
 assert.equal(await page.locator('#work-title').evaluate(el=>getComputedStyle(el).animationName),'none','work headline is visible');
@@ -501,8 +501,8 @@ await page.setViewportSize({width:1440,height:900});
 await page.goto(base+'/aruvix',{waitUntil:'domcontentloaded'});
 
 const pdf=await page.request.get(base+'/resume/pdf/Amrishkhan-Sheik-Abdullah-Resume.pdf');
-const doc=await page.request.get(base+'/resume/doc/Amrishkhan-Sheik-Abdullah-Resume.docx');
-assert.equal(pdf.status(),200,'PDF endpoint accessible');assert.equal(doc.status(),200,'Word endpoint accessible');
+assert.equal(pdf.status(),200,'PDF endpoint accessible');
+assert.equal((await pdf.body()).subarray(0,4).toString(),'%PDF','PDF download serves a valid PDF');
 await page.setViewportSize({width:390,height:844});
 await page.goto(base+'/',{waitUntil:'domcontentloaded'});
 await page.locator('#journal-grid .journal-card').first().waitFor({timeout:20000});

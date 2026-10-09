@@ -37,8 +37,9 @@ check('Shared stylesheet on all page types', home.includes('/site-polish.css') &
 check('No persisted theme overrides the editorial palette', !common.includes('portfolio-theme') && !home.includes('portfolio-theme') && !aruvix.includes('portfolio-theme') && !read('public/script.js').includes('portfolio-theme'));
 check('Article reader uses refreshed theme-free script', home.includes('/script.js?v=5'));
 check('Resume PDF path exists', fs.existsSync(path.join(root, 'public/resume/pdf/Amrishkhan-Sheik-Abdullah-Resume.pdf')));
-check('Resume DOCX path exists', fs.existsSync(path.join(root, 'public/resume/doc/Amrishkhan-Sheik-Abdullah-Resume.docx')));
-check('Resume links in the UI', home.includes('/resume/pdf/Amrishkhan-Sheik-Abdullah-Resume.pdf') && home.includes('/resume/doc/Amrishkhan-Sheik-Abdullah-Resume.docx'));
+check('Only PDF resume is offered', !home.includes('resume/doc/') && !aruvix.includes('resume/doc/'));
+check('PDF resume links remain in the UI', home.includes('/resume/pdf/Amrishkhan-Sheik-Abdullah-Resume.pdf') && aruvix.includes('/resume/pdf/Amrishkhan-Sheik-Abdullah-Resume.pdf'));
+check('No resume generation workflow remains', !fs.existsSync(path.join(root,'.github/workflows/build-resume.yml')) && !fs.existsSync(path.join(root,'scripts/build-resume.py')));
 check('Selected Work ticket artwork and original Aruvix branding', home.includes('class="boarding-pass"') && !home.includes('class="project-star"') && polish.includes('SELECTED WORK · Restore prototype visual fidelity') && polish.includes('#work .bar-code'));
 check('Compact open-source package panel without oversized illustration', home.includes('oss-compact-body') && !/<div class="oss-visual"/.test(home) && polish.includes('OSS COMPACT PANEL') && home.includes('site-polish.css?v=10'));
 check('Three published npm packages linked inside selected work', ['%40amrishkhan05/frankly','%40amrishkhan05/hallpass','sql-select-query-generator'].every(name=>home.includes('https://www.npmjs.com/package/'+name)) && (home.match(/class="oss-package"/g)||[]).length===3);
