@@ -6,7 +6,7 @@
 #home-content #writing .journal-discovery-count{color:#516754;font:600 12px/1.5 var(--sans);white-space:nowrap}
 #home-content #writing .journal-discovery-count strong{color:#224a32;font:750 13px/1.5 var(--mono);font-variant-numeric:tabular-nums}
 #home-content #writing .journal-match-summary{margin:0;color:#647767;font:600 11px/1.5 var(--mono)}
-#home-content #writing .journal-actions{display:grid;grid-template-columns:minmax(0,1fr) 178px;gap:10px;align-items:stretch;min-width:0;margin:0}
+#home-content #writing .journal-actions{display:grid;grid-template-columns:minmax(210px,405px) minmax(152px,183px) minmax(156px,178px);gap:11px;align-items:stretch;justify-content:start;min-width:0;margin:0}
 #home-content #writing .journal-search-box{display:flex;align-items:center;gap:10px;min-width:0;min-height:48px;padding:0 14px;color:#5d7566;border:1px solid #aab9ab;border-radius:6px;background:#fffdfa;cursor:text}
 #home-content #writing .journal-search-box:focus-within,#home-content #writing .journal-sort-field:focus-within{border-color:#2a553b;box-shadow:0 0 0 3px #a9cbb14d}
 #home-content #writing .journal-search-box svg{flex:none}
@@ -28,23 +28,23 @@
 #home-content #writing .journal-sort-menu [role="option"]:hover,#home-content #writing .journal-sort-menu [role="option"]:focus-visible{outline:none;background:#d5f478;color:#173421}
 /* Topic filtering reads as one understated editorial control, never a tag cloud. */
 #home-content #writing .journal-topic-row{
- display:flex;align-items:center;gap:9px;min-width:0;
- margin:13px 0 0;
+ display:flex;align-items:stretch;gap:5px;min-width:0;
+ margin:0;
 }
 #home-content #writing .journal-topic-label{
- color:#637668;font:600 12px/1.5 var(--sans);padding:0;
+ position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;
+ clip:rect(0,0,0,0);white-space:nowrap;border:0;
 }
-#home-content #writing .journal-topic-field{position:relative;min-width:0}
+#home-content #writing .journal-topic-field{position:relative;min-width:0;flex:1 1 auto}
 #home-content #writing .journal-topic-trigger{
- display:inline-flex;align-items:center;justify-content:space-between;gap:13px;
- min-width:128px;max-width:min(62vw,270px);min-height:36px;
- margin:0;padding:6px 4px;
- color:#244333;background:transparent;border:0;border-radius:0;
- border-bottom:1px solid #9bac9b;
+ display:inline-flex;align-items:center;justify-content:space-between;gap:9px;
+ width:100%;min-width:0;max-width:100%;min-height:48px;
+ margin:0;padding:10px 13px;
+ color:#244333;background:#fffdfa;border:1px solid #aab9ab;border-radius:6px;
  font:650 12px/1.4 var(--sans);text-align:left;cursor:pointer;
 }
-#home-content #writing .journal-topic-trigger:hover{color:#143b22;border-color:#244e34;background:transparent}
-#home-content #writing .journal-topic-trigger:focus-visible{outline:2px solid #446f4e;outline-offset:3px}
+#home-content #writing .journal-topic-trigger:hover{color:#143b22;border-color:#819b87;background:#ecf0e8}
+#home-content #writing .journal-topic-trigger:focus-visible{outline:2px solid #446f4e;outline-offset:2px}
 #home-content #writing .journal-topic-trigger svg{flex:none;transition:transform .16s ease}
 #home-content #writing .journal-topic-trigger[aria-expanded="true"] svg{transform:rotate(180deg)}
 #home-content #writing .journal-topic-trigger>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -73,7 +73,7 @@
  outline:0;background:#d5f478;color:#172b1f;
 }
 #home-content #writing .journal-topic-clear{
- margin:0;padding:6px 2px;min-height:34px;border:0;
+ margin:0;padding:6px 0;min-height:44px;border:0;
  background:transparent;color:#496651;border-radius:0;
  text-decoration:underline;text-underline-offset:3px;
  font:550 11px/1.4 var(--sans);cursor:pointer;
@@ -85,12 +85,21 @@
 #home-content #writing .journal-discovery{margin:20px 0 23px;padding-top:14px}
 #home-content #writing .journal-discovery-heading{margin-bottom:13px}
 #home-content #writing .journal-discovery-title h3{font-size:21px}
-#home-content #writing .journal-actions{grid-template-columns:minmax(0,1fr);gap:9px}
+#home-content #writing .journal-actions{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"search search" "topic sort";gap:9px}
+#home-content #writing .journal-search-box{grid-area:search}
+#home-content #writing .journal-topic-row{grid-area:topic}
+#home-content #writing .journal-sort-field{grid-area:sort}
 #home-content #writing .journal-search-box input{min-height:45px;flex-basis:auto;font-size:13px}
 #home-content #writing .journal-sort-trigger{min-height:44px}
 #home-content #writing .journal-sort-menu{min-width:100%}
-#home-content #writing .journal-topic-row{flex-direction:row;align-items:center;gap:9px;margin-top:12px}
+#home-content #writing .journal-topic-row{flex-direction:row;align-items:stretch;gap:4px;margin:0}
 #home-content #writing .journal-topic-menu{max-width:min(310px,85vw)}
+#home-content #writing .journal-topic-trigger{min-height:44px;padding:9px 10px}
+}
+@media(min-width:761px) and (max-width:980px){
+ #home-content #writing .journal-actions{grid-template-columns:minmax(170px,1fr) minmax(145px,175px) minmax(150px,178px);gap:8px}
+ #home-content #writing .journal-search-box{padding-inline:11px}
+ #home-content #writing .journal-search-box input{font-size:12px}
 }
 @media(prefers-reduced-motion:reduce){#home-content #writing .journal-sort-trigger svg{transition:none}
 #home-content #writing .journal-topic-trigger svg{transition:none}}

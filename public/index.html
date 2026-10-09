@@ -86,7 +86,7 @@
   <link rel="stylesheet" href="/hero-switchboard.css?v=1" />
   <link rel="stylesheet" href="/experience-refined.css?v=3" />
   <link rel="stylesheet" href="/identity-nav.css?v=2" />
-  <link rel="stylesheet" href="/journal-discovery.css?v=3" />
+  <link rel="stylesheet" href="/journal-discovery.css?v=4" />
 </head>
 
 <body>
@@ -385,17 +385,8 @@
    <svg viewBox="0 0 24 24" width="19" height="19" fill="none" aria-hidden="true" focusable="false"><circle cx="10.8" cy="10.8" r="6.6" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 4.5 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
    <input id="journal-search" type="search" placeholder="Search stories or topics…" aria-label="Search articles and topics" autocomplete="off">
   </label>
-  <div class="journal-sort-field">
-   <span class="sr-only" id="journal-sort-label">Sort articles by</span>
-   <button type="button" class="journal-sort-trigger" id="journal-order" aria-haspopup="listbox" aria-expanded="false" aria-controls="journal-sort-options" aria-labelledby="journal-sort-label journal-order-text"><span id="journal-order-text">Newest first</span><svg viewBox="0 0 24 24" width="15" height="15" fill="none" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-   <div id="journal-sort-options" class="journal-sort-menu" role="listbox" aria-labelledby="journal-sort-label" hidden>
-    <button type="button" role="option" data-sort="newest" aria-selected="true" tabindex="-1"><span>Newest first</span><span aria-hidden="true">✓</span></button>
-    <button type="button" role="option" data-sort="oldest" aria-selected="false" tabindex="-1"><span>Oldest first</span><span aria-hidden="true">✓</span></button>
-   </div>
-  </div>
- </div>
- <div class="journal-topic-row" aria-label="Filter articles by topic">
-   <span id="journal-topic-label" class="journal-topic-label">Topic</span>
+<div class="journal-topic-row" aria-label="Filter articles by topic">
+   <span id="journal-topic-label" class="journal-topic-label sr-only">Filter by topic</span>
    <div class="journal-topic-field">
     <button type="button" id="journal-topic-trigger" class="journal-topic-trigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="journal-filters" aria-labelledby="journal-topic-label journal-topic-current">
       <span id="journal-topic-current">All topics</span>
@@ -405,6 +396,16 @@
    </div>
    <button type="button" class="journal-topic-clear" id="journal-topic-clear" hidden>Clear</button>
   </div>
+  <div class="journal-sort-field">
+   <span class="sr-only" id="journal-sort-label">Sort articles by</span>
+   <button type="button" class="journal-sort-trigger" id="journal-order" aria-haspopup="listbox" aria-expanded="false" aria-controls="journal-sort-options" aria-labelledby="journal-sort-label journal-order-text"><span id="journal-order-text">Newest first</span><svg viewBox="0 0 24 24" width="15" height="15" fill="none" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+   <div id="journal-sort-options" class="journal-sort-menu" role="listbox" aria-labelledby="journal-sort-label" hidden>
+    <button type="button" role="option" data-sort="newest" aria-selected="true" tabindex="-1"><span>Newest first</span><span aria-hidden="true">✓</span></button>
+    <button type="button" role="option" data-sort="oldest" aria-selected="false" tabindex="-1"><span>Oldest first</span><span aria-hidden="true">✓</span></button>
+   </div>
+  </div>
+ </div>
+
 </div>
 <div id="journal-grid" class="journal-grid" aria-live="polite"><div class="journal-loading-card" aria-hidden="true"><div class="journal-loading-image"></div><div class="journal-loading-lines"><i></i><i></i><i></i></div></div><div class="journal-loading-card" aria-hidden="true"><div class="journal-loading-image"></div><div class="journal-loading-lines"><i></i><i></i><i></i></div></div><div class="journal-loading-card" aria-hidden="true"><div class="journal-loading-image"></div><div class="journal-loading-lines"><i></i><i></i><i></i></div></div></div>
 <div class="journal-footer"><p id="journal-showing"></p><button id="journal-more" type="button" hidden>SHOW MORE STORIES ↓</button></div>
