@@ -101,6 +101,17 @@
  #home-content #skills .skills-studio{
    flex:1 0 auto;
  }
+ #home-content #skills .skills-categories{
+   display:flex;
+   flex-direction:column;
+ }
+ #home-content #skills .skills-group{
+   flex:1 1 auto;
+ }
+ #home-content #skills .skills-ledger-foot{
+   flex:0 0 auto;
+   margin-top:auto;
+ }
  #home-content #skills .skills-studio-intro{
    padding:clamp(22px,2.2vw,34px);
    gap:17px;

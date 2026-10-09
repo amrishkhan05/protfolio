@@ -164,6 +164,15 @@ for (const {width,height} of [{width:1440,height:900},{width:1536,height:960}]){
 assert.ok(fit.top>=fit.navBottom-12&&fit.top<=fit.navBottom+18,'skills header aligns below fixed nav on '+width+'x'+height);
  assert.ok(fit.bottom<=fit.viewport+3,'skills section fits entirely within '+width+'x'+height+' viewport: '+JSON.stringify(fit));
  assert.ok(fit.footerBottom<=fit.viewport-4,'skills footer and resume link remain visible without scrolling');
+ const rhythm=await page.locator('#skills .skills-categories').evaluate(el=>{
+  const footer=el.querySelector('.skills-ledger-foot').getBoundingClientRect();
+  const studio=el.getBoundingClientRect();
+  const groups=[...el.querySelectorAll('.skills-group')].map(row=>row.getBoundingClientRect());
+  return {emptyBottom:studio.bottom-footer.bottom,minHeight:Math.min(...groups.map(g=>g.height)),maxHeight:Math.max(...groups.map(g=>g.height))};
+ });
+ assert.ok(rhythm.emptyBottom<=22,'skills ledger has no large dead space beneath resume link: '+JSON.stringify(rhythm));
+ assert.ok(rhythm.maxHeight-rhythm.minHeight<=22,'technology rows fill their screen evenly: '+JSON.stringify(rhythm));
+
  assert.ok(fit.scrollWidth<=fit.viewportWidth+2,'no horizontal overflow in skills viewport');
  await page.screenshot({path:path.join(output,'skills-fit-'+width+'x'+height+'.png')});
 }
