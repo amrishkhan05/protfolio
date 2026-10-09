@@ -13,7 +13,7 @@ const {webkit,devices}=require('playwright');
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
   for(const route of ['/','/aruvix']){
    await page.goto('http://127.0.0.1:3333'+route,{waitUntil:'domcontentloaded'});
-   await page.locator('link[href="/ui-arrows.css?v=1"]').waitFor();
+   await page.locator('link[href="/ui-arrows.css?v=1"]').waitFor({state:'attached'});
    assert.equal(await page.locator('.site-header .studio-resume-link svg.ui-arrow-svg').count(),1,'header download arrow is SVG');
    if(route==='/'){
     const contact=page.locator('#contact');
