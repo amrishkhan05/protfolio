@@ -8,6 +8,8 @@ html.is-blog-route .blog-detail-content[hidden]{display:none!important}
 html.is-blog-route.is-blog-ready #blog-loader-overlay{display:none!important}
 html.is-blog-route.is-blog-loading #blog-loader-overlay[hidden],
 html.is-opening-article #blog-loader-overlay[hidden]{display:grid!important}
+html.is-blog-route.is-blog-loading #blog-loader-overlay:not([hidden]),
+html.is-opening-article #blog-loader-overlay:not([hidden]){display:grid!important}
 html.is-blog-route #blog-detail-status:not([hidden]){min-height:220px}
 .journal-art{position:relative;isolation:isolate;overflow:hidden;aspect-ratio:16/9;background:#202d32!important}
 .journal-feature .journal-art{aspect-ratio:16/9;min-height:260px}
