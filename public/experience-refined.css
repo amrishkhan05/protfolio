@@ -78,8 +78,6 @@
 }
 #home-content #experience .timeline-date{
   grid-area:date;
-  grid-column:auto;
-  grid-row:auto;
   align-items:baseline;
   flex-wrap:nowrap;
   white-space:nowrap;
@@ -89,16 +87,12 @@
 }
 #home-content #experience .timeline-dot{
   grid-area:track;
-  grid-column:auto;
-  grid-row:auto;
 }
 #home-content #experience .timeline-dot::after{
   bottom:calc(-1 * clamp(20px,2.7vh,25px));
 }
 #home-content #experience .timeline-content{
   grid-area:body;
-  grid-column:auto;
-  grid-row:auto;
 }
 #home-content #experience .timeline-company{margin-bottom:7px}
 #home-content #experience .timeline-content h3{margin-bottom:8px}
@@ -124,19 +118,13 @@
  }
  #home-content #experience .timeline-date{
    grid-area:date;
-   grid-row:auto;
-   grid-column:auto;
    margin:0;
  }
  #home-content #experience .timeline-dot{
    grid-area:track;
-   grid-row:auto;
-   grid-column:auto;
  }
  #home-content #experience .timeline-content{
    grid-area:body;
-   grid-row:auto;
-   grid-column:auto;
  }
  #home-content #experience .timeline-dot::after{bottom:-21px}
 }
