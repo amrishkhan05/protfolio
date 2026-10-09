@@ -497,3 +497,52 @@ body.is-aruvix-view .hero-section p,body.is-aruvix-view .case-study-shell p{colo
 @media(max-width:390px){
   #work .project-oss .project-kicker{font-size:9px;letter-spacing:0}
 }
+
+
+/* CONTACT FINISH / HASH ANCHOR: the previous writing cards must not peek below
+   the sticky header when linking to the last section. Desktop contact fills
+   the viewport after the collapsed navigation; no artificial spacer below
+   the footer, and no scroll-lock or content clipping. */
+#home-content #writing{
+  padding-bottom:clamp(18px,3vh,32px);
+}
+#home-content #contact{
+  display:block;
+  min-height:calc(100svh - 68px);
+  scroll-margin-top:68px;
+  padding-top:clamp(20px,3vh,32px);
+  background:#d5f478;
+}
+#home-content #contact>.container{
+  min-height:calc(100svh - 68px - clamp(20px,3vh,32px));
+  display:flex;
+  flex-direction:column;
+}
+#home-content #contact .contact-top{flex:0 0 auto}
+#home-content #contact .contact-grid{
+  flex:1 0 auto;
+  min-height:0;
+  align-items:center;
+  padding-block:clamp(28px,4vh,54px);
+  gap:clamp(28px,3.6vw,60px);
+}
+#home-content #contact .footer{
+  flex:0 0 auto;
+  margin-top:auto;
+  padding-block:clamp(15px,2.6vh,24px);
+}
+/* On stacked tablet/mobile layouts, content determines the height.
+   Avoid forcing a viewport-height panel when columns flow vertically. */
+@media(max-width:1050px){
+  #home-content #contact{min-height:0;scroll-margin-top:75px}
+  #home-content #contact>.container{min-height:0}
+  #home-content #contact .contact-grid{
+    flex:0 0 auto;
+    padding-block:clamp(28px,4.8vh,58px);
+  }
+}
+@media(max-width:760px){
+  #home-content #writing{padding-bottom:clamp(17px,3vh,26px)}
+  #home-content #contact{scroll-margin-top:72px}
+  #home-content #contact .footer{margin-top:0}
+}

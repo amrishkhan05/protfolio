@@ -194,6 +194,44 @@ const afterSticky=await page.evaluate(() => ({
 }));
 assert.ok(Math.abs(afterSticky.heading-beforeSticky.heading)<12,'heading stays pinned while scrolling through experience');
 assert.ok(beforeSticky.row-afterSticky.row>=120,'experience entries move while heading stays still');
+
+// Last-page anchor regression, observed on a 1536×960 desktop:
+// contact must occupy the viewport beneath the sticky header, with no
+// leftover writing cards or blank transition bands in the visible area.
+await page.setViewportSize({width:1536,height:960});
+await page.goto(base+'/',{waitUntil:'domcontentloaded'});
+await page.locator('#journal-grid .journal-card').first().waitFor({timeout:20000});
+await page.evaluate(()=>document.getElementById('contact').scrollIntoView({behavior:'instant',block:'start'}));
+await page.waitForTimeout(120);
+const contactAnchor=await page.evaluate(()=>{
+  const nav=document.querySelector('.site-header').getBoundingClientRect();
+  const writing=document.getElementById('writing').getBoundingClientRect();
+  const contact=document.getElementById('contact').getBoundingClientRect();
+  const footer=document.querySelector('#contact .footer').getBoundingClientRect();
+  const journalFooter=document.querySelector('#writing .journal-footer').getBoundingClientRect();
+  return {
+    navBottom:nav.bottom,contactTop:contact.top,contactBottom:contact.bottom,
+    contactHeight:contact.height,viewport:innerHeight,
+    writingBottom:writing.bottom,writingPaddingBottom:parseFloat(getComputedStyle(document.getElementById('writing')).paddingBottom),
+    footerBottom:footer.bottom,journalFooterBottom:journalFooter.bottom,
+    maxScroll:document.documentElement.scrollHeight-innerHeight,scrollY
+  };
+});
+assert.ok(Math.abs(contactAnchor.contactTop-contactAnchor.navBottom)<=32,'contact starts directly below sticky desktop navigation');
+assert.ok(contactAnchor.writingBottom<=contactAnchor.navBottom+33,'writing cards cannot peek below sticky navigation at contact anchor');
+assert.ok(contactAnchor.writingPaddingBottom<=33,'no oversized blank writing-to-contact band');
+assert.ok(contactAnchor.contactBottom>=contactAnchor.viewport-3,'contact panel and footer reach the viewport bottom');
+assert.ok(contactAnchor.footerBottom<=contactAnchor.viewport+4,'contact footer remains visible at final anchor on tall desktop');
+await page.screenshot({path:path.join(output,'contact-desktop-1536x960.png'),fullPage:false});
+await page.goto(base+'/#contact',{waitUntil:'domcontentloaded'});
+await page.locator('#journal-grid .journal-card').first().waitFor({timeout:20000});
+await page.waitForTimeout(220);
+const directHashTop=await page.locator('#contact').evaluate(el=>el.getBoundingClientRect().top);
+assert.ok(directHashTop<=115&&directHashTop>=45,'direct #contact navigation shows contact below header');
+await page.setViewportSize({width:1440,height:900});
+await page.goto(base+'/',{waitUntil:'domcontentloaded'});
+await page.locator('#journal-grid .journal-card').first().waitFor({timeout:20000});
+
 await page.evaluate(() => scrollTo({top:0,behavior:'instant'}));
 
 await page.screenshot({path:path.join(output,'desktop-light.png'),fullPage:true});
