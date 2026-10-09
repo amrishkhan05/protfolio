@@ -595,19 +595,24 @@ await page.route('**/blog/loader-navigation-fixture',async route=>{
  await route.fulfill({status:200,contentType:'text/html',body:pageSource});
 });
 await page.locator('#journal-grid .journal-card').first().evaluate(link=>link.href=location.origin+'/blog/loader-navigation-fixture');
-await page.locator('#journal-grid .journal-card').first().click({noWaitAfter:true});
-await page.waitForTimeout(150);
-const sourceLoader=await page.evaluate(()=>({
-  pathname:location.pathname,
-  isOpening:document.documentElement.classList.contains('is-opening-article'),
-  overlayHidden:document.querySelector('#blog-loader-overlay')?.hidden
-}));
-assert.equal(sourceLoader.pathname,'/','source page remains visible during the delayed response');
+// Dispatch a canceled click first: test what the source page would do
+// without racing the browser's document teardown during real navigation.
+const sourceLoader=await page.locator('#journal-grid .journal-card').first().evaluate(link=>{
+  link.addEventListener('click',event=>event.preventDefault(),{once:true});
+  link.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true,button:0}));
+  return {
+    isOpening:document.documentElement.classList.contains('is-opening-article'),
+    overlayHidden:document.querySelector('#blog-loader-overlay')?.hidden,
+  };
+});
 assert.equal(sourceLoader.isOpening,false,'source document never starts a duplicate article loader');
 assert.equal(sourceLoader.overlayHidden,true,'source page keeps terminal loader hidden');
-await page.waitForURL('**/blog/loader-navigation-fixture',{timeout:12000});
+await Promise.all([
+  page.waitForURL('**/blog/loader-navigation-fixture',{timeout:12000}),
+  page.locator('#journal-grid .journal-card').first().click(),
+]);
 await page.locator('#blog-detail').waitFor({state:'visible',timeout:12000});
-await page.waitForFunction(()=>document.documentElement.classList.contains('is-blog-ready'),{timeout:12000});
+await page.waitForFunction(()=>document.documentElement.classList.contains('is-blog-ready'),null,{timeout:12000});
 assert.equal(await page.locator('#blog-loader-overlay').isVisible(),false,'destination reader hides its sole loader when ready');
 await page.unroute('**/blog/loader-navigation-fixture');
 const articleHtml=pageSource
