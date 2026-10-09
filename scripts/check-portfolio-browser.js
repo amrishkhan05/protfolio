@@ -45,6 +45,17 @@ await wideThumbnail.screenshot({path:path.join(output,'journal-wide-banner-uncro
 assert.equal(await page.locator('#studio-theme-toggle').count(),1,'one theme toggle');
 assert.equal(await page.locator('#back-to-top').count(),1,'one back-to-top button');
 assert.ok(await page.locator('.hero h1').isVisible(),'hero heading shown');
+const skills=page.locator('#skills');
+assert.ok(await skills.isVisible(),'technical expertise section visible');
+assert.equal(await skills.locator('.skills-group').count(),6,'six carefully curated technical groups');
+assert.ok(await page.locator('#primary-nav a[href="#skills"]').isVisible(),'skills navigation is discoverable');
+assert.ok((await skills.innerText()).includes('PostgreSQL'),'database experience is indexed');
+assert.ok((await skills.innerText()).includes('NestJS'),'backend stack is indexed');
+const skillsDesktop=await skills.evaluate(el=>({cols:getComputedStyle(el.querySelector('.skills-categories')).gridTemplateColumns.trim().split(/\s+/).length,width:el.getBoundingClientRect().width,height:el.getBoundingClientRect().height}));
+assert.equal(skillsDesktop.cols,3,'desktop skills grouped into three columns');
+assert.ok(skillsDesktop.height<1000,'skills section remains concise on desktop');
+await skills.screenshot({path:path.join(output,'skills-desktop-light.png')});
+
 assert.ok((await page.locator('a[href$=".pdf"]').count())>0,'resume PDF available');
 assert.ok((await page.locator('a[href$=".docx"]').count())>0,'resume DOCX available');
 assert.ok((await page.evaluate(()=>document.documentElement.scrollWidth))<=1442,'no desktop horizontal overflow');
@@ -188,12 +199,37 @@ await page.evaluate(() => scrollTo({top:0,behavior:'instant'}));
 await page.screenshot({path:path.join(output,'desktop-light.png'),fullPage:true});
 await page.locator('#studio-theme-toggle').click();
 assert.equal(await page.evaluate(()=>document.documentElement.dataset.theme),'dark','theme toggle works');
+assert.ok(await page.locator('#skills .skills-group').first().isVisible(),'skills remain readable in dark mode');
+assert.equal(await page.locator('#skills .skills-group h3').first().evaluate(el=>getComputedStyle(el).color),'rgb(243, 246, 236)','skills titles have contrast in dark mode');
+await page.locator('#skills').screenshot({path:path.join(output,'skills-desktop-dark.png')});
+
 await page.screenshot({path:path.join(output,'desktop-dark.png'),fullPage:true});
 await page.goto(base+'/aruvix',{waitUntil:'domcontentloaded'});
 assert.equal(await page.evaluate(()=>document.documentElement.dataset.theme),'dark','theme persists to Aruvix');
 assert.ok(await page.locator('#case-study').isVisible(),'Aruvix content visible');
-assert.equal(await page.locator('#case-study .reveal').first().evaluate(el=>getComputedStyle(el).animationName),'none','Aruvix content not trapped in animation');
+assert.equal(await page.locator('.aru-hero h1').count(),1,'one clear Aruvix case study headline');
+assert.equal(await page.locator('.aru-tool').count(),6,'current six tool families documented');
+assert.equal(await page.locator('link[href^="/styles.css"]').count(),0,'new Aruvix page does not load legacy stylesheet');
+assert.ok(await page.locator('#decisions').isVisible(),'engineering decisions are visible');
+assert.ok(await page.locator('.aru-editor-grid code').isVisible(),'developer workspace visual is present');
+assert.ok((await page.locator('#evolution').innerText()).includes('macOS and Windows'),'desktop product expansion mentioned');
+const aruDesktop=await page.evaluate(()=>({width:document.documentElement.scrollWidth,viewport:innerWidth,columns:getComputedStyle(document.querySelector('.aru-tools-grid')).gridTemplateColumns.trim().split(/\s+/).length}));
+assert.ok(aruDesktop.width<=aruDesktop.viewport+2,'Aruvix has no desktop horizontal overflow');
+assert.equal(aruDesktop.columns,3,'desktop Aruvix tools grid uses three columns');
+await page.screenshot({path:path.join(output,'aruvix-case-desktop-dark.png'),fullPage:true});
+
+assert.equal(await page.locator('#case-study .aru-hero h1').evaluate(el=>getComputedStyle(el).opacity),'1','Aruvix headline is visible without scroll reveal');
 await page.screenshot({path:path.join(output,'aruvix-dark.png'),fullPage:true});
+await page.setViewportSize({width:390,height:844});
+await page.goto(base+'/aruvix',{waitUntil:'domcontentloaded'});
+assert.ok((await page.evaluate(()=>document.documentElement.scrollWidth))<=392,'Aruvix case study fits mobile');
+assert.equal(await page.locator('.aru-tool').count(),6,'Aruvix mobile shows all tool groups');
+assert.equal(await page.locator('.aru-tools-grid').evaluate(el=>getComputedStyle(el).gridTemplateColumns.trim().split(/\s+/).length),1,'Aruvix tool cards stack cleanly on mobile');
+assert.equal(await page.evaluate(()=>document.documentElement.dataset.theme),'dark','Aruvix mobile persists dark theme');
+await page.locator('.aru-hero').screenshot({path:path.join(output,'aruvix-case-mobile-dark.png')});
+await page.setViewportSize({width:1440,height:900});
+await page.goto(base+'/aruvix',{waitUntil:'domcontentloaded'});
+
 const pdf=await page.request.get(base+'/resume/pdf/Amrishkhan-Sheik-Abdullah-Resume.pdf');
 const doc=await page.request.get(base+'/resume/doc/Amrishkhan-Sheik-Abdullah-Resume.docx');
 assert.equal(pdf.status(),200,'PDF endpoint accessible');assert.equal(doc.status(),200,'Word endpoint accessible');
@@ -201,6 +237,11 @@ await page.setViewportSize({width:390,height:844});
 await page.goto(base+'/',{waitUntil:'domcontentloaded'});
 await page.locator('#journal-grid .journal-card').first().waitFor({timeout:20000});
 assert.ok((await page.evaluate(()=>document.documentElement.scrollWidth))<=392,'no mobile horizontal overflow');
+const mobileSkills=await page.locator('#skills .skills-categories').evaluate(el=>({columns:getComputedStyle(el).gridTemplateColumns.trim().split(/\s+/).length,width:el.getBoundingClientRect().width}));
+assert.equal(mobileSkills.columns,1,'mobile technical expertise uses single-column layout');
+assert.ok(mobileSkills.width<=390,'mobile technical expertise fits viewport');
+await page.locator('#skills').screenshot({path:path.join(output,'skills-mobile.png')});
+
 await page.locator('#menu-toggle').click();
 assert.equal(await page.locator('#menu-toggle').getAttribute('aria-expanded'),'true','mobile menu opens');
 assert.ok(await page.locator('#primary-nav').isVisible(),'mobile nav visible');

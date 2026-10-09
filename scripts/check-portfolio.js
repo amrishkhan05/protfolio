@@ -22,6 +22,9 @@ check('Secondary article cover and first-paint SSR ready state', backend.include
 check('Image failure handlers and no SSR rehydration flicker', homeScript.includes('data-fallback-src') && read('public/script.js').includes('recoverFailedArticleImage') && read('public/script.js').includes('if (hasServerRenderedArticle)'));
 check('Single homepage main landmark', count(home, /<main\s/gi) === 1);
 check('Single back-to-top control', count(home, /id="back-to-top"/g) === 1);
+check('Skills section is deep-linkable and grouped', home.includes('id="skills"') && home.includes('aria-labelledby="skills-title"') && count(home, /class="skills-group"/g)===6 && home.includes('href="#skills"') && fs.existsSync(path.join(root,'public/studio-skills.css')));
+check('Aruvix rebuilt using the shared studio design without legacy CSS', aruvix.includes('class="aru-case"') && aruvix.includes('href="/aruvix-case.css?v=1"') && !aruvix.includes('href="/styles.css?v=4"') && count(aruvix, /class="aru-tool"/g)===6);
+check('Aruvix current products, privacy boundaries and desktop scope documented', aruvix.includes('API Client') && aruvix.includes('CSS Variables Extractor') && aruvix.includes('macOS and Windows') && aruvix.includes('Browser security rules'));
 check('Consistent theme control on homepage and Aruvix', home.includes('id="studio-theme-toggle"') && aruvix.includes('id="studio-theme-toggle"'));
 check('Shared stylesheet on all page types', home.includes('/site-polish.css') && aruvix.includes('/site-polish.css'));
 check('Shared theme persistence and aria state', common.includes('portfolio-theme') && common.includes('aria-pressed'));
