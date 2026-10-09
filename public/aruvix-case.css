@@ -92,7 +92,12 @@ body.is-aruvix-view .aru-final .aru-button-primary{background:#1c2b25;color:#d5f
 body.is-aruvix-view .aru-final .aru-button-primary:hover{background:#364c3a}
 body.is-aruvix-view .aru-case a:focus-visible{outline:3px solid #58815f;outline-offset:4px}
 body.is-aruvix-view .aru-hero a:focus-visible,body.is-aruvix-view .aru-flow-section a:focus-visible{outline-color:#d5f478}
-body.is-aruvix-view>.footer{background:#f6f4ee;border-top:1px solid #c8d5c9}
+body.is-aruvix-view>.footer{display:flex!important;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;background:#f6f4ee;border-top:1px solid #c8d5c9;padding:24px max(46px,calc((100vw - 1350px)/2));color:#2a4334}
+body.is-aruvix-view>.footer strong{color:inherit}
+body.is-aruvix-view>.footer nav{display:flex;flex-wrap:wrap;gap:20px;align-items:center}
+body.is-aruvix-view>.footer a{color:inherit}
+body.is-aruvix-view>.footer a:hover{text-decoration:underline;text-underline-offset:3px}
+@media(max-width:760px){body.is-aruvix-view>.footer{padding:22px 18px;align-items:flex-start;flex-direction:column;gap:16px}}
 [data-theme="dark"] body.is-aruvix-view{background:#182623;color:#edf5e9}
 [data-theme="dark"] body.is-aruvix-view .aru-story-text p,[data-theme="dark"] body.is-aruvix-view .aru-decisions-grid p,[data-theme="dark"] body.is-aruvix-view .aru-next-grid>div:first-child>p:last-child{color:#c7daca}
 [data-theme="dark"] body.is-aruvix-view .aru-tools-section{background:#23362f}

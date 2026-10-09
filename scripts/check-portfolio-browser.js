@@ -211,6 +211,8 @@ assert.equal(await page.locator('.aru-hero h1').count(),1,'one clear Aruvix case
 assert.equal(await page.locator('.aru-tool').count(),6,'current six tool families documented');
 assert.equal(await page.locator('link[href^="/styles.css"]').count(),0,'new Aruvix page does not load legacy stylesheet');
 assert.ok(await page.locator('#decisions').isVisible(),'engineering decisions are visible');
+assert.ok(await page.locator('body > footer.footer').isVisible(),'case study footer is visible');
+assert.ok(await page.locator('body > footer.footer a[href="/"]').isVisible(),'footer links back to portfolio');
 assert.ok(await page.locator('.aru-editor-grid code').isVisible(),'developer workspace visual is present');
 assert.ok((await page.locator('#evolution').innerText()).includes('macOS and Windows'),'desktop product expansion mentioned');
 const aruDesktop=await page.evaluate(()=>({width:document.documentElement.scrollWidth,viewport:innerWidth,columns:getComputedStyle(document.querySelector('.aru-tools-grid')).gridTemplateColumns.trim().split(/\s+/).length}));
