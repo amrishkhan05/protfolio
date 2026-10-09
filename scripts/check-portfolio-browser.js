@@ -56,6 +56,40 @@ assert.notEqual(sectionGeometry.timelineOverflow,'scroll','timeline uses natural
 assert.equal(sectionGeometry.workColumns,2,'work cards use two-column layout');
 assert.equal(await page.locator('.project-aruvix').evaluate(el=>getComputedStyle(el).backgroundColor),'rgb(213, 244, 120)','flagship matches lime prototype treatment');
 assert.equal(await page.locator('.project-aruvix h3').evaluate(el=>getComputedStyle(el).color),'rgb(17, 22, 29)','flagship heading contrasts against lime');
+
+assert.equal((await page.locator('.project-aruvix h3').innerText()).trim(),'Aruvix','product name has no decorative asterisk');
+assert.equal(await page.locator('.project-star').count(),0,'no misleading star symbol beside Aruvix');
+const boarding = await page.locator('#work .project-airline').evaluate(card=>{
+ const ticket=card.querySelector('.boarding-pass');
+ const visual=card.querySelector('.airline-visual');
+ const barcode=card.querySelector('.bar-code');
+ const ticketStyle=getComputedStyle(ticket);
+ const rectangle=ticket.getBoundingClientRect();
+ const art=visual.getBoundingClientRect();
+ const content=card.querySelector('.project-content').getBoundingClientRect();
+ return {
+  ticketBackground:ticketStyle.backgroundColor,
+  transform:ticketStyle.transform,
+  barcode:getComputedStyle(barcode).backgroundImage,
+  airlineBackground:getComputedStyle(card).backgroundColor,
+  artHeight:Math.round(art.height),
+  ticketWidth:Math.round(rectangle.width),
+  ticketHeight:Math.round(rectangle.height),
+  cardWidth:Math.round(card.getBoundingClientRect().width),
+  contentWidth:Math.round(content.width),
+  textColor:getComputedStyle(card.querySelector('.project-content h3')).color
+ };
+});
+assert.equal(boarding.airlineBackground,'rgb(32, 42, 50)','airline has prototype charcoal background');
+assert.equal(boarding.ticketBackground,'rgb(250, 249, 244)','boarding pass has ivory ticket surface');
+assert.notEqual(boarding.transform,'none','boarding pass is angled');
+assert.ok(boarding.barcode.includes('repeating-linear-gradient'),'ticket barcode is rendered');
+assert.ok(boarding.artHeight>=250,'boarding pass gets generous visual space');
+assert.ok(boarding.ticketWidth>=270&&boarding.ticketHeight>=145,'ticket is legible on desktop');
+assert.ok(boarding.contentWidth>350,'project content has adequate width');
+assert.equal(boarding.textColor,'rgb(246, 244, 238)','airline heading has sufficient contrast');
+await page.locator('#work').screenshot({path:path.join(output,'selected-work-desktop-light.png')});
+
 assert.equal(sectionGeometry.contactDisplay,'block','contact is full-width rather than legacy grid');
 assert.ok(sectionGeometry.contactWidth >= sectionGeometry.viewportWidth - 2,'contact band is edge to edge');
 await page.evaluate(() => {
@@ -98,6 +132,12 @@ assert.equal(await page.locator('#menu-toggle').getAttribute('aria-expanded'),'t
 assert.ok(await page.locator('#primary-nav').isVisible(),'mobile nav visible');
 await page.locator('#primary-nav a[href="#writing"]').click();
 assert.equal(await page.locator('#menu-toggle').getAttribute('aria-expanded'),'false','mobile menu closes');
+const mobileTicket=await page.locator('#work .boarding-pass').evaluate(el=>({width:el.getBoundingClientRect().width,height:el.getBoundingClientRect().height,bg:getComputedStyle(el).backgroundColor,barcode:getComputedStyle(document.querySelector('#work .bar-code')).backgroundImage}));
+assert.ok(mobileTicket.width>=240&&mobileTicket.height>=140,'boarding pass remains legible on phones');
+assert.equal(mobileTicket.bg,'rgb(250, 249, 244)','mobile boarding pass uses ivory paper');
+assert.ok(mobileTicket.barcode.includes('repeating-linear-gradient'),'mobile barcode is visible');
+await page.locator('#work').screenshot({path:path.join(output,'selected-work-mobile-dark.png')});
+
 await page.screenshot({path:path.join(output,'mobile-dark.png'),fullPage:true});
 const pageSource=fs.readFileSync(path.join(__dirname,'..','public','index.html'),'utf8');
 // Mirror app.js renderBlogPage(), which injects the legacy article reader CSS

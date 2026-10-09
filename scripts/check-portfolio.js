@@ -24,6 +24,7 @@ check('Shared theme persistence and aria state', common.includes('portfolio-them
 check('Resume PDF path exists', fs.existsSync(path.join(root, 'public/resume/pdf/Amrishkhan-Sheik-Abdullah-Resume.pdf')));
 check('Resume DOCX path exists', fs.existsSync(path.join(root, 'public/resume/doc/Amrishkhan-Sheik-Abdullah-Resume.docx')));
 check('Resume links in the UI', home.includes('/resume/pdf/Amrishkhan-Sheik-Abdullah-Resume.pdf') && home.includes('/resume/doc/Amrishkhan-Sheik-Abdullah-Resume.docx'));
+check('Selected Work ticket artwork and original Aruvix branding', home.includes('class="boarding-pass"') && !home.includes('class="project-star"') && polish.includes('SELECTED WORK · Restore prototype visual fidelity') && polish.includes('#work .bar-code'));
 check('Homepage section navigation and writing feed', home.includes('id="writing"') && home.includes('id="work"') && homeScript.includes('/api/blogs'));
 check('Blog article reader and canonical metadata', home.includes('id="blog-detail"') && home.includes('rel="canonical"'));
 check('Blog and Aruvix Express routes preserved', backend.includes('app.get("/blog/:slug"') && backend.includes('app.get("/aruvix"'));

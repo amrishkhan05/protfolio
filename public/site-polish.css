@@ -113,3 +113,122 @@ body.is-aruvix-view .hero-section h1,body.is-aruvix-view .case-study-shell h2,bo
 body.is-aruvix-view .hero-section p,body.is-aruvix-view .case-study-shell p{color:var(--muted)}
 [data-theme="dark"] body.is-aruvix-view .hero-section h1,[data-theme="dark"] body.is-aruvix-view .case-study-shell h2,[data-theme="dark"] body.is-aruvix-view .case-study-shell h3{color:#f0f5eb!important}
 [data-theme="dark"] body.is-aruvix-view .case-study-shell p{color:#d4e0d4}
+
+
+/* SELECTED WORK · Restore prototype visual fidelity and intentional rhythm.
+   Scoped to #work: article and Aruvix subpages are deliberately unaffected. */
+#work .work-heading-row{gap:clamp(24px,5vw,84px);align-items:end}
+#work .work-standfirst{max-width:355px;line-height:1.7;margin:0 0 8px}
+#work .filter-tabs{margin:clamp(30px,4vw,52px) 0 24px;gap:8px;padding-bottom:17px;scrollbar-width:thin}
+#work .filter-tab{border:1px solid transparent;border-radius:5px;min-height:42px;padding:10px 15px;transition:background-color .18s,border-color .18s,color .18s}
+#work .filter-tab:not(.active):hover{border-color:color-mix(in srgb,var(--ink) 28%,transparent)}
+#work .filter-tab:focus-visible,#work a:focus-visible,#work button:focus-visible,#work textarea:focus-visible{outline:3px solid #517ba4;outline-offset:3px}
+#work .work-layout{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(16px,1.8vw,26px);align-items:stretch}
+#work .project-card{min-width:0;position:relative;overflow:hidden;border:1px solid #cbd1c7;border-radius:12px;display:flex;flex-direction:column;box-shadow:0 8px 24px rgba(17,22,29,.035);transition:transform .23s ease,box-shadow .23s ease}
+#work .project-card:hover{transform:translateY(-3px);box-shadow:0 17px 34px rgba(17,22,29,.12)}
+#work .project-card[hidden]{display:none!important}
+#work .project-upper{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:clamp(22px,2vw,30px) clamp(22px,2.5vw,36px) 0;color:inherit;font:500 10px/1.5 var(--mono);letter-spacing:.055em}
+#work .project-kicker{display:inline-flex;align-items:center;gap:9px}
+#work .project-dot{display:inline-block;width:7px;height:7px;flex:0 0 7px;border-radius:50%;background:currentColor}
+#work .project-no{opacity:.75}
+#work .project-aruvix{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,44%) minmax(0,56%);grid-template-rows:auto minmax(0,1fr) auto;min-height:550px;background:#d5f478;color:#11161d;border-color:#d5f478}
+#work .project-aruvix .project-upper{grid-column:1/-1}
+#work .aruvix-copy{min-width:0;align-self:center;padding:40px clamp(28px,4vw,60px) 50px}
+#work .aruvix-copy h3{font:600 clamp(68px,7.7vw,122px)/1 var(--display);letter-spacing:-.085em;margin:18px 0 20px;overflow-wrap:normal}
+#work .aruvix-copy p{max-width:465px;font-size:16px;line-height:1.75;color:#354638}
+#work .project-action{display:inline-flex;align-items:center;justify-content:space-between;gap:22px;min-height:52px;background:#11161d;color:#f6f4ee!important;border:1px solid #11161d;border-radius:5px;margin-top:18px;padding:13px 18px;font-weight:700;font-size:13px;text-decoration:none;transition:background .2s}
+#work .project-action:hover{background:#283e34}
+#work .mock-editor{justify-self:stretch;align-self:center;min-width:0;width:calc(100% - 48px);min-height:335px;display:flex;flex-direction:column;margin:12px 26px 20px 8px;transform:rotate(-2deg);background:#101b1e;border:1px solid #405955;border-radius:13px;overflow:hidden;box-shadow:0 26px 50px #364d3440}
+#work .mock-editor textarea{flex:1;min-height:165px;max-width:100%;font-size:12px}
+#work .project-foot{grid-column:1/-1;display:flex;justify-content:flex-start;gap:clamp(16px,2.4vw,34px);flex-wrap:wrap;margin-top:0;border-top:1px solid #11161d30;padding:20px clamp(22px,2.5vw,36px);background:#d5f478;color:#253329;font:500 10px/1.6 var(--mono);letter-spacing:.05em}
+#work .project-airline,#work .project-payments,#work .project-oss{min-height:590px}
+#work .project-airline{background:#202a32!important;color:#f6f4ee!important;border-color:#202a32!important}
+#work .project-airline .project-upper{color:#f6f4ee}
+#work .project-airline .airline-visual{display:flex;align-items:center;justify-content:center;height:270px;min-height:270px;margin-top:8px;padding:25px 28px 18px;overflow:hidden;background:#202a32!important}
+#work .boarding-pass{position:relative;flex:0 1 390px;width:min(390px,88%);min-width:0;max-width:100%;display:flex;flex-direction:column;background:#faf9f4!important;color:#1f2a2e!important;border:0;border-radius:11px;transform:rotate(-8deg);box-shadow:22px 20px 0 #34434b,0 15px 24px #0003;transition:transform .25s;overflow:visible;padding:0}
+#work .project-airline:hover .boarding-pass{transform:rotate(-5deg) translateY(-3px)}
+#work .pass-top,#work .pass-bottom{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:15px 20px;font:500 9px/1.4 var(--mono);letter-spacing:.03em;color:#263531}
+#work .pass-top{border-bottom:1px dashed #bbc4be}
+#work .pass-top>span:first-child{font-weight:700}
+#work .pass-top>span span{padding-left:6px}
+#work .pass-routes{display:flex;align-items:center;justify-content:space-between;gap:5px;padding:12px 22px 14px;color:#1f2a2e}
+#work .pass-routes div{display:flex;flex-direction:column;flex:0 0 auto}
+#work .pass-routes div>span{font:500 9px var(--mono);color:#667572}
+#work .pass-routes strong{font:700 clamp(37px,4.6vw,58px)/1.12 var(--display);letter-spacing:-.075em;color:#1f2a2e}
+#work .pass-route-line{position:relative;flex:1;text-align:center;min-width:28px;margin:0 10px;color:#66877d;font-size:14px}
+#work .pass-route-line:before,#work .pass-route-line:after{position:absolute;top:50%;width:27%;border-top:1px dashed #71877f;content:""}
+#work .pass-route-line:before{left:0}#work .pass-route-line:after{right:0}
+#work .pass-bottom{border-top:1px dashed #bbc4be;min-height:52px}
+#work .pass-bottom>span{max-width:58%}
+#work .bar-code{display:block;flex:0 0 78px;width:78px;height:30px;background:repeating-linear-gradient(90deg,#1f2a2e 0 2px,transparent 2px 5px,#1f2a2e 5px 7px,transparent 7px 10px)}
+#work .project-content{min-width:0;display:flex;flex:1;flex-direction:column;padding:23px clamp(24px,2.7vw,38px) clamp(26px,3vw,40px);margin:0}
+#work .project-type{display:block;font:500 10px/1.5 var(--mono);letter-spacing:.08em;margin:0 0 14px;opacity:.78}
+#work .project-content h3{margin:0 0 15px;font:600 clamp(28px,2.8vw,39px)/1.12 var(--display);letter-spacing:-.055em;color:inherit}
+#work .project-content p{max-width:500px;font-size:14px;line-height:1.68;margin:0 0 22px;color:#5c6863}
+#work .project-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto}
+#work .project-tags span{font:500 10px/1.45 var(--mono);border:1px solid #9aa69d;border-radius:4px;padding:7px 10px;color:inherit}
+#work .project-airline .project-content p{color:#c5d0ce!important}
+#work .project-airline .project-tags span{border-color:#718080;color:#e5efeb}
+#work .project-airline .project-type,#work .project-airline .project-content h3{color:#f6f4ee!important}
+#work .project-payments{background:#f1e4dd!important;color:#1f292c!important;border-color:#e6d4c9!important}
+#work .project-payments .payment-visual{background:#f1e4dd!important;height:270px;min-height:270px;position:relative;display:flex;align-items:center;justify-content:center;padding:20px 24px}
+#work .payment-visual svg{width:min(330px,67%);height:auto;overflow:visible}
+#work .payment-chip{position:absolute;top:50%;transform:translateY(-50%);display:flex;gap:8px;align-items:center;padding:11px 13px;border-radius:6px;background:#1b2428;color:#f8f7f2;font:500 10px var(--mono);white-space:nowrap;box-shadow:7px 7px 0 #1b242820}
+#work .chip-left{left:clamp(14px,3vw,45px)}#work .chip-right{right:clamp(14px,3vw,45px)}
+#work .payment-caption{position:absolute;bottom:16px;left:14px;right:14px;text-align:center;color:#68736d;font:500 9px/1.4 var(--mono);letter-spacing:.02em}
+#work .project-payments .project-content p{color:#53615c!important}
+#work .project-oss{background:#e2e7f1!important;color:#1f292c!important;border-color:#cfd9e8!important}
+#work .project-oss .oss-visual{display:flex;align-items:center;justify-content:center;gap:clamp(8px,2vw,30px);height:270px;min-height:270px;background:#e2e7f1!important}
+#work .oss-visual div{display:flex;flex-direction:column}
+#work .oss-visual strong{display:block;font:600 clamp(27px,3vw,43px)/1.02 var(--display);letter-spacing:-.06em}
+#work .oss-visual strong span{color:#758f6a}
+#work .oss-visual small{font:500 10px var(--mono);margin-top:10px;color:#5b6d74}
+#work .oss-bracket{font:400 clamp(70px,8vw,120px)/1 var(--display);color:#9ab3c8}
+#work .project-oss .project-content p{color:#52616a!important}
+#work .project-text-link{display:inline-block;align-self:flex-start;margin-top:20px;border-bottom:1px solid currentColor;padding-bottom:4px;font-size:13px;font-weight:700}
+#work .projects-footer{display:flex;justify-content:space-between;align-items:baseline;gap:15px;margin-top:30px;font:500 10px/1.6 var(--mono);color:var(--muted)}
+#work .projects-footer a{text-decoration:underline;text-underline-offset:3px}
+@media(max-width:1050px){
+ #work .project-aruvix{grid-template-columns:minmax(0,45%) minmax(0,55%);min-height:510px}
+ #work .aruvix-copy{padding:26px 20px 30px 30px}
+ #work .aruvix-copy h3{font-size:clamp(64px,8.5vw,98px)}
+ #work .mock-editor{width:calc(100% - 30px);margin:10px 22px 20px 0}
+ #work .project-airline .airline-visual,#work .project-payments .payment-visual,#work .project-oss .oss-visual{height:252px;min-height:252px}
+ #work .pass-top,#work .pass-bottom{padding:12px 15px;font-size:8px}
+ #work .pass-routes{padding:10px 16px 12px}
+ #work .pass-routes strong{font-size:clamp(32px,4vw,48px)}
+ #work .boarding-pass{width:96%}
+ #work .payment-chip{font-size:8px;padding:10px}
+}
+@media(max-width:760px){
+ #work .work-heading-row{display:block}
+ #work .work-standfirst{margin-top:18px;max-width:520px}
+ #work .filter-tabs{gap:6px;margin-top:28px;scroll-margin-inline:16px}
+ #work .work-layout{grid-template-columns:minmax(0,1fr);gap:16px}
+ #work .project-aruvix{grid-column:auto;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto auto auto;min-height:auto}
+ #work .aruvix-copy{padding:25px 24px 12px}
+ #work .aruvix-copy h3{font-size:clamp(62px,16vw,102px);margin:14px 0 16px}
+ #work .mock-editor{justify-self:center;min-height:330px;width:calc(100% - 46px);max-width:600px;margin:20px 22px 28px;transform:rotate(-1deg)}
+ #work .project-foot{gap:10px 20px;padding:18px 24px}
+ #work .project-airline,#work .project-payments,#work .project-oss{min-height:0}
+ #work .project-airline .airline-visual,#work .project-payments .payment-visual,#work .project-oss .oss-visual{height:280px;min-height:280px;margin-top:0}
+ #work .boarding-pass{width:min(390px,85%);transform:rotate(-7deg)}
+ #work .pass-routes strong{font-size:clamp(37px,10vw,57px)}
+ #work .project-content{padding:22px 24px 30px}
+ #work .project-content h3{font-size:clamp(29px,7.6vw,38px)}
+ #work .projects-footer{align-items:flex-start;flex-direction:column}
+}
+@media(max-width:410px){
+ #work .project-airline .airline-visual{padding:20px 11px}
+ #work .boarding-pass{width:88%;box-shadow:12px 12px 0 #34434b,0 9px 16px #0003}
+ #work .pass-top,#work .pass-bottom{padding:10px 11px;font-size:7px;gap:8px}
+ #work .pass-routes{padding:9px 12px}
+ #work .pass-routes strong{font-size:39px}
+ #work .pass-route-line{margin:0 3px;min-width:18px}
+ #work .bar-code{flex-basis:60px;width:60px;height:25px}
+ #work .project-payments .payment-visual .payment-chip{font-size:8px;padding:7px}
+ #work .oss-visual strong{font-size:27px}
+}
+@media(prefers-reduced-motion:reduce){
+ #work .project-card,#work .boarding-pass{transition:none!important}
+}
