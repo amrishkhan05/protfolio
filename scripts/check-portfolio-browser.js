@@ -15,6 +15,9 @@ const browser = await chromium.launch({headless:true});
 const context = await browser.newContext({viewport:{width:1440,height:900},deviceScaleFactor:1,acceptDownloads:true});
 const page = await context.newPage();
 const errors=[];page.on('pageerror',e=>errors.push(e.message));
+const wideCoverSvg="<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"1000\" height=\"420\" viewBox=\"0 0 1000 420\"><rect width=\"1000\" height=\"420\" fill=\"#1f292d\"/><rect x=\"0\" y=\"0\" width=\"90\" height=\"420\" fill=\"#d5f478\"/><rect x=\"910\" y=\"0\" width=\"90\" height=\"420\" fill=\"#f4aa91\"/><text x=\"10\" y=\"200\" font-size=\"22\" fill=\"#11161d\">LEFT</text><text x=\"930\" y=\"200\" font-size=\"22\" fill=\"#11161d\">RIGHT</text><text x=\"150\" y=\"230\" font-family=\"monospace\" font-size=\"60\" fill=\"#ffffff\">FULL BANNER</text></svg>";
+sample[1].coverImage='https://fixture-images.test/wide-banner.svg';
+await page.route('**/fixture-images.test/wide-banner.svg',route=>route.fulfill({status:200,contentType:'image/svg+xml',body:wideCoverSvg}));
 await page.route('**/api/blogs*',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({blogs:sample,count:sample.length})}));
 await page.goto(base+'/',{waitUntil:'domcontentloaded'});
 await page.locator('#journal-grid .journal-card').first().waitFor({timeout:20000});
@@ -25,6 +28,19 @@ assert.equal(listImageFallback.count,0,'broken original and backup covers are re
 assert.equal(listImageFallback.fallback,true,'cover fallback artwork stays visible');
 assert.ok(listImageFallback.height>=180,'cover image failure does not collapse the layout');
 await page.locator('#journal-feature .journal-art').screenshot({path:path.join(output,'journal-broken-cover-fallback.png')});
+const wideThumbnail=page.locator('#journal-grid .journal-card').first().locator('.journal-art');
+await wideThumbnail.locator('img').waitFor({state:'visible'});
+await wideThumbnail.locator('img').evaluate(img=>img.decode());
+const thumbnailGeometry=await wideThumbnail.evaluate(el=>{
+  const img=el.querySelector('img'),box=el.getBoundingClientRect(),style=getComputedStyle(img);
+  return {naturalWidth:img.naturalWidth,naturalHeight:img.naturalHeight,objectFit:style.objectFit,aspect:box.width/box.height};
+});
+assert.equal(thumbnailGeometry.naturalWidth,1000,'wide banner image downloaded');
+assert.equal(thumbnailGeometry.naturalHeight,420,'wide banner image has original dimensions');
+assert.equal(thumbnailGeometry.objectFit,'contain','full thumbnail must not crop title text');
+assert.ok(Math.abs(thumbnailGeometry.aspect-1000/420)<0.07,'thumbnail frame matches article banner proportions');
+await wideThumbnail.screenshot({path:path.join(output,'journal-wide-banner-uncropped.png')});
+
 
 assert.equal(await page.locator('#studio-theme-toggle').count(),1,'one theme toggle');
 assert.equal(await page.locator('#back-to-top').count(),1,'one back-to-top button');
@@ -244,6 +260,19 @@ const articleOverflow=await page.evaluate(()=>({
 if(articleOverflow.width>articleOverflow.viewport+2)console.error('Article overflowing elements:',JSON.stringify(articleOverflow));
 assert.ok(articleOverflow.width<=articleOverflow.viewport+2,'article mobile layout does not overflow');
 await page.screenshot({path:path.join(output,'article-mobile-dark.png'),fullPage:true});
+const wideArticleHtml=articleHtml.replace('src="https://media.invalid/article-cover.webp"','src="https://fixture-images.test/wide-banner.svg"');
+await page.route('**/blog/wide-banner-fixture',route=>route.fulfill({status:200,contentType:'text/html',body:wideArticleHtml}));
+await page.goto(base+'/blog/wide-banner-fixture',{waitUntil:'domcontentloaded'});
+await page.locator('#blog-detail-cover').evaluate(img=>img.decode());
+const articleCover=await page.locator('.blog-cover-frame').evaluate(el=>{
+  const img=el.querySelector('img'),rect=el.getBoundingClientRect();
+  return {naturalWidth:img.naturalWidth,objectFit:getComputedStyle(img).objectFit,aspect:rect.width/rect.height};
+});
+assert.equal(articleCover.naturalWidth,1000,'wide full-article cover loaded');
+assert.equal(articleCover.objectFit,'contain','full article image does not crop embedded text');
+assert.ok(Math.abs(articleCover.aspect-1000/420)<0.07,'full article uses text-friendly banner aspect');
+await page.locator('.blog-cover-frame').screenshot({path:path.join(output,'article-banner-uncropped-mobile.png')});
+
 // Loading page without SSR: no homepage flash, branded terminal loader, stable frame.
 await page.route('**/blog/slow-fixture',route=>route.fulfill({status:200,contentType:'text/html',body:pageSource}));
 await page.route('**/api/blogs/slow-fixture*',async route=>{await new Promise(done=>setTimeout(done,950));await route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({...sample[0],devSlug:'slow-fixture',coverImage:'https://media.invalid/missing.webp',bodyHtml:'<p>Article finally loaded.</p><img src="https://media.invalid/inline.webp" alt="Diagram">',bodyMarkdown:''})});});

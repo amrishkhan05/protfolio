@@ -62,3 +62,50 @@ html.is-opening-article #blog-loader-overlay[hidden],html.is-blog-route.is-blog-
 @media(prefers-reduced-motion:reduce){
  #blog-loader-overlay .code-loader-progress span,#blog-loader-overlay .code-loader-cursor{animation:none}
 }
+
+
+/* Editorial cover banners are text-bearing images, not decorative photographs.
+   Keep their ENTIRE width visible at every breakpoint; never center-crop text. */
+#home-content .journal-grid .journal-art,
+#home-content .journal-feature .journal-art,
+#home-content .journal-art {
+  aspect-ratio: 1000 / 420;
+  min-height: 0;
+  height: auto;
+  overflow: hidden;
+  background: #162126 !important;
+}
+#home-content .journal-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center center;
+  background: #162126;
+}
+#home-content .journal-art:has(img) .journal-art-fallback {
+  visibility: hidden;
+}
+html.is-blog-route .blog-cover-frame {
+  aspect-ratio: 1000 / 420;
+  max-height: none;
+  min-height: 0;
+  overflow: hidden;
+  background: #162126;
+}
+html.is-blog-route .blog-cover-frame .blog-cover {
+  object-fit: contain;
+  object-position: center center;
+  background: #162126;
+}
+/* The featured card may stretch to the copy's height on desktop. Center its
+   entire image within that area instead of cropping the left and right edges. */
+#home-content .journal-feature .journal-card {
+  align-items: stretch;
+}
+#home-content .journal-feature .journal-art {
+  align-self: stretch;
+}
+@media (max-width: 760px) {
+  #home-content .journal-feature .journal-art,
+  #home-content .journal-grid .journal-art { min-height: 0; }
+}
