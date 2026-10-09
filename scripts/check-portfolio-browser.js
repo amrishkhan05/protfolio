@@ -101,7 +101,7 @@ const pageSource=fs.readFileSync(path.join(__dirname,'..','public','index.html')
 // Mirror app.js renderBlogPage(), which injects the legacy article reader CSS
 // exclusively for server-rendered /blog/:slug pages.
 const articleHtml=pageSource
- .replace('<link rel="stylesheet" href="/site-redesign.css?v=5" />', '<link rel="stylesheet" href="/styles.css?v=4" />\\n  <link rel="stylesheet" href="/site-redesign.css?v=5" />')
+ .replace('<link rel="stylesheet" href="/site-redesign.css?v=5" />', ['<link rel="stylesheet" href="/styles.css?v=4" />', '<link rel="stylesheet" href="/site-redesign.css?v=5" />'].join("\n"))
  .replace('<div class="blog-detail-content" id="blog-detail-content" hidden>','<div class="blog-detail-content" id="blog-detail-content">')
  .replace('<div class="blog-detail-status" id="blog-detail-status">Loading...</div>','<div class="blog-detail-status" id="blog-detail-status" hidden></div>')
  .replace('<h1 id="blog-detail-title"></h1>','<h1 id="blog-detail-title">Sometimes the fastest system is the one willing to stop</h1>')
