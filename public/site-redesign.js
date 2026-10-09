@@ -9,7 +9,44 @@ const escape=(v)=>String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').repla
 toggle?.addEventListener('click',()=>{const open=toggle.getAttribute('aria-expanded')==='true';toggle.setAttribute('aria-expanded',String(!open));toggle.setAttribute('aria-label',open?'Open navigation':'Close navigation');nav?.classList.toggle('open',!open);});
 qa('#primary-nav a').forEach(a=>a.addEventListener('click',()=>{nav?.classList.remove('open');toggle?.setAttribute('aria-expanded','false');}));
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){nav?.classList.remove('open');toggle?.setAttribute('aria-expanded','false');}});
-function updateScroll(){const y=scrollY,max=document.documentElement.scrollHeight-innerHeight;header?.classList.toggle('is-scrolled',y>25);top?.classList.toggle('is-visible',y>490);if(progress)progress.style.width=(max>0?Math.min(100,y/max*100):0)+'%';}
+// Context navigation is a reading shortcut, not a second permanent header.
+const writing=q('#writing'),writingHeader=writing?.querySelector('.section-top'),writingContext=q('#writing-context'),contextSearch=q('#writing-context-search'),contextCount=q('#writing-context-count');
+const desktopWriting=matchMedia('(min-width:1051px)');
+function updateWritingContext(){
+  if(!writingContext||!writingHeader||!writing)return;
+  const navBottom=header?.getBoundingClientRect().bottom||68;
+  const sectionBottom=writing.getBoundingClientRect().bottom;
+  const headingBottom=writingHeader.getBoundingClientRect().bottom;
+  const active=desktopWriting.matches&&headingBottom<=navBottom+2&&sectionBottom>navBottom+60;
+  writingContext.hidden=!active;
+  if(active){
+    const top=Math.round(navBottom)+'px';
+    if(writingContext.style.top!==top)writingContext.style.top=top;
+  }
+}
+contextSearch?.addEventListener('click',()=>{
+  const field=q('#journal-search'),actions=field?.closest('.journal-actions');
+  if(!field||!actions)return;
+  const headerHeight=header?.getBoundingClientRect().bottom||68;
+  const contextHeight=writingContext?.getBoundingClientRect().height||46;
+  const y=window.scrollY+actions.getBoundingClientRect().top-headerHeight-contextHeight-16;
+  const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  field.focus({preventScroll:true});
+  window.scrollTo({top:Math.max(0,y),behavior:reduced?'instant':'smooth'});
+});
+const storyCounter=q('#journal-count');
+if(storyCounter&&contextCount){
+  const syncCount=()=>{
+    const raw=storyCounter.textContent?.trim()||'';
+    const matched=raw.match(/\b\d+\s+stories\b/i);
+    contextCount.textContent=matched?matched[0]:'Latest stories';
+  };
+  new MutationObserver(syncCount).observe(storyCounter,{childList:true,characterData:true,subtree:true});
+  syncCount();
+}
+addEventListener('resize',updateWritingContext,{passive:true});
+
+function updateScroll(){const y=scrollY,max=document.documentElement.scrollHeight-innerHeight;header?.classList.toggle('is-scrolled',y>25);top?.classList.toggle('is-visible',y>490);if(progress)progress.style.width=(max>0?Math.min(100,y/max*100):0)+'%';updateWritingContext();}
 addEventListener('scroll',updateScroll,{passive:true});updateScroll();
 top?.addEventListener('click',()=>window.scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'}));
 if(q('#current-year'))q('#current-year').textContent=String(new Date().getFullYear());

@@ -21,6 +21,32 @@ await page.route('**/fixture-images.test/wide-banner.svg',route=>route.fulfill({
 await page.route('**/api/blogs*',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({blogs:sample,count:sample.length})}));
 await page.goto(base+'/',{waitUntil:'domcontentloaded'});
 await page.locator('#journal-grid .journal-card').first().waitFor({timeout:20000});
+
+const contextBar=page.locator('#writing-context');
+assert.equal(await contextBar.isVisible(),false,'writing contextual bar stays hidden before entering Writing');
+await page.evaluate(()=>{
+ const writing=document.getElementById('writing');
+ const barHeading=writing.querySelector('.section-top');
+ const header=document.querySelector('.site-header');
+ scrollTo({top:scrollY+barHeading.getBoundingClientRect().bottom+40,behavior:'instant'});
+});
+await page.waitForTimeout(180);
+assert.ok(await contextBar.isVisible(),'slim Field Notes bar appears once Writing heading leaves view');
+const contextGeo=await contextBar.evaluate(el=>({height:el.getBoundingClientRect().height,top:el.getBoundingClientRect().top,headerBottom:document.querySelector('.site-header').getBoundingClientRect().bottom}));
+assert.ok(contextGeo.height>=40&&contextGeo.height<=52,'context bar is a compact 46px band');
+assert.ok(Math.abs(contextGeo.top-contextGeo.headerBottom)<4,'context bar sits beneath fixed navigation, without overlap');
+assert.equal((await page.locator('#writing-context-count').innerText()).trim(),'9 stories','contextual count follows API response');
+await contextBar.locator('#writing-context-search').click();
+await page.waitForTimeout(750);
+assert.equal(await page.locator('#journal-search').evaluate(el=>document.activeElement===el),true,'Find a story focuses the real article search');
+const searchGeo=await page.locator('#journal-search').evaluate(el=>({top:el.getBoundingClientRect().top,headerBottom:document.querySelector('.site-header').getBoundingClientRect().bottom,contextHeight:document.querySelector('#writing-context').getBoundingClientRect().height}));
+assert.ok(searchGeo.top>searchGeo.headerBottom+searchGeo.contextHeight-1,'focused search remains unobstructed by both navigation bars');
+await page.locator('#writing-context').screenshot({path:path.join(output,'writing-context-desktop-light.png')});
+await page.evaluate(()=>document.getElementById('contact').scrollIntoView({behavior:'instant',block:'start'}));
+await page.waitForTimeout(170);
+assert.equal(await contextBar.isVisible(),false,'context bar disappears completely before Contact');
+await page.evaluate(()=>scrollTo({top:0,behavior:'instant'}));
+
 await page.route('**/media.invalid/**',route=>route.abort());
 await page.waitForTimeout(250);
 const listImageFallback=await page.locator('#journal-feature .journal-art').evaluate(el=>({count:el.querySelectorAll('img').length,fallback:!!el.querySelector('.journal-art-fallback'),height:el.getBoundingClientRect().height}));
@@ -288,6 +314,7 @@ await page.setViewportSize({width:390,height:844});
 await page.goto(base+'/',{waitUntil:'domcontentloaded'});
 await page.locator('#journal-grid .journal-card').first().waitFor({timeout:20000});
 assert.ok((await page.evaluate(()=>document.documentElement.scrollWidth))<=392,'no mobile horizontal overflow');
+assert.equal(await page.locator('#writing-context').isVisible(),false,'secondary bar never crowds the mobile viewport');
 const mobileSkills=await page.locator('#skills .skills-categories').evaluate(el=>({columns:getComputedStyle(el).gridTemplateColumns.trim().split(/\s+/).length,width:el.getBoundingClientRect().width}));
 assert.equal(mobileSkills.columns,1,'mobile technical expertise uses single-column layout');
 assert.ok(mobileSkills.width<=390,'mobile technical expertise fits viewport');

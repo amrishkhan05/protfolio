@@ -1,0 +1,92 @@
+/* A restrained, contextual Writing navigation. Only appears after the
+   editorial section heading leaves view; never occupies document flow. */
+#home-content #writing .writing-context{
+  position:fixed;
+  top:68px;
+  left:0;
+  right:0;
+  z-index:140;
+  display:block;
+  background:rgba(245,247,240,.97);
+  color:#182c27;
+  border-bottom:1px solid #bdcbbf;
+  box-shadow:0 8px 18px #111b1916;
+  -webkit-backdrop-filter:blur(14px);
+  backdrop-filter:blur(14px);
+}
+#home-content #writing .writing-context[hidden]{display:none!important}
+#home-content .writing-context-inner{
+  width:min(1400px,calc(100% - 92px));
+  height:46px;
+  min-width:0;
+  margin-inline:auto;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:24px;
+}
+#home-content .writing-context-heading{
+  min-width:0;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  white-space:nowrap;
+}
+#home-content .writing-context-dot{
+  display:inline-block;
+  width:7px;
+  height:7px;
+  flex:none;
+  border-radius:50%;
+  background:#719b59;
+}
+#home-content .writing-context-title{
+  color:inherit;
+  font:700 13px/1.2 var(--display);
+  letter-spacing:-.02em;
+}
+#home-content .writing-context-count{
+  padding-left:12px;
+  border-left:1px solid #b1c0b7;
+  color:#52665d;
+  font:500 10px/1.5 var(--mono);
+  letter-spacing:.015em;
+}
+#home-content .writing-context-search{
+  flex:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:15px;
+  padding:8px 2px;
+  border:0;
+  border-bottom:1px solid #5e7569;
+  background:transparent;
+  color:#213d2b;
+  font:700 12px/1.2 var(--sans);
+  cursor:pointer;
+}
+#home-content .writing-context-search:hover{color:#557948;border-bottom-color:currentColor}
+#home-content .writing-context-search:focus-visible{outline:3px solid #527d62;outline-offset:3px}
+[data-theme="dark"] #home-content #writing .writing-context{
+  background:rgba(34,51,48,.97);
+  border-bottom-color:#526b60;
+  color:#f1f7ef;
+  box-shadow:0 8px 18px #060d0d50;
+}
+[data-theme="dark"] #home-content .writing-context-dot{background:#d5f478}
+[data-theme="dark"] #home-content .writing-context-count{
+  color:#bfd2c4;
+  border-left-color:#72887a;
+}
+[data-theme="dark"] #home-content .writing-context-search{
+  color:#d5f478;
+  border-bottom-color:#89a76a;
+}
+[data-theme="dark"] #home-content .writing-context-search:hover{color:#ecffb7}
+@media(max-width:1050px){
+  #home-content #writing .writing-context{display:none!important}
+}
+@media(prefers-reduced-motion:reduce){
+  #home-content #writing .writing-context{scroll-behavior:auto}
+}
