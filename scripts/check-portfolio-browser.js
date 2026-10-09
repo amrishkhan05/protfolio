@@ -107,6 +107,18 @@ const identity=page.locator('.site-header');
 assert.equal(await identity.locator('.brand-mark svg').count(),1,'custom vector AK monogram displayed');
 assert.ok(await identity.locator('.brand-name').isVisible(),'new editorial wordmark is visible');
 assert.equal((await identity.locator('.brand-name').innerText()).trim(),'amrishkhan.dev','wordmark matches the portfolio domain exactly');
+
+const footerIdentity=await page.evaluate(()=>{
+ const header=document.querySelector('.site-header .brand-mark svg');
+ const footer=document.querySelector('#contact .footer-brand .brand-mark svg');
+ const headerName=document.querySelector('.site-header .brand-name');
+ const footerName=document.querySelector('#contact .footer-brand .brand-name');
+ return {vectorMatches:header?.outerHTML===footer?.outerHTML,
+         headerName:headerName?.textContent.trim(),footerName:footerName?.textContent.trim()};
+});
+assert.equal(footerIdentity.vectorMatches,true,'contact footer reuses the exact header AK vector');
+assert.equal(footerIdentity.footerName,footerIdentity.headerName,'footer wordmark matches header brand identity');
+
 assert.equal(await identity.locator('.nav-order').count(),0,'numbered navigation removed');
 assert.equal(await identity.locator('.nav-links a[href="#work"]').innerText(),'Work','clean Work label without badge');
 assert.equal(await identity.locator('.nav-links a[href="#skills"]').innerText(),'Skills','clean Skills label without badge');
@@ -429,6 +441,31 @@ assert.ok(contactAnchor.writingBottom<=contactAnchor.navBottom+33,'writing cards
 assert.ok(contactAnchor.writingPaddingBottom<=33,'no oversized blank writing-to-contact band');
 assert.ok(contactAnchor.contactBottom>=contactAnchor.viewport-3,'contact panel and footer reach the viewport bottom');
 assert.ok(contactAnchor.footerBottom<=contactAnchor.viewport+4,'contact footer remains visible at final anchor on tall desktop');
+
+const emailActionLayout=await page.locator('#contact').evaluate(el=>{
+ const mail=el.querySelector('.contact-mail').getBoundingClientRect();
+ const copy=el.querySelector('#copy-email').getBoundingClientRect();
+ const resume=el.querySelector('.studio-resume-panel').getBoundingClientRect();
+ const row=el.querySelector('.contact-email-row').getBoundingClientRect();
+ return {mailLeft:mail.left,mailRight:mail.right,mailTop:mail.top,mailBottom:mail.bottom,
+    copyLeft:copy.left,copyRight:copy.right,copyTop:copy.top,copyBottom:copy.bottom,
+    resumeTop:resume.top,rowWidth:row.width,rowRight:row.right};
+});
+assert.ok(emailActionLayout.mailRight<emailActionLayout.copyLeft+2,'copy email button sits beside the email action on desktop');
+assert.ok(emailActionLayout.copyBottom<emailActionLayout.resumeTop,'copy action appears above the resume link');
+assert.ok(emailActionLayout.copyRight<=emailActionLayout.rowRight+2,'copy control stays within contact column');
+assert.equal(await page.locator('#copy-email').getAttribute('aria-label'),'Copy email address','copy action is labeled accessibly');
+await page.evaluate(()=>{
+ window.__copiedContactAddress=null;
+ Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText:async value=>{window.__copiedContactAddress=value;}}});
+});
+await page.locator('#copy-email').click();
+await page.waitForFunction(()=>window.__copiedContactAddress!==null);
+assert.equal(await page.evaluate(()=>window.__copiedContactAddress),
+  'amrishkhansheikabdullah@gmail.com','copy action copies the exact address in the email link');
+assert.equal(await page.locator('#copy-feedback').innerText(),'Email address copied','copying offers readable feedback');
+await page.locator('#contact .contact-email-row').screenshot({path:path.join(output,'contact-email-actions.png')});
+
 const footerControlCollision=await page.evaluate(()=>{
   const last=document.querySelector('#contact .footer-social a:last-child').getBoundingClientRect();
   const button=document.querySelector('#back-to-top').getBoundingClientRect();
@@ -642,6 +679,37 @@ assert.equal(await page.evaluate(()=>document.documentElement.classList.contains
 assert.equal(await page.locator('#blog-toc').isVisible(),false,'an uninitialized contents panel cannot appear alone');
 
 assert.ok((await page.locator('.blog-back-link').getAttribute('href'))==='/#writing','article back link to writing');
+
+// Blog pages use the same header but must navigate back to visible homepage
+// sections, not fragment IDs inside the hidden article-page homepage DOM.
+for(const fragment of ['work','skills','experience','writing','contact']){
+ assert.equal(await page.locator('#primary-nav a').filter({hasText:fragment==='work'?'Work':fragment==='skills'?'Skills':fragment==='experience'?'Experience':fragment==='writing'?'Writing':'Contact'}).first().getAttribute('href'),
+ '/#'+fragment, 'article header '+fragment+' routes to the homepage');
+}
+assert.equal(await page.locator('.site-header .header-cta').getAttribute('href'),' /#contact'.trim(),'article contact CTA routes home');
+assert.equal(await page.locator('.site-header .brand').getAttribute('href'),'/', 'article logo returns to homepage');
+assert.equal(await page.locator('.site-header #primary-nav a[href="/#writing"]').getAttribute('aria-current'),'location','Writing active during article reading');
+await page.setViewportSize({width:1440,height:900});
+await page.goto(base+'/blog/fixture',{waitUntil:'domcontentloaded'});
+await page.locator('#primary-nav a[href="/#skills"]').click();
+await page.waitForURL('**/#skills');
+assert.ok(await page.locator('#skills').isVisible(),'desktop Skills header link navigates from article to real Skills section');
+assert.equal(await page.locator('#blog-detail').isVisible(),false,'blog detail is no longer shown after homepage navigation');
+await page.goto(base+'/blog/fixture',{waitUntil:'domcontentloaded'});
+await page.locator('.site-header .header-cta').click();
+await page.waitForURL('**/#contact');
+assert.ok(await page.locator('#contact').isVisible(),'article Contact CTA opens homepage contact');
+await page.setViewportSize({width:390,height:844});
+await page.goto(base+'/blog/fixture',{waitUntil:'domcontentloaded'});
+await page.locator('#menu-toggle').click();
+assert.equal(await page.locator('#menu-toggle').getAttribute('aria-expanded'),'true','blog mobile navigation expands');
+await page.locator('#primary-nav a[href="/#writing"]').click();
+await page.waitForURL('**/#writing');
+assert.ok(await page.locator('#writing').isVisible(),'blog mobile Writing link returns to portfolio stories');
+assert.equal(await page.locator('#menu-toggle').getAttribute('aria-expanded'),'false','mobile menu closes following cross-page navigation');
+await page.goto(base+'/blog/fixture',{waitUntil:'domcontentloaded'});
+await page.locator('#blog-detail-title').waitFor({state:'visible',timeout:20000});
+
 const articleOverflow=await page.evaluate(()=>({
   width:document.documentElement.scrollWidth,
   viewport:innerWidth,
