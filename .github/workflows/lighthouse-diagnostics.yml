@@ -23,7 +23,7 @@ jobs:
       - name: Install production server and Lighthouse
         run: |
           npm ci
-          npm install --no-save lighthouse@12.8.2
+          npm install --no-save lighthouse@13.5.0
           google-chrome --version || chromium --version
       - name: Start local site
         run: |
