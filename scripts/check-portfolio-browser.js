@@ -87,6 +87,27 @@ assert.ok(boarding.barcode.includes('repeating-linear-gradient'),'ticket barcode
 assert.ok(boarding.artHeight>=250,'boarding pass gets generous visual space');
 assert.ok(boarding.ticketWidth>=270&&boarding.ticketHeight>=145,'ticket is legible on desktop');
 assert.ok(boarding.contentWidth>350,'project content has adequate width');
+const openSourceRow=await page.locator('#work .project-oss').evaluate(card=>{
+ const grid=card.parentElement.getBoundingClientRect();
+ const rect=card.getBoundingClientRect();
+ const visual=card.querySelector('.oss-visual').getBoundingClientRect();
+ const content=card.querySelector('.project-content').getBoundingClientRect();
+ return {
+  rowSpan:getComputedStyle(card).gridColumn,
+  gridLayout:getComputedStyle(card).display,
+  width:rect.width,
+  gridWidth:grid.width,
+  visualX:visual.x,
+  contentX:content.x,
+  visualWidth:visual.width,
+  contentWidth:content.width
+ };
+});
+assert.ok(openSourceRow.width>=openSourceRow.gridWidth-3,'open source card fills final row');
+assert.equal(openSourceRow.gridLayout,'grid','open source card uses horizontal editorial layout');
+assert.ok(openSourceRow.contentX>openSourceRow.visualX,'open source copy is alongside graphic');
+assert.ok(openSourceRow.visualWidth>250&&openSourceRow.contentWidth>250,'open source content is spacious');
+
 assert.equal(boarding.textColor,'rgb(246, 244, 238)','airline heading has sufficient contrast');
 await page.locator('#work').screenshot({path:path.join(output,'selected-work-desktop-light.png')});
 
@@ -135,6 +156,8 @@ assert.equal(await page.locator('#menu-toggle').getAttribute('aria-expanded'),'f
 const mobileTicket=await page.locator('#work .boarding-pass').evaluate(el=>({width:el.getBoundingClientRect().width,height:el.getBoundingClientRect().height,bg:getComputedStyle(el).backgroundColor,barcode:getComputedStyle(document.querySelector('#work .bar-code')).backgroundImage}));
 assert.ok(mobileTicket.width>=240&&mobileTicket.height>=140,'boarding pass remains legible on phones');
 assert.equal(mobileTicket.bg,'rgb(250, 249, 244)','mobile boarding pass uses ivory paper');
+assert.equal(await page.locator('#work .project-oss').evaluate(el=>getComputedStyle(el).display),'flex','open source returns to single-column mobile flow');
+
 assert.ok(mobileTicket.barcode.includes('repeating-linear-gradient'),'mobile barcode is visible');
 await page.locator('#work').screenshot({path:path.join(output,'selected-work-mobile-dark.png')});
 

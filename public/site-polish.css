@@ -232,3 +232,38 @@ body.is-aruvix-view .hero-section p,body.is-aruvix-view .case-study-shell p{colo
 @media(prefers-reduced-motion:reduce){
  #work .project-card,#work .boarding-pass{transition:none!important}
 }
+
+
+/* An intentional final row: give the open-source collection the full canvas,
+   rather than leaving half of the project grid empty at desktop widths. */
+@media (min-width:761px){
+ #work .project-oss{
+   grid-column:1/-1;
+   display:grid;
+   grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);
+   grid-template-rows:auto minmax(0,1fr);
+   min-height:365px;
+   align-items:stretch;
+ }
+ #work .project-oss .project-upper{grid-column:1/-1;grid-row:1}
+ #work .project-oss .oss-visual{
+   grid-column:1;
+   grid-row:2;
+   min-height:275px;
+   height:auto;
+   padding:24px clamp(28px,4vw,55px);
+   border-right:1px solid #c0ccdf;
+ }
+ #work .project-oss .project-content{
+   grid-column:2;
+   grid-row:2;
+   justify-content:center;
+   padding:40px clamp(32px,5vw,70px);
+ }
+ #work .project-oss .project-content h3{font-size:clamp(35px,3.4vw,49px)}
+ #work .project-oss .project-content p{max-width:440px}
+}
+@media (max-width:760px){
+ #work .project-oss{grid-column:auto;display:flex;flex-direction:column}
+ #work .project-oss .oss-visual{border-right:0}
+}
