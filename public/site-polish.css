@@ -472,6 +472,7 @@ body.is-aruvix-view .hero-section p,body.is-aruvix-view .case-study-shell p{colo
   #work .oss-package{min-height:140px}
 }
 @media(max-width:760px){
+  #work .oss-package-index-type{display:none}
   #work .project-oss .project-upper{padding:17px 19px 7px;gap:8px}
   #work .oss-compact-body{padding:12px 19px 20px;gap:16px}
   #work .oss-compact-intro{display:flex;gap:0;align-items:flex-start}

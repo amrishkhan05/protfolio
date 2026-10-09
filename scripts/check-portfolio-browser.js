@@ -211,6 +211,7 @@ assert.ok(mobileTicket.width>=240&&mobileTicket.height>=140,'boarding pass remai
 assert.equal(mobileTicket.bg,'rgb(250, 249, 244)','mobile boarding pass uses ivory paper');
 const mobileOss = await page.locator('#work .project-oss').evaluate(el=>({height:Math.round(el.getBoundingClientRect().height),width:el.getBoundingClientRect().width,columns:getComputedStyle(el.querySelector('.oss-package-list')).gridTemplateColumns.trim().split(/\s+/).length}));
 assert.equal(mobileOss.columns,1,'mobile OSS packages display as one compact list');
+assert.equal(await page.locator('#work .oss-package-index-type:visible').count(),0,'mobile package numbers remain one concise token');
 assert.ok(mobileOss.height<=540,'open source panel stays concise on mobile');
 assert.ok(mobileOss.width<=390,'open source does not overflow mobile viewport');
 await page.locator('#work .project-oss').screenshot({path:path.join(output,'open-source-compact-mobile.png')});
