@@ -115,4 +115,4 @@ await page.screenshot({path:path.join(output,'article-mobile-dark.png'),fullPage
 assert.deepEqual(errors,[],'no browser JavaScript errors');
 await browser.close();
 console.log('Browser regression checks passed on desktop, mobile, theme persistence, Aruvix, article reader and resume downloads.');
-})().catch(err=>{console.error(err);process.exitCode=1});
+})().catch(err=>{console.error(err);process.exit(1);});
