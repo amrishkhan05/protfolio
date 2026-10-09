@@ -20,6 +20,8 @@ check('Article cover art never crops wide text banners', read('public/article-ex
 check('Article cover fallback and loader are present', home.includes('blog-cover-fallback') && home.includes('code-loader-prompt') && home.includes('/article-experience.css'));
 check('Secondary article cover and first-paint SSR ready state', backend.includes('coverImageFallback:') && backend.includes('const readyHtml = indexHtml.replace'));
 check('Image failure handlers and no SSR rehydration flicker', homeScript.includes('data-fallback-src') && read('public/script.js').includes('recoverFailedArticleImage') && read('public/script.js').includes('if (hasServerRenderedArticle)'));
+check('Interactive engineering hero replaces generic orbit graph', home.includes('class="hero-art hero-switchboard"') && !home.includes('class="topo-frame"') && home.includes('href="/hero-switchboard.css?v=1"'));
+check('Hero architecture modes are accessible and respect reduced motion', count(home, /class="switchboard-mode/g)===3 && homeScript.includes('const systemScenes=') && read('public/hero-switchboard.css').includes('@media(prefers-reduced-motion:reduce)'));
 check('Single homepage main landmark', count(home, /<main\s/gi) === 1);
 check('Single back-to-top control', count(home, /id="back-to-top"/g) === 1);
 check('Skills section is deep-linkable and grouped', home.includes('id="skills"') && home.includes('aria-labelledby="skills-title"') && count(home, /class="skills-group"/g)===6 && home.includes('href="#skills"') && fs.existsSync(path.join(root,'public/studio-skills.css')));

@@ -6,6 +6,31 @@ if (/^\/blog\//.test(location.pathname)) return;
 const q=(x)=>document.querySelector(x),qa=(x)=>Array.from(document.querySelectorAll(x));
 const nav=q('#primary-nav'),toggle=q('#menu-toggle'),header=q('.site-header'),top=q('#back-to-top'),progress=q('#reading-progress');
 const escape=(v)=>String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+
+// Engineering switchboard: meaningful illustration, not a fabricated live dashboard.
+const systemScenes={
+ aviation:{inputs:['Passenger','Journey','Services','Business rules'],result:'One calm<br>check-in<span class="switchboard-result-period">.</span>',summary:'A seamless journey, despite the complexity behind it.'},
+ payments:{inputs:['Authorization','Capture','Callbacks','Retries'],result:'One reliable<br>payment<span class="switchboard-result-period">.</span>',summary:'Different providers. One predictable experience.'},
+ tooling:{inputs:['JSON','Requests','Diffs','Workflows'],result:'One focused<br>workspace<span class="switchboard-result-period">.</span>',summary:'Small developer tasks, without the context switching.'}
+};
+const switchboard=q('.hero-switchboard');
+if(switchboard){
+ const output=q('#switchboard-result'),summary=q('#switchboard-summary'),paper=switchboard.querySelector('.switchboard-output-paper');
+ const scenes=switchboard.querySelectorAll('.switchboard-mode');
+ scenes.forEach(button=>button.addEventListener('click',()=>{
+  const mode=button.dataset.system,scene=systemScenes[mode];
+  if(!scene||switchboard.dataset.mode===mode)return;
+  switchboard.dataset.mode=mode;
+  switchboard.querySelectorAll('[data-signal]').forEach(el=>{el.textContent=scene.inputs[Number(el.dataset.signal)]||'';});
+  if(output)output.innerHTML=scene.result;
+  if(summary)summary.textContent=scene.summary;
+  scenes.forEach(item=>{const active=item===button;item.classList.toggle('is-active',active);item.setAttribute('aria-pressed',String(active));});
+  if(paper&&!matchMedia('(prefers-reduced-motion: reduce)').matches){
+    paper.classList.remove('is-changing');void paper.offsetWidth;paper.classList.add('is-changing');
+  }
+ }));
+}
+
 toggle?.addEventListener('click',()=>{const open=toggle.getAttribute('aria-expanded')==='true';toggle.setAttribute('aria-expanded',String(!open));toggle.setAttribute('aria-label',open?'Open navigation':'Close navigation');nav?.classList.toggle('open',!open);});
 qa('#primary-nav a').forEach(a=>a.addEventListener('click',()=>{nav?.classList.remove('open');toggle?.setAttribute('aria-expanded','false');}));
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){nav?.classList.remove('open');toggle?.setAttribute('aria-expanded','false');}});

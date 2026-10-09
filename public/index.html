@@ -96,6 +96,7 @@
   <link rel="stylesheet" href="/article-experience.css?v=2" />
   <link rel="stylesheet" href="/studio-skills.css?v=1" />
   <link rel="stylesheet" href="/writing-context.css?v=1" />
+  <link rel="stylesheet" href="/hero-switchboard.css?v=1" />
 </head>
 
 <body>
@@ -134,31 +135,49 @@
             <a class="text-link white-link" href="#contact">Start a conversation <span aria-hidden="true">↗</span></a><a class="hero-resume" href="/resume/pdf/Amrishkhan-Sheik-Abdullah-Resume.pdf" download>Download CV <span aria-hidden="true">↧</span></a>
           </div>
         </div>
-        <div class="hero-art" aria-label="Illustrated systems map connecting client interfaces, services, data, and the developer experience">
-          <div class="topo-frame">
-            <div class="topo-meta"><span>FIG. 01 — SYSTEMS IN MOTION</span><span>AK / 26</span></div>
-            <svg class="system-svg" viewBox="0 0 580 560" role="img" aria-labelledby="diagram-title diagram-desc" xmlns="http://www.w3.org/2000/svg">
-              <title id="diagram-title">A connected architecture, made clear</title><desc id="diagram-desc">A central orchestration node connects product interfaces, APIs, transactions, data, and developer tools.</desc>
-              <defs>
-                <linearGradient id="connector" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d5f478"/><stop offset="1" stop-color="#a7b8ff"/></linearGradient>
-                <radialGradient id="glow"><stop offset="0" stop-color="#d5f478" stop-opacity=".18"/><stop offset="1" stop-color="#d5f478" stop-opacity="0"/></radialGradient>
-              </defs>
-              <g class="topo-grid" stroke="#637179" stroke-width=".65" opacity=".22">
-                <path d="M0 70H580M0 140H580M0 210H580M0 280H580M0 350H580M0 420H580M0 490H580M70 0V560M140 0V560M210 0V560M280 0V560M350 0V560M420 0V560M490 0V560M560 0V560"/>
-              </g>
-              <circle cx="292" cy="280" r="198" fill="none" stroke="#839199" stroke-dasharray="2 10" opacity=".3"/><circle cx="292" cy="280" r="133" fill="none" stroke="#839199" opacity=".25"/><circle cx="292" cy="280" r="242" fill="url(#glow)"/>
-              <g fill="none" stroke="url(#connector)" stroke-width="1.7"><path d="M292 280L135 145"/><path d="M292 280L452 142"/><path d="M292 280L458 392"/><path d="M292 280L128 413"/></g>
-              <g class="flow-dashes" stroke="#d5f478" stroke-width="3" stroke-linecap="round"><path d="M292 280L135 145"/><path d="M292 280L452 142"/><path d="M292 280L458 392"/><path d="M292 280L128 413"/></g>
-              <g class="diagram-node diagram-node-one"><rect x="42" y="99" rx="15" width="190" height="90" fill="#232b33" stroke="#626f70" stroke-opacity=".65"/><rect x="58" y="116" width="35" height="35" rx="10" fill="#aabaff"/><path d="M67 133h18m-9-9v18" stroke="#1c2330" stroke-width="2.5"/><text x="107" y="135" class="svg-node-label">PRODUCT</text><text x="107" y="156" class="svg-node-sub">UX / FRONTEND</text><circle cx="207" cy="117" r="4" fill="#d5f478"/></g>
-              <g class="diagram-node diagram-node-two"><rect x="354" y="97" rx="15" width="180" height="90" fill="#232b33" stroke="#626f70" stroke-opacity=".65"/><rect x="370" y="114" width="35" height="35" rx="10" fill="#d5f478"/><path d="M378 131l8-7 8 7-8 7z" stroke="#19201e" stroke-width="2" fill="none"/><text x="418" y="133" class="svg-node-label">SERVICES</text><text x="418" y="154" class="svg-node-sub">API / CLOUD</text><circle cx="510" cy="115" r="4" fill="#d5f478"/></g>
-              <g class="diagram-node diagram-node-three"><rect x="355" y="352" rx="15" width="184" height="90" fill="#232b33" stroke="#626f70" stroke-opacity=".65"/><rect x="371" y="369" width="35" height="35" rx="10" fill="#f4a88b"/><path d="M379 382h19m-19 6h13" stroke="#262124" stroke-width="2.5" stroke-linecap="round"/><text x="418" y="389" class="svg-node-label">RELIABILITY</text><text x="418" y="410" class="svg-node-sub">SCALE / TRUST</text><circle cx="510" cy="371" r="4" fill="#d5f478"/></g>
-              <g class="diagram-node diagram-node-four"><rect x="38" y="352" rx="15" width="190" height="90" fill="#232b33" stroke="#626f70" stroke-opacity=".65"/><rect x="54" y="369" width="35" height="35" rx="10" fill="#bba8f5"/><path d="M65 380l-6 7 6 7m11-14l6 7-6 7" stroke="#252035" stroke-width="2" fill="none"/><text x="101" y="389" class="svg-node-label">TOOLING</text><text x="101" y="410" class="svg-node-sub">DX / WORKFLOWS</text><circle cx="202" cy="371" r="4" fill="#d5f478"/></g>
-              <g class="core-node"><circle cx="292" cy="280" r="82" fill="#d5f478"/><circle cx="292" cy="280" r="72" fill="none" stroke="#10151d" opacity=".18"/><text x="292" y="275" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="52" font-weight="700" fill="#10151d">a.k</text><text x="292" y="304" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" letter-spacing="2" fill="#10151d">ENGINEERING</text></g>
-              <g font-family="DM Mono,monospace" font-size="10" fill="#85949a" letter-spacing="1.5"><text x="47" y="515">INPUT  /  COMPLEXITY</text><text x="367" y="515">OUTPUT  /  CLARITY</text></g>
-            </svg>
-            <div class="topo-footer"><span><span class="status-led"></span> ALL SYSTEMS CONNECTED</span><span>∴ BUILT WITH INTENT</span></div>
+        <div class="hero-art hero-switchboard" data-mode="aviation" aria-label="Interactive engineering switchboard showing how complex inputs become elegant results">
+          <div class="switchboard">
+            <div class="switchboard-header">
+              <div class="switchboard-leds" aria-hidden="true"><i></i><i></i><i></i></div>
+              <span class="switchboard-file">SYSTEMS / A STUDY IN SIMPLICITY</span>
+              <span class="switchboard-index">FIG. 001 <span aria-hidden="true">↗</span></span>
+            </div>
+            <div class="switchboard-stage">
+              <div class="switchboard-noise">
+                <div class="switchboard-stage-heading"><span>01 / THE COMPLEXITY</span><span class="switchboard-pulse" aria-hidden="true"></span></div>
+                <p class="switchboard-input-intro">Many moving pieces.</p>
+                <div class="switchboard-inputs" aria-label="Incoming systems">
+                  <div class="switchboard-input"><span class="switchboard-input-id">01</span><span data-signal="0">Passenger</span><span class="switchboard-input-indicator" aria-hidden="true"></span></div>
+                  <div class="switchboard-input"><span class="switchboard-input-id">02</span><span data-signal="1">Journey</span><span class="switchboard-input-indicator" aria-hidden="true"></span></div>
+                  <div class="switchboard-input"><span class="switchboard-input-id">03</span><span data-signal="2">Services</span><span class="switchboard-input-indicator" aria-hidden="true"></span></div>
+                  <div class="switchboard-input"><span class="switchboard-input-id">04</span><span data-signal="3">Business rules</span><span class="switchboard-input-indicator" aria-hidden="true"></span></div>
+                </div>
+                <div class="switchboard-source-note">DIFFERENT SYSTEMS / ONE DIRECTION</div>
+              </div>
+              <div class="switchboard-outcome">
+                <div class="switchboard-stage-heading"><span>03 / THE EXPERIENCE</span><span aria-hidden="true">↗</span></div>
+                <div class="switchboard-output-paper">
+                  <span class="switchboard-result-index"><span class="switchboard-result-dot" aria-hidden="true"></span> DESIGNED FOR HUMANS</span>
+                  <p class="switchboard-result" id="switchboard-result" aria-live="polite">One calm<br>check-in<span class="switchboard-result-period">.</span></p>
+                  <div class="switchboard-result-line"></div>
+                  <p class="switchboard-result-summary" id="switchboard-summary">A seamless journey, despite the complexity behind it.</p>
+                  <span class="switchboard-output-signature">LESS FRICTION <span aria-hidden="true">↗</span></span>
+                </div>
+              </div>
+              <div class="switchboard-conductor" aria-hidden="true">
+                <div class="switchboard-conductor-ring"><span class="switchboard-conductor-arrow">↗</span><small>MAKE IT<br>FLOW</small></div>
+              </div>
+            </div>
+            <div class="switchboard-controls">
+              <div class="switchboard-controls-heading"><span class="switchboard-label">EXPLORE A SYSTEM</span><span class="switchboard-control-mark" aria-hidden="true">⇢</span></div>
+              <div class="switchboard-modes" role="group" aria-label="Choose an architecture example">
+                <button class="switchboard-mode is-active" type="button" data-system="aviation" aria-pressed="true" aria-controls="switchboard-result">01 <span>Aviation</span></button>
+                <button class="switchboard-mode" type="button" data-system="payments" aria-pressed="false" aria-controls="switchboard-result">02 <span>Payments</span></button>
+                <button class="switchboard-mode" type="button" data-system="tooling" aria-pressed="false" aria-controls="switchboard-result">03 <span>Dev tools</span></button>
+              </div>
+            </div>
           </div>
-          <div class="floating-stamp" aria-hidden="true"><span>FROM<br>CHAOS<br>TO CLARITY</span><span>↗</span></div>
+          <div class="switchboard-caption"><span>NOT A DASHBOARD.</span><span>THE ART OF MAKING SYSTEMS FEEL SIMPLE.</span></div>
         </div>
       </div>
       <div class="container hero-bottom"><span>THE SHORT VERSION</span><div class="hero-stats"><div><strong>10<span>+</span></strong><small>YEARS BUILDING</small></div><div><strong>600<span>+</span></strong><small>ARUVIX USERS*</small></div><div><strong>95<span>%+</span></strong><small>QUALITY GATE**</small></div></div><span class="scroll-label">SCROLL TO EXPLORE <span aria-hidden="true">↓</span></span></div>

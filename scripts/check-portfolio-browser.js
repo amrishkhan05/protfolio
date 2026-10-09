@@ -78,6 +78,23 @@ await wideThumbnail.screenshot({path:path.join(output,'journal-wide-banner-uncro
 assert.equal(await page.locator('#studio-theme-toggle').count(),1,'one theme toggle');
 assert.equal(await page.locator('#back-to-top').count(),1,'one back-to-top button');
 assert.ok(await page.locator('.hero h1').isVisible(),'hero heading shown');
+const board=page.locator('.hero-switchboard');
+assert.ok(await board.isVisible(),'interactive systems artwork visible');
+assert.equal(await page.locator('.topo-frame').count(),0,'old hub-and-spoke diagram removed');
+assert.equal(await board.locator('.switchboard-mode').count(),3,'three engineering perspectives available');
+const initialBoard=await board.evaluate(el=>({width:el.getBoundingClientRect().width,panel:el.querySelector('.switchboard').getBoundingClientRect().width,buttons:[...el.querySelectorAll('.switchboard-mode')].map(b=>b.getAttribute('aria-pressed'))}));
+assert.ok(initialBoard.width>350&&initialBoard.panel<=initialBoard.width+4,'editorial artwork sits within hero column');
+assert.deepEqual(initialBoard.buttons,['true','false','false'],'aviation is the default perspective');
+await board.screenshot({path:path.join(output,'hero-switchboard-desktop.png')});
+await board.locator('[data-system="payments"]').click();
+assert.ok((await page.locator('#switchboard-result').innerText()).includes('payment'),'payments experience updates output');
+assert.equal(await board.locator('[data-system="payments"]').getAttribute('aria-pressed'),'true','pressed state updates accessibly');
+assert.equal(await board.locator('[data-signal="0"]').innerText(),'Authorization','inputs update with perspective');
+await board.locator('[data-system="tooling"]').click();
+assert.ok((await page.locator('#switchboard-summary').innerText()).includes('developer tasks'),'tooling perspective shows relevant outcome');
+await board.locator('[data-system="aviation"]').click();
+assert.ok((await page.locator('#switchboard-result').innerText()).includes('check-in'),'switchboard can return to aviation');
+
 const skills=page.locator('#skills');
 assert.ok(await skills.isVisible(),'technical expertise section visible');
 assert.equal(await skills.locator('.skills-group').count(),6,'six carefully curated technical groups');
@@ -321,6 +338,11 @@ await page.setViewportSize({width:390,height:844});
 await page.goto(base+'/',{waitUntil:'domcontentloaded'});
 await page.locator('#journal-grid .journal-card').first().waitFor({timeout:20000});
 assert.ok((await page.evaluate(()=>document.documentElement.scrollWidth))<=392,'no mobile horizontal overflow');
+const mobileBoard=await page.locator('.hero-switchboard').evaluate(el=>({width:el.getBoundingClientRect().width,viewport:innerWidth,result:el.querySelector('.switchboard-result').getBoundingClientRect().width}));
+assert.ok(mobileBoard.width<=mobileBoard.viewport-20,'hero art does not overflow mobile viewport');
+assert.ok(mobileBoard.result>=100,'hero result text remains readable on mobile');
+await page.locator('.hero-switchboard').screenshot({path:path.join(output,'hero-switchboard-mobile.png')});
+
 assert.equal(await page.locator('#writing-context').isVisible(),false,'secondary bar never crowds the mobile viewport');
 const mobileSkills=await page.locator('#skills .skills-categories').evaluate(el=>({columns:getComputedStyle(el).gridTemplateColumns.trim().split(/\s+/).length,width:el.getBoundingClientRect().width}));
 assert.equal(mobileSkills.columns,1,'mobile technical expertise uses single-column layout');
