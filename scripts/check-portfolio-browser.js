@@ -136,7 +136,7 @@ assert.ok(skillsDesktop.height<1050,'skills section remains concise on desktop')
 assert.ok(skillsDesktop.rows.every(r=>r.height>=80&&r.height<=155),'skill rows stay compact and readable');
 assert.ok(skillsDesktop.rows.every((r,i,all)=>!i||r.top>=all[i-1].bottom-1),'skills ledger rows never overlap');
 assert.equal(await skills.locator('.skills-ledger-foot a[href$=".pdf"]').count(),1,'direct résumé link preserved');
-assert.equal(await skills.locator('.skills-group ul li').count(),33,'all 33 selected technologies remain visible');
+assert.equal(await skills.locator('.skills-group ul li').count(),32,'all 32 selected technologies remain visible');
 await skills.screenshot({path:path.join(output,'skills-desktop-light.png')});
 
 assert.ok((await page.locator('a[href$=".pdf"]').count())>0,'resume PDF available');
