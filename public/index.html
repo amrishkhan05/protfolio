@@ -73,7 +73,7 @@
             "hasPart": [
               { "@type": "WebPageElement", "@id": "https://www.amrishkhan.dev/#writing", "name": "Tech Writing" },
               { "@type": "WebPageElement", "@id": "https://www.amrishkhan.dev/#work", "name": "Aruvix" },
-              { "@type": "WebPageElement", "@id": "https://www.amrishkhan.dev/#approach", "name": "Technical Skills" },
+              { "@type": "WebPageElement", "@id": "https://www.amrishkhan.dev/#skills", "name": "Technical Skills" },
               { "@type": "WebPageElement", "@id": "https://www.amrishkhan.dev/#experience", "name": "Professional Experience" }
             ]
           }
@@ -94,6 +94,7 @@
   <link rel="stylesheet" href="/site-redesign.css?v=5" />
   <link rel="stylesheet" href="/site-polish.css?v=6" />
   <link rel="stylesheet" href="/article-experience.css?v=2" />
+  <link rel="stylesheet" href="/studio-skills.css?v=1" />
 </head>
 
 <body>
@@ -104,7 +105,7 @@
     <div class="nav-wrap container">
       <a href="#top" class="brand" aria-label="Amrish Khan — Portfolio home"><span class="brand-mark" aria-hidden="true">AK</span><span class="brand-label">AMRISH KHAN<small>ENGINEER · ARCHITECT · BUILDER</small></span></a>
       <nav id="primary-nav" class="nav-links" aria-label="Main navigation">
-        <a href="#work">Work</a><a href="#approach">Approach</a><a href="#experience">Experience</a><a href="#writing">Writing</a><a href="#contact" class="nav-contact-mobile">Contact ↗</a>
+        <a href="#work">Work</a><a href="#skills">Skills</a><a href="#experience">Experience</a><a href="#writing">Writing</a><a href="#contact" class="nav-contact-mobile">Contact ↗</a>
       </nav>
       <div class="nav-actions-studio">
         <button id="studio-theme-toggle" class="studio-theme-toggle" type="button" aria-label="Switch color theme" aria-pressed="false" title="Toggle light and dark mode">
@@ -176,6 +177,32 @@
           <article class="capability-card reveal"><div class="cap-icon cap-icon-peach">◈</div><span class="cap-number">02</span><h3>Build for people.</h3><p>Thoughtful web products and developer experiences where usability isn't an afterthought.</p><div class="cap-pills"><span>React</span><span>Next.js</span><span>TypeScript</span></div></article>
           <article class="capability-card reveal"><div class="cap-icon cap-icon-lavender">↗</div><span class="cap-number">03</span><h3>Own the outcome.</h3><p>From first design decision through test quality, deployment, monitoring, and production support.</p><div class="cap-pills"><span>CI/CD</span><span>Payments</span><span>Cloud</span></div></article>
         </div>
+      </div>
+    </section>
+
+
+    <section class="skills-band section" id="skills" aria-labelledby="skills-title">
+      <div class="container">
+        <div class="section-top"><span class="section-index">THE TOOLKIT / TECHNICAL EXPERTISE</span><span class="section-side">TOOLS CHANGE. ENGINEERING JUDGMENT DOESN'T.</span></div>
+        <div class="skills-band-head">
+          <div>
+            <p class="skills-kicker"><span class="skills-led" aria-hidden="true"></span> PRACTICAL EXPERIENCE, NOT PROFICIENCY BARS</p>
+            <h2 id="skills-title" class="display-heading">The tools behind<br><span class="serif-italic">the thinking.</span></h2>
+          </div>
+          <div class="skills-intro">
+            <p>From distributed services to product interfaces, these are the technologies I use to take work from a diagram to a dependable release.</p>
+            <a href="#work" class="skills-proof-link">See them in practice <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+        <div class="skills-categories" aria-label="Technical skills by discipline">
+          <article class="skills-group"><span class="skills-group-no">01 / SYSTEMS</span><h3>Backend &amp; APIs</h3><p>Services, contracts, and reliable integration layers.</p><ul><li>Node.js</li><li>NestJS</li><li>Express</li><li>Java / Spring Boot</li><li>REST</li><li>GraphQL</li></ul></article>
+          <article class="skills-group"><span class="skills-group-no">02 / STRUCTURE</span><h3>Architecture</h3><p>Making complex systems easier to reason about.</p><ul><li>Microservices</li><li>Event-driven</li><li>BFF patterns</li><li>API orchestration</li><li>Distributed systems</li></ul></article>
+          <article class="skills-group"><span class="skills-group-no">03 / EXPERIENCE</span><h3>Frontend</h3><p>Production interfaces built for real users.</p><ul><li>TypeScript</li><li>React</li><li>Next.js</li><li>Angular</li><li>Vue</li><li>Vite</li></ul></article>
+          <article class="skills-group"><span class="skills-group-no">04 / INFORMATION</span><h3>Data</h3><p>Query design, modeling, and predictable performance.</p><ul><li>PostgreSQL</li><li>MongoDB</li><li>MySQL</li><li>SQL tuning</li><li>Indexing</li></ul></article>
+          <article class="skills-group"><span class="skills-group-no">05 / DELIVERY</span><h3>Cloud &amp; reliability</h3><p>From local build to monitored production systems.</p><ul><li>AWS</li><li>Docker</li><li>Azure</li><li>CI/CD</li><li>Nginx</li><li>Automated testing</li></ul></article>
+          <article class="skills-group"><span class="skills-group-no">06 / EXPLORATION</span><h3>Security &amp; tooling</h3><p>Safer APIs, integrations, and new developer workflows.</p><ul><li>RBAC / OIDC</li><li>Payment gateways</li><li>Webhooks</li><li>RAG / MCP</li><li>Tauri / Rust</li></ul></article>
+        </div>
+        <div class="skills-foot"><span>SELECTED CAPABILITIES · BUILT THROUGH HANDS-ON PROJECT WORK</span><a href="/resume/pdf/Amrishkhan-Sheik-Abdullah-Resume.pdf" download>Full experience in my résumé <span aria-hidden="true">↗</span></a></div>
       </div>
     </section>
 

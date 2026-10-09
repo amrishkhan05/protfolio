@@ -1,0 +1,45 @@
+
+/* Technical expertise: scannable and compact; no progress-bar theatre. */
+#home-content .skills-band{background:#e9eee5;color:#15261e}
+#home-content .skills-band .section-top{border-color:#9eafa3}
+#home-content .skills-band .section-side{color:#587064}
+#home-content .skills-band-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(250px,.48fr);align-items:end;gap:clamp(25px,5vw,75px);margin-bottom:clamp(24px,4vh,37px)}
+#home-content .skills-band .display-heading{font-size:clamp(44px,5.2vw,77px);color:#14231c!important;margin:13px 0 0}
+#home-content .skills-band .serif-italic{color:#5a7768}
+#home-content .skills-kicker{font:600 10px/1.5 var(--mono);letter-spacing:.05em;color:#586f63;display:flex;align-items:center;gap:9px;margin:0}
+#home-content .skills-led{width:7px;height:7px;flex:none;border-radius:50%;background:#477859}
+#home-content .skills-intro p{max-width:415px;color:#465b51;line-height:1.65;font-size:15px;margin:0 0 12px}
+#home-content .skills-proof-link{border-bottom:1px solid #607b69;padding-bottom:4px;font-size:12px;font-weight:700;display:inline-flex;gap:12px;align-items:center;color:#223e2e}
+#home-content .skills-categories{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+#home-content .skills-group{min-width:0;background:#f6f7f2;border:1px solid #c4d1c4;border-radius:9px;padding:clamp(17px,2vw,27px);display:flex;flex-direction:column}
+#home-content .skills-group-no{font:600 10px/1.5 var(--mono);letter-spacing:.05em;color:#577867}
+#home-content .skills-group h3{font:650 clamp(19px,2vw,25px)/1.2 var(--display);letter-spacing:-.035em;margin:10px 0 6px;color:#1c3327!important}
+#home-content .skills-group p{font-size:12px;line-height:1.55;color:#586b60;margin:0 0 16px;max-width:295px}
+#home-content .skills-group ul{display:flex;align-content:flex-start;flex-wrap:wrap;gap:7px;margin:auto 0 0;padding:0;list-style:none}
+#home-content .skills-group li{background:#e7eee5;border:1px solid #ccdacb;border-radius:5px;padding:5px 9px;line-height:1.3;font-size:11px;font-weight:600;color:#304b3c}
+#home-content .skills-foot{display:flex;justify-content:space-between;flex-wrap:wrap;align-items:center;gap:14px;margin-top:21px;padding-top:16px;border-top:1px solid #bac9bb}
+#home-content .skills-foot span:first-child{font:600 10px/1.5 var(--mono);letter-spacing:.04em;color:#60766a}
+#home-content .skills-foot a{border-bottom:1px solid currentColor;padding:4px 0;font-size:12px;font-weight:700;color:#254334}
+#home-content .skills-band a:focus-visible{outline:3px solid #356f50;outline-offset:4px}
+[data-theme="dark"] #home-content .skills-band{background:#20322f;color:#eaf1e7}
+[data-theme="dark"] #home-content .skills-band .section-top{border-color:#4e665d}
+[data-theme="dark"] #home-content .skills-band .display-heading{color:#f1f5ed!important}
+[data-theme="dark"] #home-content .skills-band .serif-italic{color:#b9e3ab}
+[data-theme="dark"] #home-content .skills-band .skills-kicker,[data-theme="dark"] #home-content .skills-band .section-side{color:#b3d2b8}
+[data-theme="dark"] #home-content .skills-band .skills-intro p,[data-theme="dark"] #home-content .skills-band .skills-group p{color:#bed2c4}
+[data-theme="dark"] #home-content .skills-band .skills-proof-link,[data-theme="dark"] #home-content .skills-band .skills-foot a{color:#d5f478}
+[data-theme="dark"] #home-content .skills-band .skills-group{background:#293e39;border-color:#53685c}
+[data-theme="dark"] #home-content .skills-band .skills-group-no{color:#a9d4b0}
+[data-theme="dark"] #home-content .skills-band .skills-group h3{color:#f3f6ec!important}
+[data-theme="dark"] #home-content .skills-band .skills-group li{background:#385449;color:#e5f3e5;border-color:#607969}
+[data-theme="dark"] #home-content .skills-band .skills-foot{border-color:#577064}
+[data-theme="dark"] #home-content .skills-band .skills-foot span:first-child{color:#b7cbbd}
+@media(max-width:1100px){#home-content .skills-categories{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){
+ #home-content .skills-band-head{grid-template-columns:minmax(0,1fr);gap:13px}
+ #home-content .skills-categories{grid-template-columns:minmax(0,1fr);gap:10px}
+ #home-content .skills-group{padding:19px}
+ #home-content .skills-group ul{gap:6px}
+ #home-content .skills-foot{align-items:flex-start;flex-direction:column}
+}
+@media(min-width:761px) and (max-width:900px){#home-content .skills-band-head{grid-template-columns:1fr}}

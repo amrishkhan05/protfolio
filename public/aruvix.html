@@ -70,9 +70,9 @@
     href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap"
     rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" media="print" onload="this.media='all'" />
-  <link rel="stylesheet" href="/styles.css?v=4" />
-  <link rel="stylesheet" href="/site-redesign.css?v=4" />
-  <link rel="stylesheet" href="/site-polish.css?v=4" />
+  <link rel="stylesheet" href="/site-redesign.css?v=5" />
+  <link rel="stylesheet" href="/site-polish.css?v=6" />
+  <link rel="stylesheet" href="/aruvix-case.css?v=1" />
 </head>
 
 <body class="is-aruvix-view">
@@ -83,7 +83,7 @@
     <div class="nav-wrap container">
       <a href="/" class="brand" aria-label="Amrish Khan — Portfolio home"><span class="brand-mark" aria-hidden="true">AK</span><span class="brand-label">AMRISH KHAN<small>ENGINEER · ARCHITECT · BUILDER</small></span></a>
       <nav id="primary-nav" class="nav-links" aria-label="Main navigation">
-        <a href="/#work">Work</a><a href="/#approach">Approach</a><a href="/#experience">Experience</a><a href="/#writing">Writing</a><a href="/#contact" class="nav-contact-mobile">Contact ↗</a>
+        <a href="/#work">Work</a><a href="/#skills">Skills</a><a href="/#experience">Experience</a><a href="/#writing">Writing</a><a href="/#contact" class="nav-contact-mobile">Contact ↗</a>
       </nav>
       <div class="nav-actions-studio">
         <button id="studio-theme-toggle" class="studio-theme-toggle" type="button" aria-label="Switch color theme" aria-pressed="false" title="Toggle light and dark mode">
@@ -97,335 +97,80 @@
     </div>
   </header>
 
-  <main id="case-study" class="case-study-shell">
-    <section class="hero-section section reveal">
-      <div class="hero-copy">
-        <p class="eyebrow"><span></span> Built and launched product / Developer workspace</p>
-        <h1>Aruvix turns everyday debugging tasks into one private browser workflow.</h1>
-        <p class="lead">I built Aruvix to reduce the tab switching around JSON formatting, request inspection, payload
-          comparison, data conversion, and frontend utilities. It is fast, no-sign-up, and designed for local-first
-          processing where possible.</p>
-        <div class="hero-actions">
-          <a class="btn btn-primary" href="https://www.aruvix.com/" target="_blank" rel="noreferrer">Open Aruvix <i
-              class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
-          <a class="btn btn-secondary" href="/">Back to portfolio</a>
+
+  <main id="case-study" class="aru-case">
+    <section class="aru-hero" aria-labelledby="aru-title">
+      <div class="aru-wrap aru-hero-grid">
+        <div class="aru-hero-copy">
+          <p class="aru-overline"><span class="aru-status-light" aria-hidden="true"></span> INDEPENDENT PRODUCT / CASE STUDY</p>
+          <h1 id="aru-title">Less tab-hopping.<br><em>More building.</em></h1>
+          <p class="aru-lead">Aruvix brings the everyday tools developers reach for—JSON, API requests, comparisons, conversions, and frontend utilities—into one focused workspace.</p>
+          <p class="aru-hero-note">I built it to make the tiny interruptions of software development a little less frequent.</p>
+          <div class="aru-actions">
+            <a class="aru-button aru-button-primary" href="https://www.aruvix.com/" target="_blank" rel="noopener noreferrer">Explore Aruvix <span aria-hidden="true">↗</span></a>
+            <a class="aru-text-link" href="/">← Back to portfolio</a>
+          </div>
+          <div class="aru-keywords" aria-label="Product characteristics"><span>Browser-first</span><span>No account required</span><span>Local processing for core utilities</span></div>
         </div>
-      </div>
-      <aside class="product-panel" aria-label="Aruvix product summary">
-        <div class="terminal-window">
-          <div class="terminal-bar" aria-hidden="true"><span></span><span></span><span></span></div>
-          <pre><code>workspace: aruvix
-tools: json | api | diff | convert
-privacy: browser-first
-status: ready</code></pre>
-        </div>
-        <dl class="metric-grid">
-          <div>
-            <dt>Users reached</dt>
-            <dd>600+</dd>
-          </div>
-          <div>
-            <dt>Access</dt>
-            <dd>Zero sign-up</dd>
-          </div>
-          <div>
-            <dt>Processing</dt>
-            <dd>Local-first</dd>
-          </div>
-          <div>
-            <dt>Category</dt>
-            <dd>Developer tools</dd>
-          </div>
-        </dl>
-      </aside>
-    </section>
-
-    <section class="section intro-section reveal" id="overview" aria-labelledby="overview-title">
-      <div>
-        <p class="tag">Product overview</p>
-        <h2 id="overview-title">One focused place for daily developer utilities.</h2>
-      </div>
-      <div class="aruvix-copy-stack">
-        <article class="feature-card">
-          <h3>What Aruvix is</h3>
-          <p>Aruvix is a browser-first toolset for developers who regularly work with APIs, JSON payloads, logs,
-            configuration files, and structured data. It brings common tasks into a single interface so developers do
-            not need to jump across random formatter, converter, diff, and request tools.</p>
-          <p>The product is intentionally lightweight. You can open it, use the exact tool you need, and leave without
-            creating an account or setting up a project. The goal is speed, privacy, and low mental overhead.</p>
-        </article>
-        <article class="feature-card">
-          <h3>Who it helps</h3>
-          <p>Aruvix is useful for frontend engineers validating API responses, backend engineers testing endpoints, QA
-            engineers comparing payload changes, support engineers reading production logs, and students learning how
-            structured data works.</p>
-          <p>It is especially useful when data is sensitive. Because core processing happens locally in the browser,
-            developers can inspect payloads without sending them to a third-party processing server.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="section split-section reveal" id="why" aria-labelledby="why-title">
-      <div>
-        <p class="tag">Origin story</p>
-        <h2 id="why-title">Why I built Aruvix</h2>
-      </div>
-      <div class="feature-card aruvix-copy-stack">
-        <p>In daily engineering work, small workflow breaks add up. A JSON payload arrives from an API. A response needs
-          formatting. Two versions of a request body need comparison. A nested object needs visual inspection. A CSV
-          needs converting. Each of these tasks is simple, but every context switch steals attention.</p>
-        <p>I built Aruvix to remove that friction. Instead of spreading routine debugging work across disconnected
-          tools, Aruvix gives developers a unified workspace where the most common structured data tasks are available
-          immediately.</p>
-        <p>The design principle is straightforward: no sign-up, no noisy onboarding, no unnecessary server round trips
-          for local operations, and no interface clutter. The product should feel like a sharp engineering instrument
-          that opens quickly and gets out of the way.</p>
-      </div>
-    </section>
-
-    <section class="section reveal" id="tools" aria-labelledby="tools-title">
-      <div class="section-heading">
-        <p class="tag">Toolset</p>
-        <h2 id="tools-title">What you can do with Aruvix</h2>
-      </div>
-      <div class="aruvix-tool-list" aria-label="Aruvix detailed tools">
-        <article id="json-formatter">
-          <i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>
-          <div>
-            <h3>JSON Formatter and Validator</h3>
-            <p>Paste raw JSON and turn it into readable, indented, validated output. It helps reveal malformed
-              structures, missing commas, invalid nesting, and hard-to-scan response bodies.</p>
-            <ul>
-              <li>Format compact JSON into readable structures.</li>
-              <li>Validate syntax before sharing payloads or debugging APIs.</li>
-              <li>Inspect deeply nested objects with less visual noise.</li>
-            </ul>
-          </div>
-        </article>
-        <article>
-          <i class="fa-solid fa-diagram-project" aria-hidden="true"></i>
-          <div>
-            <h3>JSON Visualizer</h3>
-            <p>Convert raw structured data into a visual representation so large objects, arrays, and nested
-              relationships are easier to understand.</p>
-            <ul>
-              <li>See object hierarchy without manually tracing braces.</li>
-              <li>Understand payload shape before mapping it into UI or APIs.</li>
-              <li>Review complex responses faster during debugging.</li>
-            </ul>
-          </div>
-        </article>
-        <article id="api-tester">
-          <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
-          <div>
-            <h3>API Client</h3>
-            <p>Send requests, inspect responses, and test endpoint behavior from the same environment where you format
-              and analyze data.</p>
-            <ul>
-              <li>Use a focused request workspace for common API checks.</li>
-              <li>Inspect response bodies without copying into another formatter.</li>
-              <li>Speed up endpoint debugging during feature development.</li>
-            </ul>
-          </div>
-        </article>
-        <article>
-          <i class="fa-solid fa-code-compare" aria-hidden="true"></i>
-          <div>
-            <h3>Diff Checker</h3>
-            <p>Compare two text blocks, code snippets, JSON payloads, or data snapshots to find exactly what changed.
-            </p>
-            <ul>
-              <li>Spot response changes between API versions.</li>
-              <li>Compare expected and actual payloads during QA.</li>
-              <li>Review config changes before release.</li>
-            </ul>
-          </div>
-        </article>
-        <article id="curl-converter">
-          <i class="fa-solid fa-repeat" aria-hidden="true"></i>
-          <div>
-            <h3>Data Conversion</h3>
-            <p>Convert between developer-friendly data formats when moving between APIs, configs, spreadsheets,
-              documentation, and test fixtures.</p>
-            <ul>
-              <li>Transform data without leaving the current workflow.</li>
-              <li>Prepare cleaner samples for tickets, docs, or test cases.</li>
-              <li>Reduce repetitive copy-paste between conversion sites.</li>
-            </ul>
-          </div>
-        </article>
-        <article>
-          <i class="fa-solid fa-screwdriver-wrench" aria-hidden="true"></i>
-          <div>
-            <h3>Developer Tools</h3>
-            <p>Use small utilities for everyday debugging and data handling tasks. Aruvix keeps these helper tools close
-              to the structured data workflow instead of scattering them across tabs.</p>
-            <ul>
-              <li>Run quick inspections while debugging payloads.</li>
-              <li>Keep utility work in one clean workspace.</li>
-              <li>Use simple tools without account setup or project setup.</li>
-            </ul>
-          </div>
-        </article>
-        <article>
-          <i class="fa-solid fa-language" aria-hidden="true"></i>
-          <div>
-            <h3>Code Translator</h3>
-            <p>Translate common frontend code between JavaScript, TypeScript, CSS, Tailwind, HTML, SVG, and JSX
-              workflows without opening a heavier development tool.</p>
-            <ul>
-              <li>Convert small snippets while reviewing or prototyping.</li>
-              <li>Clean up frontend code examples before sharing them.</li>
-              <li>Move between related web formats with less manual editing.</li>
-            </ul>
-          </div>
-        </article>
-        <article>
-          <i class="fa-solid fa-palette" aria-hidden="true"></i>
-          <div>
-            <h3>CSS and Frontend Tools</h3>
-            <p>Inspect, generate, and clean up frontend assets such as colors, CSS utilities, SVG, design tokens,
-              gradients, and layout helpers.</p>
-            <ul>
-              <li>Use color and CSS helpers during UI implementation.</li>
-              <li>Optimize SVG and frontend snippets before committing them.</li>
-              <li>Generate practical CSS output for repeated interface tasks.</li>
-            </ul>
-          </div>
-        </article>
-        <article>
-          <i class="fa-solid fa-vial-circle-check" aria-hidden="true"></i>
-          <div>
-            <h3>QA and Testing Tools</h3>
-            <p>Generate test data, API assertions, bug report details, and testing helpers for the moments where
-              developers and QA teams need clean examples fast.</p>
-            <ul>
-              <li>Create sample data for forms, APIs, and edge cases.</li>
-              <li>Generate assertions from JSON responses.</li>
-              <li>Prepare clearer bug reports and test cases.</li>
-            </ul>
-          </div>
-        </article>
-        <article>
-          <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
-          <div>
-            <h3>Recently Added Utilities</h3>
-            <p>Aruvix continues to grow with focused tools such as CSS Variables Extractor, SVG Optimizer, and API
-              Assertion Generator.</p>
-            <ul>
-              <li>Extract CSS custom properties from existing stylesheets.</li>
-              <li>Clean and minify SVG code for production use.</li>
-              <li>Turn API responses into practical test assertions.</li>
-            </ul>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <section class="section reveal" id="workflow" aria-labelledby="workflow-title">
-      <div>
-        <p class="tag">Developer workflows</p>
-        <h2 id="workflow-title">Built around real engineering moments</h2>
-      </div>
-      <div class="aruvix-workflow-grid">
-        <article><span>01</span>
-          <h3>Debug an API response</h3>
-          <p>Send or paste a response, format it, inspect nested fields, and compare it against the expected payload.
-          </p>
-        </article>
-        <article><span>02</span>
-          <h3>Review a breaking change</h3>
-          <p>Diff old and new payloads to identify renamed fields, removed keys, type changes, and structural drift.</p>
-        </article>
-        <article><span>03</span>
-          <h3>Prepare clean examples</h3>
-          <p>Format and convert data samples before adding them to docs, tickets, pull requests, or automated tests.</p>
-        </article>
-        <article><span>04</span>
-          <h3>Work with sensitive data</h3>
-          <p>Keep local processing local when inspecting payloads that should not be uploaded to unknown external
-            services.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="section reveal" id="principles" aria-labelledby="principles-title">
-      <div class="section-heading">
-        <p class="tag">Design principles</p>
-        <h2 id="principles-title">Built differently</h2>
-      </div>
-      <div class="aruvix-proof">
-        <article><strong>Private by design</strong><span>Core formatting, validation, search, comparison, and conversion
-            work happens locally in your browser.</span></article>
-        <article><strong>API requests by choice</strong><span>The API Client sends requests only when you press send,
-            and only to the endpoint you choose.</span></article>
-        <article><strong>No sign-up required</strong><span>Open the URL and use the tools immediately. No email gate, no
-            trial wall, no setup ceremony.</span></article>
-        <article><strong>One unified experience</strong><span>Format, visualize, compare, convert, and inspect data
-            without moving between unrelated tools.</span></article>
-        <article><strong>600+ users reached</strong><span>Aruvix has crossed 600 users while staying focused on fast,
-            no-sign-up developer workflows.</span></article>
-        <article><strong>Web tools workspace</strong><span>JSON tools, API checks, diff comparison, converters, and
-            frontend utilities live in one browser-first product.</span></article>
-        <article><strong>Developer focused</strong><span>The interface favors speed, keyboard-friendly actions, readable
-            output, and practical debugging tasks.</span></article>
-      </div>
-    </section>
-
-    <section class="section reveal" id="build" aria-labelledby="build-title">
-      <div class="section-heading">
-        <p class="tag">Product build</p>
-        <h2 id="build-title">What I owned while building it</h2>
-      </div>
-      <div class="feature-grid">
-        <article class="feature-card">
-          <h3>Product direction</h3>
-          <p>Defined the product around high-frequency developer jobs: formatting, validating, visualizing, comparing,
-            converting, and testing data.</p>
-        </article>
-        <article class="feature-card">
-          <h3>User experience</h3>
-          <p>Designed a low-friction workflow where each tool is easy to find, fast to open, and focused on the job at
-            hand.</p>
-        </article>
-        <article class="feature-card">
-          <h3>Privacy model</h3>
-          <p>Prioritized local browser execution for data operations so developers can use the product with confidence
-            on real payloads.</p>
-        </article>
-        <article class="feature-card">
-          <h3>Web toolset</h3>
-          <p>Launched a focused browser workspace that keeps high-frequency developer tools available without account
-            setup or app setup.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="section reveal" id="web-tools" aria-labelledby="web-tools-title">
-      <div class="aruvix-web-tools-panel">
-        <div>
-          <p class="tag">Web tools workspace</p>
-          <h2 id="web-tools-title">Open Aruvix in the browser and use focused developer utilities</h2>
-          <p>Aruvix is currently available as an online workspace for daily development tasks: formatting JSON, checking
-            API responses, comparing payloads, converting data, and using frontend helpers from one private, no-sign-up
-            interface.</p>
-        </div>
-        <div class="button-row">
-          <a class="btn btn-primary" href="https://www.aruvix.com/" target="_blank" rel="noreferrer">Open Aruvix</a>
-          <a class="btn btn-secondary" href="#tools">Explore tools</a>
+        <div class="aru-workspace" aria-label="Illustration of an Aruvix JSON workflow">
+          <div class="aru-workspace-top"><span class="aru-dots" aria-hidden="true"><i></i><i></i><i></i></span><span>ARUVIX / WORKSPACE</span><span class="aru-connected">● LOCAL</span></div>
+          <div class="aru-editor-tabs"><span class="aru-tab-selected">json.format()</span><span>api.request()</span><span>diff.compare()</span></div>
+          <div class="aru-editor-grid"><div class="aru-line-nums" aria-hidden="true">01<br>02<br>03<br>04<br>05<br>06<br>07<br>08</div><pre><code><span class="aru-syntax-key">{</span>
+  <span class="aru-syntax-name">"workspace"</span>: <span class="aru-syntax-text">"Aruvix"</span>,
+  <span class="aru-syntax-name">"processing"</span>: <span class="aru-syntax-text">"local-first"</span>,
+  <span class="aru-syntax-name">"tools"</span>: [
+    <span class="aru-syntax-text">"format"</span>, <span class="aru-syntax-text">"compare"</span>,
+    <span class="aru-syntax-text">"convert"</span>, <span class="aru-syntax-text">"inspect"</span>
+  ]
+<span class="aru-syntax-key">}</span></code></pre></div>
+          <div class="aru-workspace-foot"><span><i aria-hidden="true"></i> Ready when you are</span><span>NO SIGN-UP / NO FRICTION</span></div>
         </div>
       </div>
     </section>
+    <div class="aru-facts" aria-label="Aruvix product highlights"><div class="aru-wrap aru-facts-inner"><span><b>01</b> FORMAT &amp; INSPECT</span><span><b>02</b> REQUEST &amp; DEBUG</span><span><b>03</b> COMPARE &amp; CONVERT</span><span><b>04</b> BUILD &amp; TEST</span></div></div>
 
-    <section class="section reveal" aria-labelledby="aruvix-cta-title">
-      <div class="aruvix-cta-band">
-        <div>
-          <h2 id="aruvix-cta-title">Try Aruvix for your next API or JSON debugging task.</h2>
-          <p>Private local processing, no sign-up, and the tools developers reach for every day.</p>
-        </div>
-        <a class="btn btn-inverse" href="https://www.aruvix.com/" target="_blank" rel="noreferrer">Open Aruvix</a>
+    <section class="aru-section" id="overview" aria-labelledby="aru-why-title">
+      <div class="aru-wrap aru-story">
+        <div><p class="aru-label">01 / THE WHY</p><h2 id="aru-why-title">A good tool should<br><em>get out of the way.</em></h2></div>
+        <div class="aru-story-text"><p>Most developers know the routine: format an unreadable response, compare two payloads, translate a snippet, then search for yet another utility. Each task is small. The context switching isn't.</p><p>I wanted one place where that work feels immediate. No account wall, no long setup process, and browser-local execution for the data transformations that don't need a server.</p><a href="https://www.aruvix.com/" target="_blank" rel="noopener noreferrer">See the product in action <span aria-hidden="true">↗</span></a></div>
       </div>
     </section>
+
+    <section class="aru-section aru-tools-section" id="tools" aria-labelledby="aru-tools-title">
+      <div class="aru-wrap">
+        <div class="aru-section-head"><div><p class="aru-label">02 / THE TOOLBOX</p><h2 id="aru-tools-title">One workspace.<br><em>Many small victories.</em></h2></div><p>The live product has grown beyond its original formatter. These are the main groups I keep developing.</p></div>
+        <div class="aru-tools-grid">
+          <article class="aru-tool"><span class="aru-tool-no">01 / STRUCTURE</span><h3>JSON lab <span>↗</span></h3><p>Format, validate, repair, minify, and explore nested data.</p><a href="https://www.aruvix.com/json-formatter" target="_blank" rel="noopener noreferrer">Try JSON Formatter <span aria-hidden="true">↗</span></a></article>
+          <article class="aru-tool"><span class="aru-tool-no">02 / HTTP</span><h3>API client <span>↗</span></h3><p>Build requests, import cURL, inspect responses, and export OpenAPI snippets.</p><a href="https://www.aruvix.com/api-client" target="_blank" rel="noopener noreferrer">Try API Client <span aria-hidden="true">↗</span></a></article>
+          <article class="aru-tool"><span class="aru-tool-no">03 / DIFFERENCES</span><h3>Compare &amp; convert <span>↗</span></h3><p>Diff JSON and transform structured data across common developer formats.</p><a href="https://www.aruvix.com/" target="_blank" rel="noopener noreferrer">Explore converters <span aria-hidden="true">↗</span></a></article>
+          <article class="aru-tool"><span class="aru-tool-no">04 / FRONTEND</span><h3>Code translator <span>↗</span></h3><p>Switch between familiar web languages and clean up frontend snippets.</p><a href="https://www.aruvix.com/" target="_blank" rel="noopener noreferrer">Explore translators <span aria-hidden="true">↗</span></a></article>
+          <article class="aru-tool"><span class="aru-tool-no">05 / DESIGN SYSTEMS</span><h3>CSS &amp; SVG tools <span>↗</span></h3><p>Inspect colors and design tokens, extract variables, and optimize SVGs.</p><a href="https://www.aruvix.com/" target="_blank" rel="noopener noreferrer">Explore frontend tools <span aria-hidden="true">↗</span></a></article>
+          <article class="aru-tool"><span class="aru-tool-no">06 / QUALITY</span><h3>QA helpers <span>↗</span></h3><p>Generate test data, assertions, and examples for repeatable debugging.</p><a href="https://www.aruvix.com/" target="_blank" rel="noopener noreferrer">Explore QA tools <span aria-hidden="true">↗</span></a></article>
+        </div>
+        <div class="aru-recent"><span class="aru-recent-title">RECENTLY ADDED</span><span>CSS Variables Extractor</span><span>SVG Optimizer</span><span>API Assertion Generator</span></div>
+      </div>
+    </section>
+
+    <section class="aru-section" id="decisions" aria-labelledby="aru-decisions-title"><div class="aru-wrap">
+      <div class="aru-section-head"><div><p class="aru-label">03 / ENGINEERING DECISIONS</p><h2 id="aru-decisions-title">Simple for the user.<br><em>Deliberate underneath.</em></h2></div><p>Building developer tools means earning trust with clear boundaries—not just shipping another editor.</p></div>
+      <div class="aru-decisions-grid">
+        <article><span class="aru-decision-icon">⌁</span><h3>Local when it makes sense.</h3><p>Formatting, diffing, and conversion happen in the browser for the supported tools. That helps keep payloads on the developer's own device.</p></article>
+        <article><span class="aru-decision-icon">↗</span><h3>Network by intention.</h3><p>API Client requests run when the user chooses to send them to a target endpoint. Browser security rules and proxy flows still apply.</p></article>
+        <article><span class="aru-decision-icon">⌘</span><h3>Quick in. Quick out.</h3><p>No mandatory account, no onboarding ceremony, and focused utilities that let you complete a task without building a project around it.</p></article>
+      </div>
+    </div></section>
+
+    <section class="aru-section aru-flow-section" id="workflow" aria-labelledby="aru-flow-title"><div class="aru-wrap">
+      <div class="aru-section-head"><div><p class="aru-label">04 / THE WORKFLOW</p><h2 id="aru-flow-title">A tiny task.<br><em>One less interruption.</em></h2></div></div>
+      <ol class="aru-flow"><li><span>01</span><h3>Bring the data</h3><p>Paste a payload or start a request.</p></li><li><span>02</span><h3>Make sense of it</h3><p>Format, inspect, compare, or convert.</p></li><li><span>03</span><h3>Keep moving</h3><p>Copy the output and return to the real problem.</p></li></ol>
+    </div></section>
+
+    <section class="aru-section aru-next-section" id="evolution" aria-labelledby="aru-next-title"><div class="aru-wrap aru-next-grid">
+      <div><p class="aru-label">05 / CONTINUING TO SHIP</p><h2 id="aru-next-title">The browser is just<br><em>the beginning.</em></h2><p>Aruvix now lists desktop downloads for macOS and Windows alongside its browser tools. The guiding idea stays the same: remove friction from the work developers do every day.</p></div>
+      <div class="aru-next-panel"><span>WHAT I'M BUILDING</span><strong>One developer workspace,<br>many ways to use it.</strong><p>Browser-first utilities, local processing where practical, and an evolving collection of tools for real engineering workflows.</p><a href="https://www.aruvix.com/" target="_blank" rel="noopener noreferrer">Explore current releases <span aria-hidden="true">↗</span></a></div>
+    </div></section>
+
+    <section class="aru-final"><div class="aru-wrap aru-final-inner"><div><p>FROM A DEVELOPER, FOR DEVELOPERS.</p><h2>Have a payload to untangle?<br><em>Give Aruvix a go.</em></h2></div><a class="aru-button aru-button-primary" href="https://www.aruvix.com/" target="_blank" rel="noopener noreferrer">Open Aruvix <span aria-hidden="true">↗</span></a></div></section>
   </main>
 
   <footer class="footer">
@@ -441,7 +186,7 @@ status: ready</code></pre>
   </footer>
 
   <button id="back-to-top" class="back-to-top" type="button" aria-label="Back to top"><span aria-hidden="true">↑ TOP</span></button>
-  <script src="/script.js?v=4"></script><script defer src="/site-polish.js?v=4"></script>
+  <script defer src="/site-polish.js?v=4"></script>
 </body>
 
 </html>
