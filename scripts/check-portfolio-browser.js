@@ -565,7 +565,8 @@ await page.locator('#skills').screenshot({path:path.join(output,'skills-desktop-
 
 await page.screenshot({path:path.join(output,'desktop-editorial.png'),fullPage:true});
 const aruvixLink=page.locator('#work .project-aruvix .project-action[href="/aruvix"]');
-assert.equal(await aruvixLink.count(),1,'Aruvix has a dedicated Learn more case-study link');
+assert.equal(await aruvixLink.count(),1,'Aruvix has a dedicated case-study link');
+assert.ok((await aruvixLink.innerText()).includes('Aruvix case study'),'case-study CTA has descriptive SEO link text');
 assert.equal(await page.locator('#work .aruvix-visit-link').count(),1,'Aruvix has a separate product launch link');
 assert.equal(await page.locator('#work .aruvix-visit-link').getAttribute('target'),'_blank','product launch opens separately');
 assert.equal(await page.locator('#work .aruvix-visit-link').getAttribute('href'),'https://www.aruvix.com/','product launch reaches Aruvix');
