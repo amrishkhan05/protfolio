@@ -60,6 +60,9 @@
 .site-header .nav-links .nav-order{
   color:#92a89a;font:600 9px/1 'DM Mono',monospace;letter-spacing:-.03em;
 }
+/* Contact appears in the collapsed menu only. Desktop already has the lime CTA. */
+.site-header .nav-links .nav-contact-mobile{display:none}
+
 .site-header .nav-links a:hover{background:#314438;color:#f4f6ee}
 .site-header .nav-links a:hover .nav-order{color:#d5f478}
 .site-header .nav-links a[aria-current="location"]{
@@ -157,7 +160,7 @@
   .site-header .brand-mark{width:37px;height:36px}
   .site-header .brand-name{font-size:17px}
   .site-header .studio-resume-link{min-height:40px;padding:8px 10px;font-size:0}
-  .site-header .studio-resume-link::before{content:none}
+  .site-header .studio-resume-link::before{content:"CV";font:750 11px/1 'DM Mono',monospace;letter-spacing:.03em;color:#f3f5ed}
   .site-header .studio-resume-link>span:first-child{display:none}
   .site-header .studio-resume-link .resume-download-symbol{width:25px;height:23px;font-size:16px}
   .site-header .menu-toggle{width:42px;min-width:42px;height:41px}

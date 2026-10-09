@@ -106,6 +106,7 @@ assert.equal(await identity.locator('.brand-mark svg').count(),1,'custom vector 
 assert.ok(await identity.locator('.brand-name').isVisible(),'new editorial wordmark is visible');
 assert.ok((await identity.locator('.brand-name').innerText()).includes('amrish.khan'),'wordmark is correctly spelled');
 assert.equal(await identity.locator('.nav-links a[href="#work"] .nav-order').innerText(),'01','numbered navigation displayed');
+assert.ok(await identity.locator('.nav-contact-mobile').isHidden(),'mobile-only contact link is hidden in desktop navigation');
 assert.equal(await identity.locator('a[href="#contact"].header-cta').count(),1,'header contact CTA preserved');
 assert.equal(await identity.locator('.studio-resume-link[download]').count(),1,'resume download remains in header');
 const navDesktop=await identity.evaluate(header=>{
@@ -552,6 +553,7 @@ const mobileHeader=await page.locator('.site-header').evaluate(header=>{
 assert.ok(mobileHeader.brandRight+8<mobileHeader.menuLeft,'mobile header wordmark does not collide with menu');
 assert.ok(mobileHeader.documentWidth<=mobileHeader.viewport+2,'mobile header has no horizontal overflow');
 await page.locator('.site-header').screenshot({path:path.join(output,'header-mobile-open.png')});
+await page.screenshot({path:path.join(output,'header-mobile-menu-viewport.png'),fullPage:false});
 
 await page.locator('#primary-nav a[href="#writing"]').click();
 assert.equal(await page.locator('#menu-toggle').getAttribute('aria-expanded'),'false','mobile menu closes');
