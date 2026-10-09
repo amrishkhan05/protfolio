@@ -581,7 +581,7 @@ body.is-aruvix-view .hero-section p,body.is-aruvix-view .case-study-shell p{colo
 .site-header .header-cta:hover * {
   color:inherit;
 }
-#home-content #work .project-action:hover{box-shadow:0 6px 18px #10151d20}
+#home-content #work .project-action:hover{box-shadow:0 6px 18px #10151d20;color:#11161d!important}
 #home-content .filter-tab:hover:not(.active){background:#11161d;color:#f6f4ee;border-color:#11161d}
 #home-content .filter-tab.active:hover{background:#d5f478;color:#11161d}
 /* Fixed dark controls retain dark backgrounds when not hovered. */

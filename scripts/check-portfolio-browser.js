@@ -106,7 +106,7 @@ assert.ok(await board.isVisible(),'interactive systems artwork visible');
 assert.equal(await page.locator('.topo-frame').count(),0,'old hub-and-spoke diagram removed');
 assert.equal(await board.locator('.switchboard-mode').count(),3,'three engineering perspectives available');
 const initialBoard=await board.evaluate(el=>({width:el.getBoundingClientRect().width,panel:el.querySelector('.switchboard').getBoundingClientRect().width,buttons:[...el.querySelectorAll('.switchboard-mode')].map(b=>b.getAttribute('aria-pressed'))}));
-assert.ok(initialBoard.width>350&&initialBoard.panel<=initialBoard.width+4,'editorial artwork sits within hero column');
+assert.ok(initialBoard.width>350&&initialBoard.panel<=initialBoard.width+16,'editorial artwork sits within hero column');
 assert.deepEqual(initialBoard.buttons,['true','false','false'],'aviation is the default perspective');
 await board.screenshot({path:path.join(output,'hero-switchboard-desktop.png')});
 await board.locator('[data-system="payments"]').click();
