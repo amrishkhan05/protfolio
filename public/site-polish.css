@@ -546,3 +546,10 @@ body.is-aruvix-view .hero-section p,body.is-aruvix-view .case-study-shell p{colo
   #home-content #contact{scroll-margin-top:72px}
   #home-content #contact .footer{margin-top:0}
 }
+
+/* Desktop anchor target should account for header only ONCE.
+   :root scroll-padding previously stacked with #contact scroll-margin. */
+@media(min-width:1051px){
+  html:not(.is-blog-route):has(#contact){scroll-padding-top:68px}
+  #home-content #contact{scroll-margin-top:0}
+}
