@@ -1,0 +1,130 @@
+/* Experience: four rich career chapters without an inner scrolling panel.
+   Fixed rhythm and clear hierarchy preserve the sticky introduction. */
+#home-content #experience{scroll-margin-top:0}
+#home-content #experience .section-top{margin-bottom:clamp(22px,3.5vh,36px)}
+#home-content #experience .experience-layout{grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);column-gap:clamp(34px,5vw,78px);align-items:start}
+#home-content #experience .experience-heading{top:clamp(102px,13vh,142px)}
+#home-content #experience .experience-eyebrow{display:inline-block;font:600 10px/1.5 var(--mono);color:#577364;letter-spacing:.08em;margin-bottom:13px}
+#home-content #experience .experience-heading .display-heading{margin:0 0 16px;font-size:clamp(44px,5vw,73px);line-height:1.06}
+#home-content #experience .experience-heading p{font:400 15px/1.72 var(--sans);color:#485b51;margin:0 0 22px;max-width:450px}
+#home-content #experience .experience-stat-line{display:flex;justify-content:space-between;max-width:380px;gap:14px;border-block:1px solid #bbc9bd;padding:11px 0;margin-bottom:22px;color:#476b55;font:600 11px/1.5 var(--mono)}
+#home-content #experience .timeline{display:flex;flex-direction:column;gap:0;overflow:visible!important}
+#home-content #experience .timeline-row{display:grid;grid-template-columns:155px 14px minmax(0,1fr);column-gap:clamp(10px,1.5vw,20px);min-height:0!important;height:auto;padding:0 0 clamp(29px,3.9vh,44px);margin:0 0 clamp(30px,4vh,46px);position:relative}
+#home-content #experience .timeline-row:last-child{margin-bottom:0;padding-bottom:0}
+#home-content #experience .timeline-date{display:flex;flex-direction:row;align-items:baseline;flex-wrap:nowrap;white-space:nowrap;gap:4px;font:500 10px/1.4 var(--mono);letter-spacing:0;color:#637366;padding-top:3px}
+#home-content #experience .timeline-date strong{font-weight:750;color:#264b36}
+#home-content #experience .timeline-dot{position:relative}
+#home-content #experience .timeline-dot::before{width:11px;height:11px;margin:3px 0 0;background:#244533}
+#home-content #experience .timeline-dot::after{left:5px;top:21px;bottom:calc(-1 * clamp(30px,4vh,46px));border-color:#bdcbbf}
+#home-content #experience .timeline-row:last-child .timeline-dot::after{display:none}
+#home-content #experience .timeline-content{min-width:0}
+#home-content #experience .timeline-company{display:block;font:750 10px/1.5 var(--mono);letter-spacing:.065em;color:#426b52;margin-bottom:10px}
+#home-content #experience .timeline-company span{color:#728477;font-weight:500}
+#home-content #experience .timeline-content h3{font:650 clamp(20px,1.9vw,27px)/1.18 var(--display);letter-spacing:-.035em;color:#1b3026;margin:0 0 10px}
+#home-content #experience .timeline-content h3 em{font-family:Georgia,serif;font-weight:400;font-style:italic;letter-spacing:-.015em}
+#home-content #experience .timeline-summary{font:500 14px/1.6 var(--sans);color:#465a4e;margin:0 0 13px;max-width:710px}
+#home-content #experience .timeline-points{list-style:none;display:grid;gap:9px;margin:0 0 17px;padding:0;max-width:710px}
+#home-content #experience .timeline-points li{position:relative;padding-left:17px;font:400 13px/1.58 var(--sans);color:#516157;overflow-wrap:break-word}
+#home-content #experience .timeline-points li::before{position:absolute;left:0;top:.63em;content:"";height:5px;width:5px;border-radius:50%;background:#6c9770}
+#home-content #experience .tiny-tags{display:flex;flex-wrap:wrap;gap:7px;margin:0;padding:0}
+#home-content #experience .tiny-tags span{font:600 10px/1.4 var(--mono);border:1px solid #ccd6c8;background:#e9eee6;color:#35503e;padding:6px 9px;border-radius:5px}
+#home-content #experience .experience-credentials{display:grid;grid-template-columns:1fr 1fr auto;align-items:center;gap:clamp(20px,3vw,42px);margin-top:clamp(38px,6vh,66px);padding:clamp(20px,2.6vw,33px);background:#e4eae1;border:1px solid #c8d3c7;border-radius:9px}
+#home-content #experience .experience-credential{min-width:0}
+#home-content #experience .experience-credential>span{display:block;font:650 10px/1.5 var(--mono);color:#657e6b;letter-spacing:.065em;margin-bottom:8px}
+#home-content #experience .experience-credential strong{display:block;font:650 16px/1.3 var(--display);letter-spacing:-.025em;color:#20392b}
+#home-content #experience .experience-credential p{margin:6px 0 0;font:400 12px/1.6 var(--sans);color:#596b5f}
+#home-content #experience .experience-credentials-link{display:inline-flex;gap:14px;align-items:center;white-space:nowrap;font:700 12px/1.4 var(--sans);color:#294f35;border-bottom:1px solid currentColor;padding-bottom:5px}
+#home-content #experience .experience-credentials-link:hover{color:#4f8553}
+#home-content #experience .experience-credentials-link:focus-visible{outline:3px solid #376e4b;outline-offset:4px}
+@media(max-width:1100px){
+ #home-content #experience .experience-layout{grid-template-columns:minmax(0,1fr);row-gap:26px}
+ #home-content #experience .experience-heading{position:static}
+ #home-content #experience .experience-heading .display-heading{font-size:clamp(44px,6vw,67px)}
+ #home-content #experience .experience-heading p{max-width:650px}
+ #home-content #experience .experience-credentials{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #home-content #experience .experience-credentials-link{justify-self:start}
+}
+@media(max-width:760px){
+ #home-content #experience .timeline-row{grid-template-columns:16px minmax(0,1fr);column-gap:14px;padding-bottom:27px;margin-bottom:29px}
+ #home-content #experience .timeline-date{grid-column:2;grid-row:1;flex-direction:row;gap:5px;flex-wrap:nowrap;margin-bottom:10px}
+ #home-content #experience .timeline-dot{grid-column:1;grid-row:1 / span 2}
+ #home-content #experience .timeline-content{grid-column:2;grid-row:2}
+ #home-content #experience .timeline-dot::after{bottom:-36px}
+ #home-content #experience .timeline-company{font-size:9px}
+ #home-content #experience .timeline-content h3{font-size:23px}
+ #home-content #experience .timeline-points li{font-size:12px;line-height:1.6}
+ #home-content #experience .timeline-summary{font-size:13px}
+ #home-content #experience .experience-credentials{grid-template-columns:minmax(0,1fr);gap:19px}
+ #home-content #experience .experience-heading .display-heading{font-size:46px}
+ #home-content #experience .experience-stat-line{max-width:none}
+}
+@media(prefers-reduced-motion:reduce){#home-content #experience .timeline-row{scroll-behavior:auto}}
+
+
+/* Compact career timeline: dates and descriptions share a single readable
+   column. The narrow rail replaces the oversized 155px date gutter. */
+#home-content #experience .experience-layout{
+  grid-template-columns:minmax(0,.72fr) minmax(0,1.28fr);
+  column-gap:clamp(24px,3vw,46px);
+}
+#home-content #experience .timeline-row{
+  display:grid;
+  grid-template-columns:14px minmax(0,1fr);
+  grid-template-areas:"track date" "track body";
+  column-gap:clamp(12px,1.4vw,18px);
+  row-gap:8px;
+  padding:0 0 clamp(15px,2.1vh,22px);
+  margin:0 0 clamp(20px,2.7vh,25px);
+}
+#home-content #experience .timeline-date{
+  grid-area:date;
+  align-items:baseline;
+  flex-wrap:nowrap;
+  white-space:nowrap;
+  gap:5px;
+  min-width:0;
+  padding-top:0;
+}
+#home-content #experience .timeline-dot{
+  grid-area:track;
+}
+#home-content #experience .timeline-dot::after{
+  bottom:calc(-1 * clamp(20px,2.7vh,25px));
+}
+#home-content #experience .timeline-content{
+  grid-area:body;
+}
+#home-content #experience .timeline-company{margin-bottom:7px}
+#home-content #experience .timeline-content h3{margin-bottom:8px}
+#home-content #experience .timeline-summary{line-height:1.55;margin-bottom:10px}
+#home-content #experience .timeline-points{gap:6px;margin-bottom:13px}
+#home-content #experience .experience-credentials{
+  margin-top:clamp(22px,3.5vh,37px);
+}
+@media(max-width:1100px){
+ #home-content #experience .experience-layout{
+   grid-template-columns:minmax(0,1fr);
+   row-gap:clamp(16px,2.7vh,26px);
+ }
+}
+@media(max-width:760px){
+ #home-content #experience .timeline-row{
+   grid-template-columns:14px minmax(0,1fr);
+   grid-template-areas:"track date" "track body";
+   column-gap:13px;
+   row-gap:8px;
+   padding-bottom:16px;
+   margin-bottom:21px;
+ }
+ #home-content #experience .timeline-date{
+   grid-area:date;
+   margin:0;
+ }
+ #home-content #experience .timeline-dot{
+   grid-area:track;
+ }
+ #home-content #experience .timeline-content{
+   grid-area:body;
+ }
+ #home-content #experience .timeline-dot::after{bottom:-21px}
+}

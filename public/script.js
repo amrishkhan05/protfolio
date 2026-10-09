@@ -1,11 +1,7 @@
 /** @format */
 
-const themeToggles = Array.from(document.querySelectorAll(".theme-toggle"));
-const themeToggle = themeToggles[0] || null;
 const menuToggle = document.querySelector(".menu-toggle");
 const mobileMenu = document.getElementById("mobile-menu");
-const themeColorMeta = document.querySelector('meta[name="theme-color"]');
-const colorSchemeMeta = document.querySelector('meta[name="color-scheme"]');
 const viewCountNode = document.getElementById("portfolio-view-count");
 const ownerViewBadge = document.getElementById("owner-view-badge");
 const copyEmailBtn = document.getElementById("copy-email-btn");
@@ -38,9 +34,6 @@ const blogToolsPanel = document.getElementById("blog-tools-panel");
 const blogToolList = document.getElementById("blog-tool-list");
 const blogLoaderOverlay = document.getElementById("blog-loader-overlay");
 const ownerMaxViewsKey = "portfolio-owner-max-views";
-const themeStorageKey = "portfolio-theme";
-const lightThemeColor = "#f8f9ff";
-const darkThemeColor = "#111418";
 const kofiWidgetId = "L3L71XQ4TR";
 const kofiWidgetLabel = "Buy me a coffee on Ko-fi";
 const kofiWidgetColors = {
@@ -49,7 +42,6 @@ const kofiWidgetColors = {
 };
 let copyResetTimer;
 let activeHeadingObserver;
-const prefersDark = globalThis.matchMedia?.("(prefers-color-scheme: dark)")?.matches;
 const countFormatter = new Intl.NumberFormat("en-US");
 const searchParams = new URLSearchParams(globalThis.location.search);
 const blogSlug = globalThis.location.pathname.match(/^\/blog\/([^/]+)\/?$/)?.[1];
@@ -257,34 +249,6 @@ if (isOwnerViewEnabled && viewCountNode) {
   renderOwnerCount(knownValue);
 }
 
-const applyTheme = (theme) => {
-  const scheme = theme === "dark" ? "dark" : "only light";
-  document.documentElement.dataset.theme = theme;
-  document.documentElement.style.colorScheme = scheme;
-  const isDark = theme === "dark";
-  themeColorMeta?.setAttribute("content", isDark ? darkThemeColor : lightThemeColor);
-  colorSchemeMeta?.setAttribute("content", scheme);
-
-  themeToggles.forEach((toggle) => {
-    toggle.setAttribute("aria-pressed", String(isDark));
-    toggle.setAttribute("aria-label", isDark ? "Switch to light theme" : "Switch to dark theme");
-
-    const checkbox = toggle.querySelector("input[type='checkbox']");
-    if (checkbox) {
-      checkbox.checked = !isDark;
-    }
-
-    const icon = toggle.querySelector("i");
-    if (icon) {
-      icon.className = isDark ? "fa-solid fa-sun" : "fa-solid fa-moon";
-    }
-  });
-};
-
-const savedTheme = safeStorageGet(themeStorageKey);
-const initialTheme = savedTheme || (prefersDark ? "dark" : "light");
-applyTheme(initialTheme);
-
 const drawKofiWidget = () => {
   if (!globalThis.kofiwidget2) {
     return;
@@ -351,26 +315,6 @@ const copyEmailToClipboard = async () => {
 
 copyEmailBtn?.addEventListener("click", copyEmailToClipboard);
 
-themeToggles.forEach((toggle) => {
-  const checkbox = toggle.querySelector("input[type='checkbox']");
-  if (checkbox) {
-    checkbox.addEventListener("change", (e) => {
-      e.stopPropagation();
-      const next = checkbox.checked ? "light" : "dark";
-      applyTheme(next);
-      safeStorageSet(themeStorageKey, next);
-    });
-  } else {
-    toggle.addEventListener("click", () => {
-      const current = document.documentElement.dataset.theme || "light";
-      const next = current === "dark" ? "light" : "dark";
-
-      applyTheme(next);
-      safeStorageSet(themeStorageKey, next);
-    });
-  }
-});
-
 const setMobileMenuOpen = (isOpen) => {
   if (!menuToggle || !mobileMenu) {
     return;
@@ -395,171 +339,218 @@ mobileMenu?.querySelectorAll("a").forEach((link) => {
   link.addEventListener("click", () => setMobileMenuOpen(false));
 });
 
-const renderBlogCard = (blog) => {
-  const tags = Array.isArray(blog.tags) ? blog.tags.slice(0, 4) : [];
+// Editorial DEV.to journal. Uses the existing /api/blogs normalization and /blog/:slug routes.
+const journalFeatured = document.getElementById("journal-featured");
+const journalFilters = document.getElementById("journal-filters");
+const journalSearch = document.getElementById("journal-search");
+const journalSort = document.getElementById("journal-sort");
+const journalResults = document.getElementById("journal-results");
+const journalLoadMore = document.getElementById("journal-load-more");
+const journalPageSize = 6;
+let journalVisibleCount = journalPageSize;
+let journalActiveTag = "all";
+let journalQuery = "";
 
-  return `
-    <a class="blog-card" href="${escapeHtml(blog.url)}">
-      <h4>${escapeHtml(blog.title)}</h4>
-      <p class="blog-meta">${escapeHtml(formatPublishedDate(blog.publishedAt))}${blog.readingTimeMinutes ? ` • ${escapeHtml(blog.readingTimeMinutes)} min read` : ""}</p>
-      <div class="blog-tags">
-        ${tags.map((tag) => `<span>${escapeHtml(tag)}</span>`).join("")}
+const journalDate = (publishedAt) => {
+  const date = new Date(publishedAt || "");
+  return Number.isNaN(date.getTime()) ? "Date unavailable" : date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+};
+
+const journalArticleLink = (article) => {
+  const url = String(article?.url || "");
+  // Links are produced by normalizeDevArticle() on the server. Reject unexpected paths.
+  return /^\/blog\/[a-z0-9-]+\/?$/.test(url) ? url : "/#blogs";
+};
+
+const journalCoverFallback = (featured) => `<span class="journal-cover-art" aria-hidden="true"><span class="journal-cover-orbit"></span><span class="journal-cover-wordmark">${featured ? "FIELD / NOTES" : "BUILD / LEARN"}</span></span>`;
+
+// DEV cover URLs can expire. Replace failed images with the same designed fallback.
+const journalRecoverCovers = (root) => {
+  root?.querySelectorAll(".journal-cover img").forEach((image) => {
+    const replaceBrokenImage = () => {
+      const cover = image.closest(".journal-cover");
+      if (cover) cover.innerHTML = journalCoverFallback(cover.classList.contains("journal-cover-featured"));
+    };
+    image.addEventListener("error", replaceBrokenImage, { once: true });
+    if (image.complete && image.naturalWidth === 0) replaceBrokenImage();
+  });
+};
+
+const journalCover = (article, featured = false) => {
+  const cover = String(article?.coverImage || "");
+  let isValidCover = false;
+  try {
+    isValidCover = new URL(cover).protocol === "https:";
+  } catch (_error) { /* Use the designed fallback illustration. */ }
+  const image = isValidCover
+    ? `<img src="${escapeHtml(cover)}" alt="" loading="lazy" decoding="async" />`
+    : journalCoverFallback(featured);
+  return `<div class="journal-cover${featured ? " journal-cover-featured" : ""}">${image}</div>`;
+};
+
+const journalCategory = (article) => escapeHtml(formatArticleCategory(article.tags));
+const journalTime = (article) => article.readingTimeMinutes ? `${Math.max(1, Math.round(Number(article.readingTimeMinutes) || 1))} min read` : "Article";
+const journalCardTags = (article) => (Array.isArray(article.tags) ? article.tags : []).slice(0, 2)
+  .map((tag) => `<span class="journal-tag">#${escapeHtml(tag)}</span>`).join("");
+
+const renderBlogCard = (article) => `
+  <article class="journal-card">
+    <a href="${escapeHtml(journalArticleLink(article))}" class="journal-card-link" aria-label="Read ${escapeHtml(article.title)}">
+      ${journalCover(article)}
+      <div class="journal-card-content">
+        <div class="journal-card-topline"><span>${journalCategory(article)}</span><span>${escapeHtml(journalTime(article))}</span></div>
+        <h4>${escapeHtml(article.title)}</h4>
+        <p class="journal-card-description">${escapeHtml(article.description || "A field note on software, systems, and making things better.")}</p>
+        <div class="journal-card-footer"><time>${escapeHtml(journalDate(article.publishedAt))}</time><span class="journal-card-arrow" aria-hidden="true"><i class="fa-solid fa-arrow-up-right-from-square"></i></span></div>
       </div>
     </a>
-  `;
+  </article>
+`;
+
+const renderJournalFeatured = (article) => {
+  if (!journalFeatured) return;
+  const tags = journalCardTags(article);
+  journalFeatured.innerHTML = `
+    <article class="journal-feature-story">
+      <a class="journal-feature-media" href="${escapeHtml(journalArticleLink(article))}" aria-label="Read featured article: ${escapeHtml(article.title)}">${journalCover(article, true)}</a>
+      <div class="journal-feature-copy">
+        <div class="journal-feature-eyebrow"><span class="journal-feature-dot"></span> THE LATEST STORY <span class="journal-feature-separator">/</span> ${escapeHtml(journalDate(article.publishedAt))}</div>
+        <span class="journal-feature-category">${journalCategory(article)} · ${escapeHtml(journalTime(article))}</span>
+        <h3><a href="${escapeHtml(journalArticleLink(article))}">${escapeHtml(article.title)}</a></h3>
+        <p>${escapeHtml(article.description || "A new note from the workbench.")}</p>
+        <div class="journal-feature-tags">${tags}</div>
+        <a class="journal-feature-cta" href="${escapeHtml(journalArticleLink(article))}">Read the story <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+      </div>
+    </article>`;
+  journalFeatured.hidden = false;
+  journalRecoverCovers(journalFeatured);
 };
 
-const getBlogGridColumnCount = () => {
-  if (!blogGrid) {
-    return 1;
-  }
-
-  const columns = globalThis.getComputedStyle(blogGrid).gridTemplateColumns.trim();
-
-  if (!columns || columns === "none") {
-    return 1;
-  }
-
-  return columns.split(/\s+/).length || 1;
+const journalFilteredArticles = () => {
+  const normalizedQuery = journalQuery.trim().toLowerCase();
+  return blogListItems.filter((article) => {
+    const tags = Array.isArray(article.tags) ? article.tags : [];
+    const matchesTag = journalActiveTag === "all" || tags.some((tag) => String(tag).toLowerCase() === journalActiveTag);
+    const searchableText = [article.title, article.description, ...tags].join(" ").toLowerCase();
+    return matchesTag && (!normalizedQuery || searchableText.includes(normalizedQuery));
+  }).sort((left, right) => {
+    const leftTime = new Date(left.publishedAt || 0).getTime() || 0;
+    const rightTime = new Date(right.publishedAt || 0).getTime() || 0;
+    return journalSort?.value === "oldest" ? leftTime - rightTime : rightTime - leftTime;
+  });
 };
 
-const getBlogsPerPage = () => {
-  const columns = getBlogGridColumnCount();
-  const rows = columns === 1 ? mobileBlogRowsPerPage : blogRowsPerPage;
-
-  return Math.max(1, columns * rows);
+const renderJournalFilters = () => {
+  if (!journalFilters) return;
+  const counts = new Map();
+  for (const article of blogListItems) {
+    for (const tag of new Set((Array.isArray(article.tags) ? article.tags : []).map((value) => String(value).toLowerCase()))) {
+      if (tag && !["programming", "webdev", "beginners", "discuss"].includes(tag)) counts.set(tag, (counts.get(tag) || 0) + 1);
+    }
+  }
+  const suggested = [...counts].sort((left, right) => right[1] - left[1] || left[0].localeCompare(right[0])).slice(0, 5);
+  journalFilters.innerHTML = [`<button type="button" class="journal-filter is-active" data-journal-tag="all" aria-pressed="true">All stories <span>${blogListItems.length}</span></button>`, ...suggested.map(([tag, count]) => `<button type="button" class="journal-filter" data-journal-tag="${escapeHtml(tag)}" aria-pressed="false">${escapeHtml(tag.replace(/[-_]/g," "))} <span>${count}</span></button>`)].join("");
 };
 
-const renderBlogPage = ({ preserveFirstBlog = false } = {}) => {
-  if (!blogGrid) {
-    return;
+const journalReset = () => {
+  journalActiveTag = "all";
+  journalQuery = "";
+  if (journalSearch) journalSearch.value = "";
+  if (journalSort) journalSort.value = "newest";
+  journalVisibleCount = journalPageSize;
+  renderBlogPage();
+};
+
+const renderBlogPage = () => {
+  if (!blogGrid) return;
+  const isDefaultView = journalActiveTag === "all" && !journalQuery.trim() && journalSort?.value !== "oldest";
+  const matched = journalFilteredArticles();
+  const featuredArticle = isDefaultView ? matched[0] : null;
+  if (featuredArticle) renderJournalFeatured(featuredArticle);
+  else if (journalFeatured) { journalFeatured.hidden = true; journalFeatured.innerHTML = ""; }
+  const listing = featuredArticle ? matched.slice(1) : matched;
+  const visible = listing.slice(0, journalVisibleCount);
+  blogGrid.setAttribute("aria-busy", "false");
+  if (visible.length) {
+    blogGrid.innerHTML = visible.map(renderBlogCard).join("");
+  } else if (featuredArticle) {
+    blogGrid.innerHTML = '<p class="journal-empty">More stories are on their way. In the meantime, enjoy the featured read above.</p>';
+  } else {
+    blogGrid.innerHTML = '<div class="journal-empty"><strong>No matching stories.</strong><p>Try another topic or a shorter search.</p><button type="button" class="journal-reset" id="journal-reset">Clear filters <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button></div>';
+    blogGrid.querySelector("#journal-reset")?.addEventListener("click", journalReset);
   }
-
-  const previousStartIndex = (currentBlogPage - 1) * currentBlogsPerPage;
-  currentBlogsPerPage = getBlogsPerPage();
-
-  const totalPages = Math.max(1, Math.ceil(blogListItems.length / currentBlogsPerPage));
-
-  if (preserveFirstBlog) {
-    currentBlogPage = Math.floor(previousStartIndex / currentBlogsPerPage) + 1;
+  journalRecoverCovers(blogGrid);
+  if (journalResults) {
+    const label = matched.length === 1 ? "story" : "stories";
+    journalResults.textContent = `${matched.length} ${label} ${journalActiveTag !== "all" || journalQuery ? "found" : "in the journal"}`;
   }
-
-  currentBlogPage = Math.min(Math.max(currentBlogPage, 1), totalPages);
-
-  const startIndex = (currentBlogPage - 1) * currentBlogsPerPage;
-  const pageBlogs = blogListItems.slice(startIndex, startIndex + currentBlogsPerPage);
-
-  blogGrid.innerHTML = pageBlogs.map(renderBlogCard).join("");
-
-  const renderedCards = blogGrid.querySelectorAll(".blog-card").length;
-  if (renderedCards !== pageBlogs.length) {
-    console.warn(`Rendered blog card count (${renderedCards}) differs from current page item count (${pageBlogs.length}).`);
+  if (blogPagination && journalLoadMore) {
+    blogPagination.hidden = listing.length <= journalVisibleCount;
+    journalLoadMore.textContent = `Show more stories (${listing.length - journalVisibleCount} remaining) ↓`;
   }
-
-  if (!blogPagination || !blogPrevPage || !blogNextPage || !blogPageStatus) {
-    return;
+  for (const button of journalFilters?.querySelectorAll("[data-journal-tag]") || []) {
+    const selected = button.dataset.journalTag === journalActiveTag;
+    button.classList.toggle("is-active", selected);
+    button.setAttribute("aria-pressed", String(selected));
   }
+};
 
-  const shouldShowPagination = totalPages > 1;
-  blogPagination.hidden = !shouldShowPagination;
-  if (writingControlsTop) {
-    writingControlsTop.hidden = !shouldShowPagination;
-  }
-
-  if (!shouldShowPagination) {
-    return;
-  }
-
-  const isFirstPage = currentBlogPage === 1;
-  const isLastPage = currentBlogPage === totalPages;
-
-  blogPrevPage.disabled = isFirstPage;
-  blogNextPage.disabled = isLastPage;
-  if (blogPrevPageTop) {
-    blogPrevPageTop.disabled = isFirstPage;
-  }
-  if (blogNextPageTop) {
-    blogNextPageTop.disabled = isLastPage;
-  }
-  blogPageStatus.textContent = `Page ${currentBlogPage} of ${totalPages}`;
+const showJournalFallback = (message) => {
+  if (!blogGrid) return;
+  if (journalFeatured) journalFeatured.hidden = true;
+  blogGrid.setAttribute("aria-busy", "false");
+  blogGrid.innerHTML = `<div class="journal-empty journal-unavailable"><strong>${escapeHtml(message)}</strong><p>You can still find every published story on DEV.</p><div class="journal-fallback-actions"><button id="journal-retry" type="button" class="journal-reset">Try again ↻</button><a href="https://dev.to/amrishkhan05" target="_blank" rel="noopener noreferrer">Browse DEV <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a></div></div>`;
+  blogGrid.querySelector("#journal-retry")?.addEventListener("click", renderBlogList);
+  if (journalResults) journalResults.textContent = "The journal is temporarily unavailable";
+  if (blogPagination) blogPagination.hidden = true;
 };
 
 const renderBlogList = async () => {
-  if (!blogGrid || blogSlug) {
-    return;
-  }
-
+  if (!blogGrid || blogSlug) return;
+  blogGrid.setAttribute("aria-busy", "true");
+  blogGrid.innerHTML = '<div class="journal-skeleton" aria-hidden="true"></div><div class="journal-skeleton" aria-hidden="true"></div><div class="journal-skeleton" aria-hidden="true"></div>';
+  if (journalResults) journalResults.textContent = "Loading the journal...";
+  if (blogPagination) blogPagination.hidden = true;
   try {
-    blogGrid.innerHTML = '<p class="blog-list-status">Loading latest articles...</p>';
-    if (blogPagination) {
-      blogPagination.hidden = true;
-    }
-
-    const { articles: blogs } = await fetchDevArticles();
-
-    if (!blogs.length) {
-      blogGrid.innerHTML = '<p class="blog-list-status">No articles are available right now.</p>';
-      return;
-    }
-
-    blogListItems = blogs;
-    currentBlogPage = 1;
+    const { articles } = await fetchDevArticles();
+    if (!articles.length) { showJournalFallback("No stories could be loaded right now."); return; }
+    blogListItems = articles;
+    journalActiveTag = "all";
+    journalQuery = "";
+    journalVisibleCount = journalPageSize;
+    if (journalSearch) journalSearch.value = "";
+    if (journalSort) journalSort.value = "newest";
+    renderJournalFilters();
     renderBlogPage();
   } catch (error) {
-    console.error("Unable to load DEV blog list:", error);
-    blogGrid.innerHTML = '<p class="blog-list-status">Articles are temporarily unavailable.</p>';
-    if (blogPagination) {
-      blogPagination.hidden = true;
-    }
-    if (writingControlsTop) {
-      writingControlsTop.hidden = true;
-    }
+    console.error("Unable to load DEV journal:", error);
+    showJournalFallback("The stories are taking a little longer to arrive.");
   }
 };
 
-blogPrevPage?.addEventListener("click", () => {
-  currentBlogPage -= 1;
+journalFilters?.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-journal-tag]");
+  if (!button || !journalFilters.contains(button)) return;
+  journalActiveTag = button.dataset.journalTag || "all";
+  journalVisibleCount = journalPageSize;
   renderBlogPage();
 });
 
-blogPrevPageTop?.addEventListener("click", () => {
-  currentBlogPage -= 1;
+journalSearch?.addEventListener("input", () => {
+  journalQuery = journalSearch.value;
+  journalVisibleCount = journalPageSize;
   renderBlogPage();
 });
 
-blogNextPage?.addEventListener("click", () => {
-  currentBlogPage += 1;
+journalSort?.addEventListener("change", () => {
+  journalVisibleCount = journalPageSize;
   renderBlogPage();
 });
 
-blogNextPageTop?.addEventListener("click", () => {
-  currentBlogPage += 1;
+journalLoadMore?.addEventListener("click", () => {
+  journalVisibleCount += journalPageSize;
   renderBlogPage();
 });
-
-const syncBlogPageSize = () => {
-  if (!blogGrid || !blogListItems.length || blogSlug) {
-    return;
-  }
-
-  const nextBlogsPerPage = getBlogsPerPage();
-
-  if (nextBlogsPerPage === currentBlogsPerPage) {
-    return;
-  }
-
-  globalThis.clearTimeout(blogResizeTimer);
-  blogResizeTimer = globalThis.setTimeout(() => {
-    renderBlogPage({ preserveFirstBlog: true });
-  }, 120);
-};
-
-if (blogGrid && "ResizeObserver" in globalThis) {
-  const blogGridObserver = new ResizeObserver(syncBlogPageSize);
-  blogGridObserver.observe(blogGrid);
-} else {
-  globalThis.addEventListener("resize", syncBlogPageSize);
-}
 
 const showBlogStatus = (message) => {
   if (!blogDetailStatus) {
@@ -571,11 +562,39 @@ const showBlogStatus = (message) => {
 };
 
 const setBlogLoading = (isLoading) => {
-  document.documentElement.classList.toggle(blogLoadingClass, isLoading);
-
-  if (blogLoaderOverlay) {
-    blogLoaderOverlay.hidden = !isLoading;
+  const root = document.documentElement;
+  if (isLoading) {
+    root.classList.remove("is-blog-ready");
+    root.classList.add(blogLoadingClass);
+    if (blogLoaderOverlay) blogLoaderOverlay.hidden = false;
+    return;
   }
+
+  // Commit the entire reading shell in one paint, never the TOC by itself.
+  root.classList.add("is-blog-ready");
+  root.classList.remove(blogLoadingClass);
+  if (blogLoaderOverlay) {
+    globalThis.setTimeout(() => {
+      if (!root.classList.contains(blogLoadingClass)) blogLoaderOverlay.hidden = true;
+    }, 260);
+  }
+};
+
+const prepareArticleFirstPaint = async () => {
+  const tasks = [];
+  // The article cover has a reserved frame; a short decode wait avoids a second
+  // content swap without holding visitors indefinitely on a slow CDN.
+  if (blogDetailCover && !blogDetailCover.hidden && blogDetailCover.getAttribute("src")) {
+    if (typeof blogDetailCover.decode === "function") {
+      tasks.push(blogDetailCover.decode().catch(() => {}));
+    }
+  }
+  if (document.fonts?.ready) tasks.push(document.fonts.ready.catch(() => {}));
+  await Promise.race([
+    Promise.all(tasks),
+    new Promise(resolve => globalThis.setTimeout(resolve, 450)),
+  ]);
+  await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
 };
 
 const slugifyHeading = (text) =>
@@ -754,6 +773,11 @@ const cleanBlogMedia = () => {
       return;
     }
 
+    const deferredSrc = image.getAttribute("data-src");
+    const currentSrc = image.getAttribute("src");
+    if (deferredSrc && /^https:\/\//i.test(deferredSrc) && (!currentSrc || /^data:/i.test(currentSrc))) {
+      image.src = deferredSrc;
+    }
     image.loading = "lazy";
     image.decoding = "async";
     image.removeAttribute("data-src");
@@ -864,7 +888,12 @@ const renderRelatedArticles = async (currentArticle) => {
     const { articles: blogs } = await fetchDevArticles();
     const currentTags = new Set((Array.isArray(currentArticle.tags) ? currentArticle.tags : []).map((tag) => String(tag).toLowerCase()));
     const related = blogs
-      .filter((blog) => blog.localSlug !== currentArticle.localSlug && blog.devSlug !== currentArticle.devSlug && blog.url !== currentArticle.url)
+      .filter((blog) => ![
+        ["id", blog.id, currentArticle.id],
+        ["localSlug", blog.localSlug, currentArticle.localSlug],
+        ["devSlug", blog.devSlug, currentArticle.devSlug],
+        ["url", blog.url, currentArticle.url],
+      ].some(([,left,right]) => left !== undefined && left !== null && right !== undefined && right !== null && String(left) === String(right)))
       .map((blog) => {
         const score = (Array.isArray(blog.tags) ? blog.tags : []).reduce((total, tag) => total + (currentTags.has(String(tag).toLowerCase()) ? 1 : 0), 0);
         return { ...blog, score };
@@ -873,22 +902,25 @@ const renderRelatedArticles = async (currentArticle) => {
       .slice(0, 4);
 
     if (!related.length) {
-      blogRelated.hidden = true;
+      blogRelatedList.innerHTML = "";
+      blogRelated.querySelector(".blog-related-editorial")?.setAttribute("hidden", "");
+      blogRelated.hidden = !blogToolsPanel || blogToolsPanel.hidden;
       return;
     }
 
     blogRelatedList.innerHTML = related
-      .map(
-        (blog) => `<a class="blog-related-card" href="${escapeHtml(blog.url)}">
-          <span>${escapeHtml(formatPublishedDate(blog.publishedAt).replace("Published: ", ""))}</span>
+      .map((blog, index) => `<a class="blog-related-card" href="${escapeHtml(blog.url)}">
+          <span class="related-card-meta"><span class="related-card-index">${String(index + 1).padStart(2, "0")} / FIELD NOTE</span><time datetime="${escapeHtml(blog.publishedAt || "")}">${escapeHtml(formatPublishedDate(blog.publishedAt).replace("Published: ", ""))}</time></span>
           <strong>${escapeHtml(blog.title)}</strong>
-        </a>`,
-      )
+          <span class="related-card-tail">READ STORY <span aria-hidden="true">↗</span></span>
+        </a>`)
       .join("");
+    blogRelated.querySelector(".blog-related-editorial")?.removeAttribute("hidden");
     blogRelated.hidden = false;
   } catch (error) {
     console.error("Unable to load related DEV articles:", error);
-    blogRelated.hidden = true;
+    blogRelated.querySelector(".blog-related-editorial")?.setAttribute("hidden", "");
+    blogRelated.hidden = !blogToolsPanel || blogToolsPanel.hidden;
   }
 };
 
@@ -901,18 +933,24 @@ const renderRelatedTools = (article) => {
   const tools = [
     {
       name: "JSON Formatter",
-      href: "/aruvix#json-formatter",
+      href: "https://www.aruvix.com/json-formatter",
       keywords: ["json", "api", "payload", "response"],
+      glyph: "{ }",
+      summary: "Format, validate and inspect JSON, locally.",
     },
     {
-      name: "API Tester",
-      href: "/aruvix#api-tester",
+      name: "API Client",
+      href: "https://www.aruvix.com/api-client",
       keywords: ["api", "postman", "http", "request", "endpoint"],
+      glyph: "→_",
+      summary: "Send requests and inspect API responses.",
     },
     {
-      name: "Curl Converter",
-      href: "/aruvix#curl-converter",
+      name: "cURL Import",
+      href: "https://www.aruvix.com/api-client",
       keywords: ["curl", "terminal", "http", "request"],
+      glyph: "$_",
+      summary: "Turn cURL commands into editable requests.",
     },
   ].filter((tool) => tool.keywords.some((keyword) => text.includes(keyword)));
 
@@ -923,14 +961,14 @@ const renderRelatedTools = (article) => {
   }
 
   blogToolList.innerHTML = tools
-    .map(
-      (tool) => `<a class="blog-tool-link" href="${escapeHtml(tool.href)}">
-        <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
-        <span>${escapeHtml(tool.name)}</span>
-      </a>`,
-    )
+    .map((tool) => `<a class="blog-tool-link" href="${escapeHtml(tool.href)}" target="_blank" rel="noopener noreferrer">
+        <span class="blog-tool-glyph" aria-hidden="true">${escapeHtml(tool.glyph)}</span>
+        <span class="blog-tool-content"><strong>${escapeHtml(tool.name)}</strong><small>${escapeHtml(tool.summary)}</small></span>
+        <span class="blog-tool-arrow" aria-hidden="true">↗</span>
+      </a>`)
     .join("");
   blogToolsPanel.hidden = false;
+  if (blogRelated) blogRelated.hidden = false;
 };
 
 blogDetailBody?.addEventListener("click", async (event) => {
@@ -974,6 +1012,42 @@ blogDetailBody?.addEventListener("click", async (event) => {
   }
 });
 
+// React to late and early image failures, including images from DEV.to HTML.
+const recoverFailedArticleImage = image => {
+  if (!image || image.dataset.imageRecovered === "1") return;
+  const backup = image.dataset.fallbackSrc;
+  if (backup && !image.dataset.backupTried && /^https:\/\//i.test(backup)) {
+    image.dataset.backupTried = "1";
+    image.src = backup;
+    return;
+  }
+  image.dataset.imageRecovered = "1";
+  if (image.id === "blog-detail-cover") {
+    image.hidden = true;
+    image.removeAttribute("src"); // Permanent editorial cover underneath.
+  } else if (image.closest(".blog-body")) {
+    const box = document.createElement("div");
+    box.className = "blog-media-unavailable";
+    box.setAttribute("role", "img");
+    box.setAttribute("aria-label", image.alt ? "Image unavailable: " + image.alt : "Article illustration unavailable");
+    box.innerHTML = '<span aria-hidden="true">{ /* IMAGE UNAVAILABLE */ }</span><small>The article text is still here.</small>';
+    image.replaceWith(box);
+  }
+};
+document.addEventListener("error", event => {
+  const node = event.target;
+  if (node instanceof HTMLImageElement && (node.id === "blog-detail-cover" || node.closest(".blog-body"))) {
+    recoverFailedArticleImage(node);
+  }
+}, true);
+const recoverArticleImages = () => {
+  document.querySelectorAll("#blog-detail-cover, .blog-body img").forEach(image => {
+    if (!image.hidden && image.complete && image.naturalWidth === 0 && image.getAttribute("src")) {
+      recoverFailedArticleImage(image);
+    }
+  });
+};
+
 const renderBlogDetail = async () => {
   if (!blogSlug || !blogDetail) {
     renderBlogList();
@@ -987,11 +1061,32 @@ const renderBlogDetail = async () => {
   }
 
   blogDetail.hidden = false;
+  setBlogLoading(true);
   const startTime = Date.now();
   const hasServerRenderedArticle = Boolean(blogDetailContent && !blogDetailContent.hidden && blogDetailBody?.textContent.trim());
 
-  setBlogLoading(true);
+  // SSR is already a complete page. Re-fetching and rewriting it was causing
+  // the title, cover, sidebar and content to jump after navigation.
+  if (hasServerRenderedArticle) {
+    cleanBlogMedia();
+    recoverArticleImages();
+    enhanceBlogTables();
+    enhanceBlogCodeBlocks();
+    buildBlogToc();
+    recoverArticleImages();
+    await prepareArticleFirstPaint();
+    setBlogLoading(false);
+    fetchFreshJson(`/api/blogs/${encodeURIComponent(blogSlug)}`)
+      .then(article => {
+        if (article && typeof article === "object") {
+          renderRelatedTools(article);
+          renderRelatedArticles(article);
+        }
+      }).catch(() => {});
+    return;
+  }
 
+  // Even SSR articles stay hidden behind the terminal until their layout is ready.
   if (!hasServerRenderedArticle) {
     showBlogStatus("Loading...");
   }
@@ -1016,7 +1111,9 @@ const renderBlogDetail = async () => {
     }
     blogDetailTags.innerHTML = tags.map((tag) => `<span>${escapeHtml(tag)}</span>`).join("");
 
-    if (article.coverImage) {
+    if (typeof article.coverImage === "string" && /^https:\/\//i.test(article.coverImage)) {
+      blogDetailCover.dataset.fallbackSrc = typeof article.coverImageFallback === "string" && /^https:\/\//i.test(article.coverImageFallback) ? article.coverImageFallback : "";
+      blogDetailCover.removeAttribute("data-backup-tried");
       blogDetailCover.src = article.coverImage;
       blogDetailCover.hidden = false;
     } else {
@@ -1040,6 +1137,7 @@ const renderBlogDetail = async () => {
     renderRelatedArticles(article);
     blogDetailStatus.hidden = true;
     blogDetailContent.hidden = false;
+    await prepareArticleFirstPaint();
     updateScrollProgress();
   } catch (error) {
     console.error("Unable to load DEV blog article:", error);
@@ -1047,9 +1145,9 @@ const renderBlogDetail = async () => {
       showBlogStatus("This article is temporarily unavailable.");
     }
   } finally {
-    const elapsedTime = Date.now() - startTime;
-    if (elapsedTime < 1000) {
-      await new Promise((resolve) => setTimeout(resolve, 1000 - elapsedTime));
+    if (!hasServerRenderedArticle) {
+      const elapsedTime = Date.now() - startTime;
+      if (elapsedTime < 250) await new Promise((resolve) => setTimeout(resolve, 250 - elapsedTime));
     }
     setBlogLoading(false);
   }
@@ -1141,13 +1239,16 @@ const copyArticleLink = async () => {
     const success = await writeClipboardText(window.location.href);
     if (!success) throw new Error("Clipboard write failed");
 
-    const originalIcon = blogCopyLinkBtn.innerHTML;
-    blogCopyLinkBtn.innerHTML = '<i class="fa-solid fa-check"></i>';
+    const icon = blogCopyLinkBtn.querySelector("i");
+    const label = blogCopyLinkBtn.querySelector("span");
+    if (icon) icon.className = "fa-solid fa-check";
+    if (label) label.textContent = "Copied";
     blogCopyLinkBtn.classList.add("is-copied");
     blogCopyLinkBtn.setAttribute("aria-label", "Link copied");
 
     setTimeout(() => {
-      blogCopyLinkBtn.innerHTML = originalIcon;
+      if (icon) icon.className = "fa-regular fa-copy";
+      if (label) label.textContent = "Copy link";
       blogCopyLinkBtn.classList.remove("is-copied");
       blogCopyLinkBtn.setAttribute("aria-label", "Copy article link");
     }, 1500);

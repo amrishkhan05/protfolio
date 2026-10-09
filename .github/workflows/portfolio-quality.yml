@@ -1,0 +1,52 @@
+name: Portfolio branch quality
+on:
+  push:
+    branches:
+      - feature/editorial-writing-experience
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check syntax and portfolio invariants
+        run: npm test
+
+  browser:
+    runs-on: ubuntu-latest
+    needs: quality
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Express and browser test dependencies
+        run: |
+          npm ci
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Start the local portfolio server
+        run: |
+          npm start > /tmp/portfolio-server.log 2>&1 &
+          for i in $(seq 1 30); do
+            curl --fail --silent http://127.0.0.1:3333/ > /dev/null && exit 0
+            sleep 1
+          done
+          cat /tmp/portfolio-server.log
+          exit 1
+      - name: Test home, mobile, themes, articles and downloads
+        run: node scripts/check-portfolio-browser.js
+      - name: Upload browser screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: portfolio-browser-screenshots
+          path: browser-artifacts/
+          if-no-files-found: ignore

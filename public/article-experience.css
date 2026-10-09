@@ -1,0 +1,405 @@
+/* Article covers + navigation: editorial fallbacks, stable layout, terminal loader. */
+html.is-blog-route #home-content{display:none!important}
+html.is-blog-route #blog-detail[hidden]{display:block!important}
+html.is-blog-route .blog-detail-shell{min-height:calc(100svh - 100px)}
+html.is-blog-route .blog-detail-layout{align-items:start}
+html.is-blog-route #blog-detail .blog-article{min-width:0}
+html.is-blog-route .blog-detail-content[hidden]{display:none!important}
+/* Reader overlay fades away only after article layout commits. */
+html.is-blog-route.is-blog-loading #blog-loader-overlay[hidden],
+html.is-opening-article #blog-loader-overlay[hidden]{display:grid!important}
+html.is-blog-route.is-blog-loading #blog-loader-overlay:not([hidden]),
+html.is-opening-article #blog-loader-overlay:not([hidden]){display:grid!important}
+html.is-blog-route #blog-detail-status:not([hidden]){min-height:220px}
+.journal-art{position:relative;isolation:isolate;overflow:hidden;aspect-ratio:16/9;background:#202d32!important}
+.journal-feature .journal-art{aspect-ratio:16/9;min-height:260px}
+.journal-art .journal-art-fallback{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;gap:18px;padding:clamp(19px,3vw,38px);background:radial-gradient(circle at 88% 20%,#486759,#233436 45%,#152126 95%);color:#d5f478;font-family:'DM Mono',monospace;pointer-events:none;z-index:0}
+.journal-art .cover-comment{font-size:11px;letter-spacing:.14em;color:#afc6b3}
+.journal-art .cover-glyph{align-self:center;font:600 clamp(48px,7vw,102px)/1 'Space Grotesk',system-ui,sans-serif;letter-spacing:-.08em}
+.journal-art .cover-signature{font-size:10px;letter-spacing:.055em;color:#abc1b5}
+.journal-art img{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:cover;z-index:1}
+html.is-blog-route .blog-cover-frame{position:relative;isolation:isolate;width:100%;aspect-ratio:16/9;max-height:480px;margin:0 0 clamp(26px,3vw,42px);border:1px solid var(--line-soft);border-radius:13px;overflow:hidden;background:#1b2a2e}
+html.is-blog-route .blog-cover-fallback{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(20px,5%,54px);background:radial-gradient(circle at 80% 15%,#3a5347,#18272c 68%);color:#d5f478;font-family:'DM Mono',monospace}
+html.is-blog-route .blog-cover-code{font-size:clamp(17px,2vw,27px);color:#90b1a0}
+html.is-blog-route .blog-cover-design{align-self:center;font:650 clamp(27px,5vw,62px)/1.05 'Space Grotesk',system-ui,sans-serif;letter-spacing:-.06em;text-align:center}
+html.is-blog-route .blog-cover-design-dot{color:#f1b1a0}
+html.is-blog-route .blog-cover-end{font-size:clamp(8px,1vw,12px);letter-spacing:.08em;color:#b9d0ba}
+html.is-blog-route .blog-cover-frame .blog-cover{position:absolute;inset:0;width:100%;height:100%;max-height:none;margin:0;object-fit:cover;border:0;border-radius:0;z-index:1}
+html.is-blog-route .blog-cover[hidden]{display:none!important}
+html.is-blog-route .blog-body img{display:block;max-width:100%;height:auto;margin-inline:auto;object-fit:contain}
+html.is-blog-route .blog-media-unavailable{width:100%;min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:11px;border:1px dashed var(--line);border-radius:12px;background:var(--surface-low);color:var(--muted);margin:22px 0;padding:25px 16px;text-align:center}
+html.is-blog-route .blog-media-unavailable>span{font:600 clamp(15px,2.6vw,22px) 'DM Mono',monospace}
+html.is-blog-route .blog-media-unavailable small{font:400 13px 'DM Sans',system-ui,sans-serif}
+#blog-loader-overlay{position:fixed;inset:0;width:100%;height:100dvh;display:none;place-items:center;padding:clamp(16px,4vw,38px);z-index:500;background:rgba(17,28,31,.97);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);color:#e8f4e6}
+#blog-loader-overlay[hidden]{display:none!important}
+html.is-opening-article #blog-loader-overlay[hidden],html.is-blog-route.is-blog-loading #blog-loader-overlay[hidden]{display:grid!important}
+#blog-loader-overlay .code-loader{width:min(480px,100%);border:1px solid #557368;border-radius:14px;background:#111e21;box-shadow:0 32px 100px #0007;overflow:hidden;font-family:'DM Mono',monospace}
+#blog-loader-overlay .code-loader-top{display:flex;align-items:center;gap:13px;padding:16px 20px;border-bottom:1px solid #304a44;color:#b1c7be;font-size:11px}
+#blog-loader-overlay .code-loader-lights{display:flex;gap:6px}
+#blog-loader-overlay .code-loader-lights i{display:block;width:9px;height:9px;border-radius:50%;background:#e9a491}
+#blog-loader-overlay .code-loader-lights i:nth-child(2){background:#e9cc92}
+#blog-loader-overlay .code-loader-lights i:nth-child(3){background:#9fd4a6}
+#blog-loader-overlay .code-loader-mode{margin-left:auto;color:#d5f478}
+#blog-loader-overlay .code-loader-main{display:flex;flex-direction:column;gap:17px;padding:32px clamp(20px,4vw,36px) 28px}
+#blog-loader-overlay .code-loader-prompt{font-size:clamp(16px,3vw,22px);color:#f0f6e9;white-space:nowrap}
+#blog-loader-overlay .code-loader-prompt>span:first-child{color:#d5f478;padding-right:9px}
+#blog-loader-overlay .code-loader-cursor{color:#d5f478;animation:code-cursor .75s steps(2,end) infinite}
+#blog-loader-overlay .code-loader-output{font-size:12px;line-height:1.5;color:#b8cec0}
+#blog-loader-overlay .code-loader-output>span{color:#d5f478;margin-right:12px}
+#blog-loader-overlay .code-loader-progress{width:100%;height:5px;background:#2d443c;overflow:hidden;border-radius:20px;margin-top:10px}
+#blog-loader-overlay .code-loader-progress span{display:block;width:40%;height:100%;border-radius:20px;background:linear-gradient(90deg,#85b5a2,#d5f478);animation:code-scan 1.4s ease-in-out infinite alternate}
+#blog-loader-overlay .code-loader-caption{font-size:10px;letter-spacing:.13em;color:#9fb8aa}
+#blog-loader-overlay .code-loader-dots{color:#d5f478}
+@keyframes code-scan{from{transform:translateX(-110%)}to{transform:translateX(280%)}}
+@keyframes code-cursor{50%{opacity:0}}
+@media(max-width:760px){
+ .journal-art .journal-art-fallback{padding:20px}
+ .journal-art .cover-glyph{font-size:clamp(40px,15vw,66px)}
+ html.is-blog-route .blog-cover-frame{max-height:none}
+ #blog-loader-overlay .code-loader-main{gap:14px;padding:24px 20px}
+ #blog-loader-overlay .code-loader-prompt{font-size:16px}
+}
+@media(prefers-reduced-motion:reduce){
+ #blog-loader-overlay .code-loader-progress span,#blog-loader-overlay .code-loader-cursor{animation:none}
+}
+
+
+/* Editorial cover banners are text-bearing images, not decorative photographs.
+   Keep their ENTIRE width visible at every breakpoint; never center-crop text. */
+#home-content .journal-grid .journal-art,
+#home-content .journal-feature .journal-art,
+#home-content .journal-art {
+  aspect-ratio: 1000 / 420;
+  min-height: 0;
+  height: auto;
+  overflow: hidden;
+  background: #162126 !important;
+}
+#home-content .journal-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center center;
+  background: #162126;
+}
+#home-content .journal-art:has(img) .journal-art-fallback {
+  visibility: hidden;
+}
+html.is-blog-route .blog-cover-frame {
+  aspect-ratio: 1000 / 420;
+  max-height: none;
+  min-height: 0;
+  overflow: hidden;
+  background: #162126;
+}
+html.is-blog-route .blog-cover-frame .blog-cover {
+  object-fit: contain;
+  object-position: center center;
+  background: #162126;
+}
+/* The featured card may stretch to the copy's height on desktop. Center its
+   entire image within that area instead of cropping the left and right edges. */
+#home-content .journal-feature .journal-card {
+  align-items: stretch;
+}
+#home-content .journal-feature .journal-art {
+  align-self: stretch;
+}
+@media (max-width: 760px) {
+  #home-content .journal-feature .journal-art,
+  #home-content .journal-grid .journal-art { min-height: 0; }
+}
+
+
+/* ATOMIC ARTICLE REVEAL
+   The article, its navigation, and the cover must become visible together.
+   Explicit hidden rules defeat the legacy .blog-toc{display:grid} declaration,
+   which previously made an uninitialized sidebar flash before the article. */
+html.is-blog-route #blog-toc[hidden],
+html.is-blog-route #blog-related[hidden],
+html.is-blog-route #blog-detail-status[hidden],
+html.is-blog-route #blog-tools-panel[hidden] { display:none!important; }
+html.is-blog-route:not(.is-blog-ready) .blog-detail-layout,
+html.is-blog-route:not(.is-blog-ready) .article-footer{
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
+html.is-blog-route.is-blog-loading body::before,
+html.is-blog-route.is-blog-loading body::after{display:none!important}
+html.is-blog-route.is-blog-loading,
+html.is-blog-route.is-blog-loading body{overflow:hidden}
+html.is-blog-route:not(.is-blog-ready) #blog-loader-overlay{
+  display:grid!important;opacity:1;visibility:visible;pointer-events:auto;
+}
+html.is-blog-route.is-blog-ready #blog-loader-overlay{
+  display:grid;opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .22s ease,visibility 0s linear .22s;
+}
+html.is-blog-route.is-blog-ready #blog-loader-overlay[hidden]{display:none!important}
+html.is-blog-route.is-blog-ready .blog-detail-layout{
+  visibility:visible;
+}
+/* Reserve featured and card dimensions while the DEV.to list is loading.
+   Replace placeholders in one synchronous DOM update, not section by section. */
+#home-content .journal-loading-feature{
+  display:grid;grid-template-columns:1.15fr 1fr;min-height:350px;
+  background:#152329;border:0;
+}
+#home-content .journal-loading-art{
+  min-height:340px;background:linear-gradient(135deg,#213b38 0%,#344b42 48%,#233535 100%);
+}
+#home-content .journal-loading-copy{
+  display:flex;flex-direction:column;gap:16px;justify-content:center;padding:38px;
+}
+#home-content .journal-loading-copy span,
+#home-content .journal-loading-lines i{
+  display:block;border-radius:4px;background:linear-gradient(100deg,#dbe4da 0%,#e9f0e6 48%,#dbe4da 100%);
+  background-size:200% 100%;animation:journal-placeholder-scan 1.6s ease-in-out infinite;
+}
+#home-content .journal-loading-copy span{height:15px;background-color:#50635b;opacity:.38}
+#home-content .journal-loading-copy span:nth-child(1){width:35%;height:11px}
+#home-content .journal-loading-copy span:nth-child(2){width:90%;height:30px}
+#home-content .journal-loading-copy span:nth-child(3){width:77%;height:30px}
+#home-content .journal-loading-copy span:nth-child(4){width:65%}
+#home-content .journal-loading-card{
+  min-width:0;min-height:385px;overflow:hidden;border:1px solid #cbd3c9;
+  border-radius:9px;background:#fff;
+}
+#home-content .journal-loading-image{aspect-ratio:1000/420;background:#dce3da}
+#home-content .journal-loading-lines{display:grid;gap:14px;padding:24px}
+#home-content .journal-loading-lines i{height:16px}
+#home-content .journal-loading-lines i:nth-child(1){width:38%;height:11px}
+#home-content .journal-loading-lines i:nth-child(2){width:95%;height:25px}
+#home-content .journal-loading-lines i:nth-child(3){width:68%}
+#home-content .journal-filters{min-height:61px}
+@keyframes journal-placeholder-scan{0%{background-position:200% 0}100%{background-position:-200% 0}}
+@media(max-width:760px){
+  #home-content .journal-loading-feature{grid-template-columns:minmax(0,1fr)}
+  #home-content .journal-loading-art{min-height:0;aspect-ratio:1000/420}
+  #home-content .journal-loading-copy{padding:24px;min-height:190px}
+  #home-content .journal-loading-card{min-height:350px}
+}
+@media(prefers-reduced-motion:reduce){
+  #home-content .journal-loading-copy span,
+  #home-content .journal-loading-lines i{animation:none}
+  html.is-blog-route.is-blog-ready #blog-loader-overlay{transition:none}
+}
+
+
+/* READER STUDIO | compact navigation rail and deliberate bottom-of-article
+   recommendations. All selectors are article scoped to avoid homepage leaks. */
+html.is-blog-route .blog-detail-layout{
+  grid-template-columns:minmax(168px,210px) minmax(0,1fr);
+  column-gap:clamp(28px,3.8vw,52px);
+}
+html.is-blog-route .blog-toc{
+  position:sticky;top:100px;max-height:calc(100svh - 120px);
+  overflow-y:auto;align-content:start;gap:18px;
+  scrollbar-width:thin;
+}
+html.is-blog-route .blog-reading-guide{
+  padding:20px 0 5px 15px;background:transparent;border:0;
+  border-left:1px solid #bfcfc2;border-radius:0;box-shadow:none;
+}
+html.is-blog-route .blog-sidebar-eyebrow{
+  display:block;margin-bottom:11px;
+  font:600 9px/1.4 'DM Mono',monospace;letter-spacing:.09em;
+  color:#568467;
+}
+html.is-blog-route .blog-reading-guide h2{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:6px;border:0;margin:0 0 13px;padding:0;
+  font:650 18px/1.2 'Space Grotesk',system-ui,sans-serif;
+  letter-spacing:-.04em;color:var(--text);
+}
+html.is-blog-route .blog-reading-guide h2 span{font-size:20px;color:#68956c}
+html.is-blog-route #blog-toc-list{display:flex;flex-direction:column;gap:2px}
+html.is-blog-route .blog-toc-link{
+  margin:0;padding:8px 8px 8px 12px;position:relative;
+  border-left:2px solid transparent;border-radius:0;
+  color:#627168;line-height:1.45;font-size:12px;font-weight:500;
+  overflow-wrap:anywhere;transition:border-color .15s ease,color .15s ease,background .15s ease;
+}
+html.is-blog-route .blog-toc-link.is-h3,
+html.is-blog-route .blog-toc-link.is-h4{padding-left:23px;font-size:11.5px}
+html.is-blog-route .blog-toc-link.is-active,
+html.is-blog-route .blog-toc-link:hover{
+  background:#e5ece3;color:#183d2a;border-left-color:#719855;
+  font-weight:650;
+}
+/* Share functionality is part of the reading guide, not another card. */
+html.is-blog-route .blog-share-inline{
+  margin-top:14px;padding:13px 0 0;
+  border-top:1px solid #cbd8ca;
+  display:flex;flex-direction:column;gap:7px;
+}
+html.is-blog-route .blog-share-caption{
+  display:block;color:#59725e;
+  font:650 9px/1.4 'DM Mono',monospace;letter-spacing:.07em;
+}
+html.is-blog-route .blog-share-actions{
+  display:flex;align-items:center;flex-wrap:wrap;gap:4px 17px;
+}
+html.is-blog-route .blog-share-actions button{
+  display:inline-flex;align-items:center;justify-content:flex-start;
+  flex:none;gap:7px;min-height:38px;
+  margin:0;padding:7px 0;
+  border:0;border-bottom:1px solid transparent;
+  border-radius:0;background:transparent;
+  color:#375a43;
+  font:650 12px/1.35 'DM Sans',system-ui,sans-serif;
+  white-space:nowrap;
+}
+html.is-blog-route .blog-share-actions button:hover{
+  background:transparent;color:#163921;border-bottom-color:#4f7c57;
+}
+html.is-blog-route .blog-share-actions button.is-copied{color:#266a42}
+html.is-blog-route .blog-share-actions button:focus-visible,
+html.is-blog-route .blog-related a:focus-visible{
+  outline:3px solid #719855;outline-offset:3px;
+}
+html.is-blog-route .blog-share-actions i{font-size:11px}
+html.is-blog-route .blog-related{
+  grid-column:2;margin-top:clamp(44px,6vw,74px);
+  display:flex;flex-direction:column;gap:clamp(34px,5vw,55px);
+  min-width:0;
+}
+html.is-blog-route .blog-related[hidden],
+html.is-blog-route .blog-tools-panel[hidden],
+html.is-blog-route .blog-related-editorial[hidden]{display:none!important}
+html.is-blog-route .blog-related .blog-sidebar-panel{
+  padding:0;border:0;background:transparent;box-shadow:none;
+}
+html.is-blog-route .blog-section-heading{
+  display:flex;align-items:end;justify-content:space-between;
+  gap:16px;margin:0 0 19px;padding-top:18px;border-top:1px solid #b6c5b8;
+}
+html.is-blog-route .blog-section-kicker{
+  display:block;margin-bottom:9px;font:600 10px/1.4 'DM Mono',monospace;
+  color:#577b63;letter-spacing:.045em;
+}
+html.is-blog-route .blog-section-heading h2{
+  display:block;padding:0;margin:0;border:0;
+  color:#193026;font:650 clamp(25px,3vw,35px)/1.1 'Space Grotesk',system-ui,sans-serif;
+  letter-spacing:-.055em;
+}
+html.is-blog-route .blog-section-heading h2 em{
+  font:italic 400 1.04em/1 Georgia,serif;letter-spacing:-.05em;
+}
+html.is-blog-route .blog-all-stories{
+  display:inline-flex;align-items:center;gap:11px;
+  padding:8px 0;border-bottom:1px solid #9aac9e;
+  color:#244835;font:650 11px/1.3 'DM Mono',monospace;
+  text-decoration:none;white-space:nowrap;
+}
+html.is-blog-route .blog-all-stories:hover{color:#41714c;border-bottom-color:#41714c}
+html.is-blog-route .blog-related-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+html.is-blog-route .blog-related-card{
+  display:flex;flex-direction:column;justify-content:flex-start;gap:12px;
+  min-height:191px;padding:22px;
+  background:#f6f7f0;border:1px solid #c9d5c9;
+  border-radius:8px;box-shadow:none;
+  text-decoration:none;transition:transform .18s ease,border-color .18s ease,background .18s ease;
+}
+html.is-blog-route .blog-related-card:hover{
+  transform:translateY(-3px);border-color:#69896e;background:#edf3e9;
+}
+html.is-blog-route .related-card-meta{
+  display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:8px;font:500 10px/1.4 'DM Mono',monospace;
+}
+html.is-blog-route .related-card-index{color:#557562;white-space:nowrap;font-size:9px}
+html.is-blog-route .related-card-meta time{color:#76867a;font-size:10px}
+html.is-blog-route .blog-related-card strong{
+  display:block;margin:0;flex:1;color:#20372b;
+  font:650 clamp(17px,1.6vw,21px)/1.24 'Space Grotesk',system-ui,sans-serif;
+  letter-spacing:-.035em;text-wrap:pretty;
+}
+html.is-blog-route .related-card-tail{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:10px;margin-top:auto;padding-top:12px;
+  border-top:1px solid #cdd9ca;color:#395f47;
+  font:650 10px/1.2 'DM Mono',monospace;letter-spacing:.035em;
+}
+html.is-blog-route .related-card-tail span{font-size:19px;line-height:1}
+html.is-blog-route .blog-tool-intro{margin:0 0 18px;color:#627367;font-size:13px;line-height:1.55}
+html.is-blog-route .blog-tool-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+html.is-blog-route .blog-tool-link{
+  display:flex;align-items:center;gap:13px;min-width:0;
+  margin:0;padding:18px 16px;border:1px solid #c7d6c8;border-radius:8px;
+  background:#edf1e8;color:#223d2d!important;text-decoration:none;
+  transition:border-color .18s ease,transform .18s ease,background .18s ease;
+}
+html.is-blog-route .blog-tool-link:hover{transform:translateY(-2px);border-color:#658975;background:#e1ebdf}
+html.is-blog-route .blog-tool-glyph{
+  display:grid;place-items:center;flex:0 0 43px;height:43px;
+  background:#1a3126;color:#d5f478;border-radius:6px;
+  font:650 15px/1 'DM Mono',monospace;letter-spacing:-.06em;
+}
+html.is-blog-route .blog-tool-content{display:flex;flex-direction:column;gap:5px;min-width:0}
+html.is-blog-route .blog-tool-content strong{
+  color:#203a2a;font:650 15px/1.2 'Space Grotesk',system-ui,sans-serif;
+}
+html.is-blog-route .blog-tool-content small{color:#5f7467;font:400 11px/1.35 'DM Sans',system-ui,sans-serif}
+html.is-blog-route .blog-tool-arrow{margin-left:auto;align-self:flex-start;color:#50745b;font-size:18px;line-height:1}
+@media(max-width:1000px){
+  html.is-blog-route .blog-detail-layout{grid-template-columns:minmax(0,1fr)}
+  html.is-blog-route .blog-toc{
+    grid-row:1;position:static;max-height:none;overflow:visible;gap:10px;
+  }
+  html.is-blog-route .blog-reading-guide{padding:12px 0 11px;border-left:0;border-bottom:1px solid #c0cec1}
+  html.is-blog-route .blog-reading-guide h2{font-size:16px;margin-bottom:8px}
+  html.is-blog-route #blog-toc-list{flex-direction:row;gap:7px;overflow-x:auto;overscroll-behavior-x:contain}
+  html.is-blog-route .blog-toc-link,
+  html.is-blog-route .blog-toc-link.is-h3,
+  html.is-blog-route .blog-toc-link.is-h4{
+    flex:0 0 auto;max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    padding:9px 12px;border:1px solid #bdccbe;border-radius:5px;
+    background:#f1f4eb;font-size:12px;
+  }
+  html.is-blog-route .blog-toc-link.is-active{border-color:#6e986b}
+  html.is-blog-route .blog-share-inline{margin-top:12px;padding-top:10px}
+  html.is-blog-route .blog-related{grid-column:1}
+}
+@media(max-width:640px){
+  html.is-blog-route .blog-related-grid,html.is-blog-route .blog-tool-grid{grid-template-columns:minmax(0,1fr)}
+  html.is-blog-route .blog-related-card{min-height:155px;padding:19px}
+  html.is-blog-route .blog-section-heading{align-items:start}
+  html.is-blog-route .blog-all-stories{font-size:10px}
+  html.is-blog-route .blog-reading-guide h2{font-size:15px}
+}
+@media(prefers-reduced-motion:reduce){
+  html.is-blog-route .blog-related-card,html.is-blog-route .blog-tool-link,
+  html.is-blog-route .blog-toc-link{transition:none}
+}
+
+
+/* SINGLE ARTICLE LOADER / stable geometry.
+   The old home-to-blog click overlay was removed. Once the destination page
+   loads, its fixed viewport overlay is the sole progress UI, with no resizing
+   across CSS states (loading, ready, fade-out). */
+#blog-loader-overlay,
+html.is-blog-route.is-blog-loading #blog-loader-overlay,
+html.is-blog-route.is-blog-ready #blog-loader-overlay{
+  position:fixed;
+  inset:0;
+  width:100vw;
+  height:100dvh;
+  box-sizing:border-box;
+  padding:clamp(16px,4vw,38px);
+  place-items:center;
+}
+#blog-loader-overlay .code-loader{
+  width:min(480px,100%);
+  min-width:0;
+  min-height:220px;
+  box-sizing:border-box;
+  margin:0;
+  flex:none;
+  transform:none;
+}
+/* Keep hidden attribute absolute when not on a loading article route.
+   There must not be a second homepage loader or smaller fallback. */
+html:not(.is-blog-route) #blog-loader-overlay[hidden]{
+  display:none!important;
+}

@@ -1,0 +1,98 @@
+name: Lighthouse SEO and Best Practices diagnostics
+on:
+  push:
+    branches: [feature/editorial-writing-experience]
+    paths:
+      - .github/workflows/lighthouse-diagnostics.yml
+      - public/**
+      - app.js
+      - api/**
+      - vercel.json
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install production server and Lighthouse
+        run: |
+          npm ci
+          npm install --no-save lighthouse@12.8.2
+          google-chrome --version || chromium --version
+      - name: Start local site
+        run: |
+          npm start > /tmp/lighthouse-portfolio-server.log 2>&1 &
+          for i in $(seq 1 40); do
+            if curl --fail --silent http://127.0.0.1:3333/ >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/lighthouse-portfolio-server.log
+          exit 1
+      - name: Run local and deployed Lighthouse
+        env:
+          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+        run: |
+          mkdir -p lighthouse-reports
+          # GitHub Actions secret is optional. If configured, Lighthouse can inspect
+          # protected Vercel previews without changing public access settings.
+          HEADER_FILE="$RUNNER_TEMP/lighthouse-vercel-headers.json"
+          if [ -n "${VERCEL_AUTOMATION_BYPASS_SECRET:-}" ]; then
+            node -e 'require("fs").writeFileSync(process.argv[1],JSON.stringify({"x-vercel-protection-bypass":process.env.VERCEL_AUTOMATION_BYPASS_SECRET}))' "$HEADER_FILE"
+            chmod 600 "$HEADER_FILE"
+          fi
+          for case in homepage-local aruvix-local homepage-preview homepage-production; do
+            case "$case" in
+              homepage-local) URL="http://127.0.0.1:3333/" ;;
+              aruvix-local) URL="http://127.0.0.1:3333/aruvix" ;;
+              homepage-preview) URL="https://protfolio-git-feature-editorial-w-d67f8c-amrishkhan05s-projects.vercel.app/" ;;
+              homepage-production) URL="https://www.amrishkhan.dev/" ;;
+            esac
+            echo "::group::Lighthouse $case $URL"
+            extra=()
+            if [ "$case" = "homepage-preview" ] && [ -s "$HEADER_FILE" ]; then
+              extra+=(--extra-headers="$HEADER_FILE")
+            fi
+            npx lighthouse "$URL" "${extra[@]}" \
+              --chrome-flags="--headless --no-sandbox --disable-dev-shm-usage" \
+              --only-categories=best-practices,seo \
+              --output=json --output-path="lighthouse-reports/$case.json" \
+              --quiet --max-wait-for-load=50000 || echo "AUDIT FAILED for $case"
+            node - "$case" <<'NODE'
+          const fs=require("fs");
+          const label=process.argv[2],p="lighthouse-reports/"+label+".json";
+          if(!fs.existsSync(p)){console.log(label,"NO_REPORT");process.exit(0)}
+          const r=JSON.parse(fs.readFileSync(p,"utf8"));
+          if(label==="homepage-preview"&&String(r.finalDisplayedUrl||"").startsWith("https://vercel.com/login")){
+             console.log("BLOCKED_BY_VERCEL_AUTH","Preview is protected. Login-page scores are not portfolio scores. Configure VERCEL_AUTOMATION_BYPASS_SECRET in GitHub Actions and Vercel.");
+           }
+          console.log("TARGET",label,"URL",r.finalDisplayedUrl,"Lighthouse",r.lighthouseVersion,
+             "scores",Object.fromEntries(Object.entries(r.categories).map(([k,v])=>[k,v.score*100])));
+          const ids=new Set(Object.values(r.categories).flatMap(c=>c.auditRefs.filter(a=>a.weight>0).map(a=>a.id)));
+          for(const id of ids){const a=r.audits[id];
+            if(a&&a.score!==null&&a.score<1){
+              console.log("FAIL",id,"score",a.score,"title",a.title,"details",a.displayValue||"");
+              for(const item of (a.details?.items||[]).slice(0,6)){
+                console.log("  ITEM",JSON.stringify(item).slice(0,750));
+              }
+            }
+          }
+          console.log("CONSOLE",r.audits["errors-in-console"]?.details?.items?.slice(0,10)||[]);
+          if(label.endsWith('-local')&&(r.categories['best-practices']?.score<1||r.categories.seo?.score<1)){
+            console.error('LOCAL_100_GATE_FAILED',label);process.exitCode=1;
+          }
+          NODE
+            echo "::endgroup::"
+          done
+      - name: Upload Lighthouse JSON reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-diagnostic-json
+          path: lighthouse-reports/*.json
+          if-no-files-found: warn
