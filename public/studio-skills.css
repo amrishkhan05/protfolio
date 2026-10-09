@@ -79,7 +79,8 @@
    screen beneath the collapsed fixed nav. At short heights, narrow widths,
    enlarged text or browser zoom, intrinsic height remains authoritative. */
 @media(min-width:1101px){
- #home-content #skills{scroll-margin-top:-28px}
+ /* Global scroll-padding already tracks the collapsed header. */
+ #home-content #skills{scroll-margin-top:0}
 }
 @media(min-width:1101px) and (min-height:820px){
  #home-content #skills{
