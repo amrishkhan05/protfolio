@@ -50,7 +50,9 @@ await page.locator('#journal-order').selectOption('newest');
 
 
 const contextBar=page.locator('#writing-context');
-assert.equal(await contextBar.isVisible(),false,'writing contextual bar stays hidden before entering Writing');
+await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
+await page.waitForTimeout(150);
+assert.equal(await contextBar.isVisible(),false,'writing contextual bar stays hidden at the top of the homepage');
 await page.evaluate(()=>{
  const writing=document.getElementById('writing');
  const barHeading=writing.querySelector('.journal-toolbar');
