@@ -96,3 +96,20 @@ html.is-blog-route #blog-detail[hidden]{display:block!important}
 html.is-blog-route:not(.is-blog-loading) body{background:var(--surface-base)}
 html.is-blog-route .blog-detail-shell{min-height:65vh}
 html.is-blog-route .blog-loader-overlay[hidden]{display:none!important}
+
+/* studio-visibility-guard: neutralise paused animations and conflicting legacy heading colors. */
+.redesign-main .reveal,body.is-aruvix-view .reveal{animation:none!important;animation-play-state:running!important;opacity:1!important;visibility:visible!important;transform:none!important}
+.hero .hero-copy h1,.hero .hero-copy h1 em{color:#f6f4ee}
+.hero .hero-copy h1 em{color:#d5f478}
+.redesign-main .intro-section .display-heading,.redesign-main .work-section .display-heading,.redesign-main .experience-section .display-heading,.redesign-main .thinking-section .display-heading{color:#11161d!important}
+.redesign-main .intro-section h3,.redesign-main .work-section h3,.redesign-main .experience-section h3,.redesign-main .thinking-section h3{color:#182520}
+.redesign-main .project-aruvix h3,.redesign-main .journal-feature h3{color:#f7f8ee!important}
+.redesign-main .contact-section h2,.redesign-main .contact-section h3{color:#11161d!important}
+[data-theme="dark"] .redesign-main .intro-section .display-heading,[data-theme="dark"] .redesign-main .work-section .display-heading,[data-theme="dark"] .redesign-main .experience-section .display-heading,[data-theme="dark"] .redesign-main .thinking-section .display-heading{color:#f4f6ec!important}
+[data-theme="dark"] .redesign-main .intro-section h3,[data-theme="dark"] .redesign-main .experience-section h3,[data-theme="dark"] .redesign-main .work-section h3,[data-theme="dark"] .redesign-main .thinking-section h3{color:#f4f6ec}
+[data-theme="dark"] .redesign-main .contact-section h2,[data-theme="dark"] .redesign-main .contact-section h3{color:#11161d!important}
+body.is-aruvix-view .case-study-shell .reveal{opacity:1!important}
+body.is-aruvix-view .hero-section h1,body.is-aruvix-view .case-study-shell h2,body.is-aruvix-view .case-study-shell h3{color:var(--text)!important}
+body.is-aruvix-view .hero-section p,body.is-aruvix-view .case-study-shell p{color:var(--muted)}
+[data-theme="dark"] body.is-aruvix-view .hero-section h1,[data-theme="dark"] body.is-aruvix-view .case-study-shell h2,[data-theme="dark"] body.is-aruvix-view .case-study-shell h3{color:#f0f5eb!important}
+[data-theme="dark"] body.is-aruvix-view .case-study-shell p{color:#d4e0d4}
