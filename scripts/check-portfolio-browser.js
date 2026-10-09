@@ -27,6 +27,54 @@ assert.ok((await page.evaluate(()=>document.documentElement.scrollWidth))<=1442,
 assert.equal(await page.locator('#approach-title').evaluate(el=>getComputedStyle(el).animationName),'none','desktop intro is not trapped in a paused animation');
 assert.equal(await page.locator('#work-title').evaluate(el=>getComputedStyle(el).animationName),'none','work headline is visible');
 assert.equal(await page.locator('#hero-heading').evaluate(el=>getComputedStyle(el).color),'rgb(246, 244, 238)','light-mode hero heading contrasts with dark hero');
+// Section-level regression: the legacy stylesheet must not constrain the studio layout.
+const sectionGeometry = await page.evaluate(() => {
+  const intro = document.querySelector('.intro-section');
+  const introCopy = document.querySelector('.intro-copy');
+  const experience = document.querySelector('#experience');
+  const heading = experience?.querySelector('.experience-heading');
+  const timeline = experience?.querySelector('.timeline');
+  const work = document.querySelector('.work-layout');
+  const contact = document.querySelector('.contact-section');
+  return {
+    introDisplay: getComputedStyle(intro).display,
+    introCopyWidth: introCopy.getBoundingClientRect().width,
+    introColumns: getComputedStyle(intro.querySelector('.intro-grid')).gridTemplateColumns.split(' ').length,
+    experiencePosition: getComputedStyle(heading).position,
+    timelineOverflow: getComputedStyle(timeline).overflowY,
+    workColumns: getComputedStyle(work).gridTemplateColumns.split(' ').length,
+    contactDisplay: getComputedStyle(contact).display,
+    contactWidth: Math.round(contact.getBoundingClientRect().width),
+    viewportWidth: innerWidth
+  };
+});
+assert.equal(sectionGeometry.introDisplay,'block','intro is a full-width section, not the legacy grid');
+assert.ok(sectionGeometry.introCopyWidth >= 220,'intro body copy has proper reading width');
+assert.equal(sectionGeometry.introColumns,2,'intro uses editorial two-column grid');
+assert.equal(sectionGeometry.experiencePosition,'sticky','experience heading stays pinned on desktop');
+assert.notEqual(sectionGeometry.timelineOverflow,'scroll','timeline uses natural page scrolling');
+assert.equal(sectionGeometry.workColumns,2,'work cards use two-column layout');
+assert.equal(sectionGeometry.contactDisplay,'block','contact is full-width rather than legacy grid');
+assert.ok(sectionGeometry.contactWidth >= sectionGeometry.viewportWidth - 2,'contact band is edge to edge');
+await page.evaluate(() => {
+  const section=document.getElementById('experience');
+  scrollTo({top:scrollY+section.getBoundingClientRect().top+180,behavior:'instant'});
+});
+await page.waitForTimeout(150);
+const beforeSticky=await page.evaluate(() => ({
+  heading:document.querySelector('.experience-heading').getBoundingClientRect().top,
+  row:document.querySelector('.timeline-row').getBoundingClientRect().top
+}));
+await page.evaluate(() => scrollBy({top:150,behavior:'instant'}));
+await page.waitForTimeout(150);
+const afterSticky=await page.evaluate(() => ({
+  heading:document.querySelector('.experience-heading').getBoundingClientRect().top,
+  row:document.querySelector('.timeline-row').getBoundingClientRect().top
+}));
+assert.ok(Math.abs(afterSticky.heading-beforeSticky.heading)<12,'heading stays pinned while scrolling through experience');
+assert.ok(beforeSticky.row-afterSticky.row>=120,'experience entries move while heading stays still');
+await page.evaluate(() => scrollTo({top:0,behavior:'instant'}));
+
 await page.screenshot({path:path.join(output,'desktop-light.png'),fullPage:true});
 await page.locator('#studio-theme-toggle').click();
 assert.equal(await page.evaluate(()=>document.documentElement.dataset.theme),'dark','theme toggle works');

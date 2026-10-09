@@ -612,7 +612,13 @@ const getBlogArticleForSeo = async (slug) => {
 };
 
 const renderBlogPage = async (article) => {
-  const indexHtml = await fs.readFile(path.join(__dirname, "public", "index.html"), "utf8");
+  // Keep the original long-form article reader styling without leaking legacy
+  // homepage grid/section rules into the redesigned portfolio.
+  const indexHtml = (await fs.readFile(path.join(__dirname, "public", "index.html"), "utf8"))
+    .replace(
+      '<link rel="stylesheet" href="/site-redesign.css?v=5" />',
+      '<link rel="stylesheet" href="/styles.css?v=4" />\\n  <link rel="stylesheet" href="/site-redesign.css?v=5" />',
+    );
   const canonicalPath = article.url;
   const description = article.description || `Read ${article.title} by Amrish Khan on amrishkhan.dev.`;
   const image = article.coverImage || siteImageUrl;

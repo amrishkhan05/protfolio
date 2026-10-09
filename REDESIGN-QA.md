@@ -3,6 +3,12 @@
 ## Scope
 The `feature/editorial-writing-experience` branch is a standalone Vercel preview. It does not require a pull request and does not update `main`. Existing Express APIs, DEV.to integration, sitemap, resume assets, `/blog/:slug` and `/aruvix` remain in place.
 
+## Root-cause fix: section-level layout and pinned experience heading
+- **Legacy CSS collision:** Removed `/styles.css` from the homepage. The original stylesheet defines incompatible `.intro-section`, `.section`, `.timeline`, and responsive `.contact-section` rules. The Express article renderer now loads it **only** on `/blog/:slug` server-rendered pages.
+- **Experience interaction:** Restored a real CSS `position: sticky` left column on desktop while timeline cards move with natural document scrolling; intentionally not a nested scroll pane. At tablet/mobile widths it returns to a readable single-column flow.
+- **Section audit:** Homepage hero, introduction, skills, projects, experience, writing, contact and footer now use only the Studio-specific layout system. Dedicated Aruvix and article pages keep their working legacy reader styles.
+- **Browser regressions:** Desktop tests assert introduction and work column counts, full-bleed contact, sticky heading vs moving timeline, and non-scroll-locked timeline.
+
 ## Design and navigation
 - [x] Branded fixed navigation with compact-on-scroll treatment and accessible mobile menu
 - [x] Clear AK wordmark and downloadable résumé link in header and contact section
