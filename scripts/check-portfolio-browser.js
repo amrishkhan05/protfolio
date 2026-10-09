@@ -24,6 +24,7 @@ const listImageFallback=await page.locator('#journal-feature .journal-art').eval
 assert.equal(listImageFallback.count,0,'broken original and backup covers are removed');
 assert.equal(listImageFallback.fallback,true,'cover fallback artwork stays visible');
 assert.ok(listImageFallback.height>=180,'cover image failure does not collapse the layout');
+await page.locator('#journal-feature .journal-art').screenshot({path:path.join(output,'journal-broken-cover-fallback.png')});
 
 assert.equal(await page.locator('#studio-theme-toggle').count(),1,'one theme toggle');
 assert.equal(await page.locator('#back-to-top').count(),1,'one back-to-top button');
@@ -252,6 +253,7 @@ assert.equal(loaderState.home,'none','article route never paints the home layout
 assert.equal(loaderState.loader,'grid','terminal loader visible while data fetch is pending');
 assert.ok(loaderState.shell>200,'article route maintains reserved layout space');
 assert.ok(await page.locator('.code-loader-prompt').isVisible(),'terminal progress UI is shown');
+await page.screenshot({path:path.join(output,'article-terminal-loading.png')});
 await page.locator('#blog-detail-body').getByText('Article finally loaded.').waitFor({timeout:8000});
 await page.waitForTimeout(300);
 assert.equal(await page.locator('#blog-loader-overlay').isVisible(),false,'terminal loader disappears when article is ready');
