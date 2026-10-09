@@ -17,7 +17,7 @@ def rgb(x):return RGBColor.from_string(x)
 normal=doc.styles["Normal"];normal.font.name="Carlito";normal.font.size=Pt(9.2);normal.font.color.rgb=rgb(DARK)
 normal.paragraph_format.space_after=Pt(0);normal.paragraph_format.line_spacing=1.12
 for name,size,color,bold,before,after in [
- ("Name",22,DARK,True,0,4),("Title",10.6,GREEN,True,0,4),
+ ("Name",22,DARK,True,0,4),("ResumeTitle",10.6,GREEN,True,0,4),
  ("SectionTitle",10.1,GREEN,True,11,4),("JobTitle",10,DARK,True,8,1),
  ("JobDate",8.6,MUTED,False,0,3),("BodyText",9.15,DARK,False,0,4),
  ("ContactLine",8.5,"4E6157",False,0,3)]:
@@ -44,7 +44,7 @@ def job(title,employer,dates,city,items):
  p(dates+"  •  "+city,"JobDate")
  for item in items:bullet(item)
 p("Amrishkhan Sheik Abdullah","Name")
-p("Technology Lead  |  Microservices & Backend Architect  |  Full-Stack Engineering","Title")
+p("Technology Lead  |  Microservices & Backend Architect  |  Full-Stack Engineering","ResumeTitle")
 p("Dubai, UAE  |  +971 52 588 6136  |  amrishkhan05@gmail.com","ContactLine")
 p("amrishkhan.dev  |  linkedin.com/in/amrishkhan  |  github.com/amrishkhan05","ContactLine")
 section("Professional profile")
