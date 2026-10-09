@@ -108,6 +108,42 @@ assert.equal(openSourceRow.gridLayout,'grid','open source card uses horizontal e
 assert.ok(openSourceRow.contentX>openSourceRow.visualX,'open source copy is alongside graphic');
 assert.ok(openSourceRow.visualWidth>250&&openSourceRow.contentWidth>250,'open source content is spacious');
 
+const packages=page.locator('#work .oss-package');
+assert.equal(await packages.count(),3,'published npm packages are visible');
+for(const [i,name] of ['%40amrishkhan05/frankly','%40amrishkhan05/hallpass','sql-select-query-generator'].entries()){
+  const item=packages.nth(i);
+  assert.ok((await item.getAttribute('href')).includes('npmjs.com/package/'+name),'each package has a direct npm URL');
+  assert.ok(await item.isVisible(),'each published package is visible');
+}
+async function checkVerticalRhythm(width,height) {
+ await page.setViewportSize({width,height});
+ await page.evaluate(()=>scrollTo({top:0,behavior:'instant'}));
+ const geometry=await page.evaluate(()=>{
+   const selectors=['#approach','#work','#experience','#writing','#contact'];
+   return {
+     viewport:innerWidth,scrollWidth:document.documentElement.scrollWidth,
+     hero:document.querySelector('.hero').getBoundingClientRect().height,
+     sections:selectors.map(sel=>{
+       const el=document.querySelector(sel),rect=el.getBoundingClientRect(),st=getComputedStyle(el);
+       return {id:sel,height:Math.round(rect.height),paddingTop:parseFloat(st.paddingTop),paddingBottom:parseFloat(st.paddingBottom),overflowY:st.overflowY,display:st.display};
+     })
+   };
+ });
+ assert.ok(geometry.scrollWidth<=geometry.viewport+2,'no sideways scroll at '+width+'×'+height);
+ for(const section of geometry.sections){
+  assert.ok(section.height>200,'content remains present in '+section.id);
+  assert.ok(section.paddingTop<=85&&section.paddingBottom<=85,'no oversized section-edge spacing in '+section.id+' at '+height+'px viewport');
+  assert.notEqual(section.overflowY,'scroll','sections use natural document scrolling: '+section.id);
+ }
+ if(width>=1100)assert.ok(geometry.hero<=height*1.4,'hero does not overwhelm shorter laptop screens');
+ return geometry;
+}
+const laptopRhythm=await checkVerticalRhythm(1280,720);
+assert.ok(laptopRhythm.sections.find(s=>s.id==='#work').paddingTop<=55,'work section begins promptly on short laptop viewport');
+await page.locator('#work').screenshot({path:path.join(output,'selected-work-laptop-packages.png')});
+await checkVerticalRhythm(1440,900);
+
+
 assert.equal(boarding.textColor,'rgb(246, 244, 238)','airline heading has sufficient contrast');
 await page.locator('#work').screenshot({path:path.join(output,'selected-work-desktop-light.png')});
 
@@ -157,6 +193,10 @@ const mobileTicket=await page.locator('#work .boarding-pass').evaluate(el=>({wid
 assert.ok(mobileTicket.width>=240&&mobileTicket.height>=140,'boarding pass remains legible on phones');
 assert.equal(mobileTicket.bg,'rgb(250, 249, 244)','mobile boarding pass uses ivory paper');
 assert.equal(await page.locator('#work .project-oss').evaluate(el=>getComputedStyle(el).display),'flex','open source returns to single-column mobile flow');
+const mobileRhythm=await checkVerticalRhythm(390,844);
+assert.ok(mobileRhythm.sections.every(s=>s.paddingTop<=60),'mobile sections do not have desktop-sized gaps');
+assert.equal(await page.locator('#work .oss-package').count(),3,'all published packages remain available on mobile');
+
 
 assert.ok(mobileTicket.barcode.includes('repeating-linear-gradient'),'mobile barcode is visible');
 await page.locator('#work').screenshot({path:path.join(output,'selected-work-mobile-dark.png')});
