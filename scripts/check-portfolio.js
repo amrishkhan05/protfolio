@@ -30,7 +30,8 @@ check('Aruvix rebuilt using the shared studio design without legacy CSS', aruvix
 check('Aruvix current products, privacy boundaries and desktop scope documented', aruvix.includes('API Client') && aruvix.includes('CSS Variables Extractor') && aruvix.includes('macOS and Windows') && aruvix.includes('Browser security rules'));
 check('No theme-toggle controls remain on homepage or Aruvix', !home.includes('studio-theme-toggle') && !aruvix.includes('studio-theme-toggle'));
 check('Shared stylesheet on all page types', home.includes('/site-polish.css') && aruvix.includes('/site-polish.css'));
-check('No persisted theme overrides the editorial palette', !common.includes('portfolio-theme') && !home.includes('portfolio-theme') && !aruvix.includes('portfolio-theme'));
+check('No persisted theme overrides the editorial palette', !common.includes('portfolio-theme') && !home.includes('portfolio-theme') && !aruvix.includes('portfolio-theme') && !read('public/script.js').includes('portfolio-theme'));
+check('Article reader uses refreshed theme-free script', home.includes('/script.js?v=5'));
 check('Resume PDF path exists', fs.existsSync(path.join(root, 'public/resume/pdf/Amrishkhan-Sheik-Abdullah-Resume.pdf')));
 check('Resume DOCX path exists', fs.existsSync(path.join(root, 'public/resume/doc/Amrishkhan-Sheik-Abdullah-Resume.docx')));
 check('Resume links in the UI', home.includes('/resume/pdf/Amrishkhan-Sheik-Abdullah-Resume.pdf') && home.includes('/resume/doc/Amrishkhan-Sheik-Abdullah-Resume.docx'));

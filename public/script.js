@@ -1,11 +1,7 @@
 /** @format */
 
-const themeToggles = Array.from(document.querySelectorAll(".theme-toggle"));
-const themeToggle = themeToggles[0] || null;
 const menuToggle = document.querySelector(".menu-toggle");
 const mobileMenu = document.getElementById("mobile-menu");
-const themeColorMeta = document.querySelector('meta[name="theme-color"]');
-const colorSchemeMeta = document.querySelector('meta[name="color-scheme"]');
 const viewCountNode = document.getElementById("portfolio-view-count");
 const ownerViewBadge = document.getElementById("owner-view-badge");
 const copyEmailBtn = document.getElementById("copy-email-btn");
@@ -38,9 +34,6 @@ const blogToolsPanel = document.getElementById("blog-tools-panel");
 const blogToolList = document.getElementById("blog-tool-list");
 const blogLoaderOverlay = document.getElementById("blog-loader-overlay");
 const ownerMaxViewsKey = "portfolio-owner-max-views";
-const themeStorageKey = "portfolio-theme";
-const lightThemeColor = "#f8f9ff";
-const darkThemeColor = "#111418";
 const kofiWidgetId = "L3L71XQ4TR";
 const kofiWidgetLabel = "Buy me a coffee on Ko-fi";
 const kofiWidgetColors = {
@@ -49,7 +42,6 @@ const kofiWidgetColors = {
 };
 let copyResetTimer;
 let activeHeadingObserver;
-const prefersDark = globalThis.matchMedia?.("(prefers-color-scheme: dark)")?.matches;
 const countFormatter = new Intl.NumberFormat("en-US");
 const searchParams = new URLSearchParams(globalThis.location.search);
 const blogSlug = globalThis.location.pathname.match(/^\/blog\/([^/]+)\/?$/)?.[1];
@@ -257,34 +249,6 @@ if (isOwnerViewEnabled && viewCountNode) {
   renderOwnerCount(knownValue);
 }
 
-const applyTheme = (theme) => {
-  const scheme = theme === "dark" ? "dark" : "only light";
-  document.documentElement.dataset.theme = theme;
-  document.documentElement.style.colorScheme = scheme;
-  const isDark = theme === "dark";
-  themeColorMeta?.setAttribute("content", isDark ? darkThemeColor : lightThemeColor);
-  colorSchemeMeta?.setAttribute("content", scheme);
-
-  themeToggles.forEach((toggle) => {
-    toggle.setAttribute("aria-pressed", String(isDark));
-    toggle.setAttribute("aria-label", isDark ? "Switch to light theme" : "Switch to dark theme");
-
-    const checkbox = toggle.querySelector("input[type='checkbox']");
-    if (checkbox) {
-      checkbox.checked = !isDark;
-    }
-
-    const icon = toggle.querySelector("i");
-    if (icon) {
-      icon.className = isDark ? "fa-solid fa-sun" : "fa-solid fa-moon";
-    }
-  });
-};
-
-const savedTheme = safeStorageGet(themeStorageKey);
-const initialTheme = savedTheme || (prefersDark ? "dark" : "light");
-applyTheme(initialTheme);
-
 const drawKofiWidget = () => {
   if (!globalThis.kofiwidget2) {
     return;
@@ -350,26 +314,6 @@ const copyEmailToClipboard = async () => {
 };
 
 copyEmailBtn?.addEventListener("click", copyEmailToClipboard);
-
-themeToggles.forEach((toggle) => {
-  const checkbox = toggle.querySelector("input[type='checkbox']");
-  if (checkbox) {
-    checkbox.addEventListener("change", (e) => {
-      e.stopPropagation();
-      const next = checkbox.checked ? "light" : "dark";
-      applyTheme(next);
-      safeStorageSet(themeStorageKey, next);
-    });
-  } else {
-    toggle.addEventListener("click", () => {
-      const current = document.documentElement.dataset.theme || "light";
-      const next = current === "dark" ? "light" : "dark";
-
-      applyTheme(next);
-      safeStorageSet(themeStorageKey, next);
-    });
-  }
-});
 
 const setMobileMenuOpen = (isOpen) => {
   if (!menuToggle || !mobileMenu) {
