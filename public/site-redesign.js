@@ -106,14 +106,9 @@ document.addEventListener('error', event => {
     img.remove(); // Reveal the reserved editorial fallback, never a broken icon.
   }
 },true);
-document.addEventListener('click',event=>{
-  const link=event.target.closest?.('a.journal-card[href^="/blog/"]');
-  if(!link||event.defaultPrevented||event.button!==0||event.metaKey||event.ctrlKey||event.altKey||event.shiftKey)return;
-  event.preventDefault();
-  const overlay=q('#blog-loader-overlay');
-  if(overlay){overlay.hidden=false;document.documentElement.classList.add('is-opening-article');}
-  requestAnimationFrame(()=>setTimeout(()=>{location.assign(link.href);},90));
-},true);
+// Use normal browser navigation for story links. The article document owns
+// exactly one loader until SSR content and reader enhancements are ready.
+// Do not launch a second terminal from the homepage before navigation.
 function filtered(){return articles.filter(a=>(tag==='All'||normalTags(a).some(t=>String(t).toLowerCase()===tag.toLowerCase()))&&(!term||(a.title+' '+a.description+' '+normalTags(a).join(' ')).toLowerCase().includes(term))).sort((a,b)=>(sort?.value==='oldest'?1:-1)*(new Date(a.publishedAt||0)-new Date(b.publishedAt||0)));}
 function render(){const list=filtered(),first=!term&&tag==='All'&&sort?.value!=='oldest'?list[0]:null;feature.innerHTML=first?card(first,true):'';const other=first?list.slice(1):list;grid.innerHTML=other.length?other.slice(0,visible).map(a=>card(a)).join(''):'<p class="journal-status">No matching stories. Try another topic or search.</p>';if(shown)shown.textContent=list.length?('Showing '+Math.min(visible+(first?1:0),list.length)+' of '+list.length+' stories'):'';if(more)more.hidden=other.length<=visible;if(counter)counter.textContent=articles.length+' stories from DEV.to';}
 function buildFilters(){const tags=[...new Set(articles.flatMap(normalTags).map(String).filter(Boolean))];const count=t=>articles.filter(a=>normalTags(a).some(s=>String(s).toLowerCase()===t.toLowerCase())).length;tags.sort((a,b)=>count(b)-count(a));const choices=['All',...tags.slice(0,8)];filters.innerHTML=choices.map(t=>'<button type="button" data-tag="'+escape(t)+'" aria-pressed="'+String(t===tag)+'">'+escape(t==='All'?'All stories':t)+'</button>').join('');}

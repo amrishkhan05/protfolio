@@ -586,6 +586,30 @@ await page.screenshot({path:path.join(output,'mobile-editorial.png'),fullPage:tr
 const pageSource=fs.readFileSync(path.join(__dirname,'..','public','index.html'),'utf8');
 // Mirror app.js renderBlogPage(), which injects the legacy article reader CSS
 // exclusively for server-rendered /blog/:slug pages.
+// Regression: navigating from Writing must NOT show a first, differently
+// sized terminal on the source page. Only the destination article has a loader.
+await page.goto(base+'/',{waitUntil:'domcontentloaded'});
+await page.locator('#journal-grid .journal-card').first().waitFor({state:'visible',timeout:20000});
+await page.route('**/blog/loader-navigation-fixture',async route=>{
+ await new Promise(resolve=>setTimeout(resolve,450));
+ await route.fulfill({status:200,contentType:'text/html',body:pageSource});
+});
+await page.locator('#journal-grid .journal-card').first().evaluate(link=>link.href=location.origin+'/blog/loader-navigation-fixture');
+await page.locator('#journal-grid .journal-card').first().click({noWaitAfter:true});
+await page.waitForTimeout(150);
+const sourceLoader=await page.evaluate(()=>({
+  pathname:location.pathname,
+  isOpening:document.documentElement.classList.contains('is-opening-article'),
+  overlayHidden:document.querySelector('#blog-loader-overlay')?.hidden
+}));
+assert.equal(sourceLoader.pathname,'/','source page remains visible during the delayed response');
+assert.equal(sourceLoader.isOpening,false,'source document never starts a duplicate article loader');
+assert.equal(sourceLoader.overlayHidden,true,'source page keeps terminal loader hidden');
+await page.waitForURL('**/blog/loader-navigation-fixture',{timeout:12000});
+await page.locator('#blog-detail').waitFor({state:'visible',timeout:12000});
+await page.waitForFunction(()=>document.documentElement.classList.contains('is-blog-ready'),{timeout:12000});
+assert.equal(await page.locator('#blog-loader-overlay').isVisible(),false,'destination reader hides its sole loader when ready');
+await page.unroute('**/blog/loader-navigation-fixture');
 const articleHtml=pageSource
  .replace('<link rel="stylesheet" href="/site-redesign.css?v=5" />', ['<link rel="stylesheet" href="/styles.css?v=4" />', '<link rel="stylesheet" href="/site-redesign.css?v=5" />'].join("\n"))
  .replace('<div class="blog-detail-content" id="blog-detail-content" hidden>','<div class="blog-detail-content" id="blog-detail-content">')
@@ -640,6 +664,18 @@ await page.goto(base+'/blog/slow-fixture',{waitUntil:'domcontentloaded'});
 const loaderState=await page.evaluate(()=>({home:getComputedStyle(document.querySelector('#home-content')).display,loader:getComputedStyle(document.querySelector('#blog-loader-overlay')).display,shell:document.querySelector('#blog-detail').getBoundingClientRect().height}));
 assert.equal(loaderState.home,'none','article route never paints the home layout');
 assert.equal(loaderState.loader,'grid','terminal loader visible while data fetch is pending');
+const loaderGeometry=await page.locator('#blog-loader-overlay').evaluate(el=>{
+ const surface=el.getBoundingClientRect();
+ const terminal=el.querySelector('.code-loader').getBoundingClientRect();
+ return {surfaceWidth:surface.width,surfaceHeight:surface.height,
+         width:terminal.width,height:terminal.height,
+         top:terminal.top,viewportWidth:innerWidth,viewportHeight:innerHeight};
+});
+assert.ok(Math.abs(loaderGeometry.surfaceHeight-loaderGeometry.viewportHeight)<3,
+  'only article loader covers whole viewport');
+assert.ok(loaderGeometry.width>=380&&loaderGeometry.width<=480,
+  'destination terminal keeps stable desktop width, not a small spinner');
+
 const atomicPending=await page.evaluate(()=>({
   ready:document.documentElement.classList.contains('is-blog-ready'),
   sidebar:getComputedStyle(document.querySelector('#blog-toc')).display,

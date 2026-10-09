@@ -372,3 +372,34 @@ html.is-blog-route .blog-tool-arrow{margin-left:auto;align-self:flex-start;color
   html.is-blog-route .blog-related-card,html.is-blog-route .blog-tool-link,
   html.is-blog-route .blog-toc-link{transition:none}
 }
+
+
+/* SINGLE ARTICLE LOADER / stable geometry.
+   The old home-to-blog click overlay was removed. Once the destination page
+   loads, its fixed viewport overlay is the sole progress UI, with no resizing
+   across CSS states (loading, ready, fade-out). */
+#blog-loader-overlay,
+html.is-blog-route.is-blog-loading #blog-loader-overlay,
+html.is-blog-route.is-blog-ready #blog-loader-overlay{
+  position:fixed;
+  inset:0;
+  width:100vw;
+  height:100dvh;
+  box-sizing:border-box;
+  padding:clamp(16px,4vw,38px);
+  place-items:center;
+}
+#blog-loader-overlay .code-loader{
+  width:min(480px,100%);
+  min-width:0;
+  min-height:220px;
+  box-sizing:border-box;
+  margin:0;
+  flex:none;
+  transform:none;
+}
+/* Keep hidden attribute absolute when not on a loading article route.
+   There must not be a second homepage loader or smaller fallback. */
+html:not(.is-blog-route) #blog-loader-overlay[hidden]{
+  display:none!important;
+}
