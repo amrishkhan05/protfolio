@@ -877,7 +877,7 @@ app.get("/api/blogs/:slug", async (req, res) => {
       throw new Error("DEV article was not found.");
     }
 
-    res.json(article);
+    res.json({ ...article, bodyHtml: sanitizeDevArticleHtml(article.bodyHtml) });
   } catch (error) {
     console.error(`Could not read DEV article ${req.params.slug}:`, error);
     res.status(503).json({

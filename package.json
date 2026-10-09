@@ -8,7 +8,8 @@
     "postbuild": "node scripts/generate-sitemap.js",
     "devto:canonicals": "node scripts/list-dev-canonical-urls.js",
     "start": "node app.js",
-    "dev": "nodemon app.js"
+    "dev": "nodemon app.js",
+    "test": "node --check app.js && node --check public/script.js && node --check public/site-redesign.js && node --check public/site-polish.js && node scripts/check-portfolio.js"
   },
   "dependencies": {
     "dotenv": "^17.4.2",

@@ -6,7 +6,7 @@ if (/^\/blog\//.test(location.pathname)) return;
 const q=(x)=>document.querySelector(x),qa=(x)=>Array.from(document.querySelectorAll(x));
 const nav=q('#primary-nav'),toggle=q('#menu-toggle'),header=q('.site-header'),top=q('#back-to-top'),progress=q('#reading-progress');
 const escape=(v)=>String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-toggle?.addEventListener('click',()=>{const open=toggle.getAttribute('aria-expanded')==='true';toggle.setAttribute('aria-expanded',String(!open));nav?.classList.toggle('open',!open);});
+toggle?.addEventListener('click',()=>{const open=toggle.getAttribute('aria-expanded')==='true';toggle.setAttribute('aria-expanded',String(!open));toggle.setAttribute('aria-label',open?'Open navigation':'Close navigation');nav?.classList.toggle('open',!open);});
 qa('#primary-nav a').forEach(a=>a.addEventListener('click',()=>{nav?.classList.remove('open');toggle?.setAttribute('aria-expanded','false');}));
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){nav?.classList.remove('open');toggle?.setAttribute('aria-expanded','false');}});
 function updateScroll(){const y=scrollY,max=document.documentElement.scrollHeight-innerHeight;header?.classList.toggle('is-scrolled',y>25);top?.classList.toggle('is-visible',y>490);if(progress)progress.style.width=(max>0?Math.min(100,y/max*100):0)+'%';}
