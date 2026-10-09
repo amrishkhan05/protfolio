@@ -233,6 +233,20 @@ assert.ok(sectionGeometry.introCopyWidth >= 220,'intro body copy has proper read
 assert.equal(sectionGeometry.introColumns,2,'intro uses editorial two-column grid');
 assert.equal(sectionGeometry.experiencePosition,'sticky','experience heading stays pinned on desktop');
 assert.notEqual(sectionGeometry.timelineOverflow,'scroll','timeline uses natural page scrolling');
+assert.equal(await page.locator('#experience .timeline-row').count(),4,'four detailed employment chapters');
+assert.equal(await page.locator('#experience .timeline-points li').count(),16,'detailed experience restored from the original portfolio and résumé');
+assert.equal(await page.locator('#experience .experience-credential').count(),2,'education and certifications restored');
+const spacing=await page.locator('#experience .timeline').evaluate(el=>{
+ const rows=[...el.querySelectorAll('.timeline-row')].map(node=>node.getBoundingClientRect());
+ const bullets=[...el.querySelectorAll('.timeline-points li')].map(node=>node.getBoundingClientRect());
+ return {rowGaps:rows.slice(1).map((r,i)=>r.top-rows[i].bottom),bulletCount:bullets.length,overlap:bullets.some(b=>b.height<15),
+   widths:rows.map(r=>r.width),scrollHeight:el.scrollHeight,clientHeight:el.clientHeight};
+});
+assert.ok(spacing.rowGaps.every(g=>g>=20&&g<=55),'timeline chapters have a consistent readable rhythm: '+JSON.stringify(spacing));
+assert.equal(spacing.overlap,false,'experience details remain legible');
+assert.ok(spacing.scrollHeight<=spacing.clientHeight+3,'timeline is not independently scrollable');
+await page.locator('#experience').screenshot({path:path.join(output,'experience-detailed-desktop.png')});
+
 assert.equal(sectionGeometry.workColumns,2,'work cards use two-column layout');
 assert.equal(await page.locator('.project-aruvix').evaluate(el=>getComputedStyle(el).backgroundColor),'rgb(213, 244, 120)','flagship matches lime prototype treatment');
 assert.equal(await page.locator('.project-aruvix h3').evaluate(el=>getComputedStyle(el).color),'rgb(17, 22, 29)','flagship heading contrasts against lime');
@@ -441,6 +455,14 @@ assert.ok(mobileBoard.result>=100,'hero result text remains readable on mobile')
 await page.locator('.hero-switchboard').screenshot({path:path.join(output,'hero-switchboard-mobile.png')});
 
 assert.equal(await page.locator('#writing-context').isVisible(),false,'secondary bar never crowds the mobile viewport');
+const mobileExperience=await page.locator('#experience').evaluate(el=>({
+  width:el.getBoundingClientRect().width,viewport:innerWidth,
+  timelineScroll:getComputedStyle(el.querySelector('.timeline')).overflowY,
+  dates:[...el.querySelectorAll('.timeline-date')].map(date=>date.getBoundingClientRect().width)
+}));
+assert.ok(mobileExperience.width<=mobileExperience.viewport+2,'experience fits mobile width');
+assert.notEqual(mobileExperience.timelineScroll,'scroll','experience continues with natural mobile scrolling');
+await page.locator('#experience').screenshot({path:path.join(output,'experience-detailed-mobile.png')});
 const mobileSkills=await page.locator('#skills .skills-studio').evaluate(el=>{
  const panel=el.querySelector('.skills-studio-intro').getBoundingClientRect();
  const ledger=el.querySelector('.skills-categories').getBoundingClientRect();
