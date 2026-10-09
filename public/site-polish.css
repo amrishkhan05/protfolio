@@ -360,3 +360,139 @@ body.is-aruvix-view .hero-section p,body.is-aruvix-view .case-study-shell p{colo
  #home-content #work .project-aruvix{min-height:445px}
 }
 @media(prefers-reduced-motion:reduce){#work .oss-package{transition:none}}
+
+
+/* OSS COMPACT PANEL · three published packages without an oversized illustration */
+#work .project-oss {
+  display:block;
+  grid-column:1/-1;
+  min-height:0 !important;
+  height:auto;
+  background:#e2e7f1 !important;
+  color:#1f292c !important;
+  border-color:#cfd9e8 !important;
+}
+#work .project-oss .project-upper {
+  display:flex;
+  padding:19px clamp(20px,2.6vw,30px) 7px;
+  color:#536874;
+  align-items:center;
+  grid-column:auto;
+  grid-row:auto;
+}
+#work .oss-compact-body {
+  display:grid;
+  grid-template-columns:minmax(210px,.27fr) minmax(0,.73fr);
+  align-items:stretch;
+  gap:clamp(15px,2vw,28px);
+  padding:13px clamp(20px,2.6vw,30px) 25px;
+  min-width:0;
+}
+#work .oss-compact-intro {
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  min-width:0;
+  padding:2px 0;
+}
+#work .oss-compact-label {
+  color:#627886;
+  font:600 10px/1.4 var(--mono);
+  letter-spacing:.08em;
+}
+#work .oss-compact-intro h3,
+[data-theme="dark"] #work .oss-compact-intro h3 {
+  margin:8px 0 9px;
+  font:650 clamp(29px,2.6vw,42px)/1.06 var(--display);
+  letter-spacing:-.065em;
+  color:#1f292c !important;
+}
+#work .oss-compact-intro h3 span{color:#829a66}
+#work .oss-compact-intro p{
+  max-width:240px;
+  margin:0 0 9px;
+  color:#5c6970;
+  font:400 13px/1.55 var(--sans);
+}
+#work .oss-compact-repos{
+  display:inline-flex;
+  align-items:center;
+  gap:13px;
+  margin-top:auto;
+  padding:4px 0;
+  border-bottom:1px solid #667c8b;
+  color:#273d4b;
+  font:700 12px var(--sans);
+}
+#work .oss-compact-repos:hover{color:#11161d}
+#work .oss-compact-repos:focus-visible{outline:3px solid #334f80;outline-offset:4px}
+#work .oss-package-list{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  align-items:stretch;
+  gap:10px;
+  margin:0;
+  min-width:0;
+}
+#work .oss-package{
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  justify-content:flex-start;
+  gap:0;
+  min-width:0;
+  min-height:161px;
+  border-radius:9px;
+  padding:16px 15px 14px;
+  background:#fcfdfb;
+  border:1px solid #bfced6;
+  box-shadow:0 2px 8px #27384d08;
+}
+#work .oss-package:hover{background:#fff;border-color:#627f92;transform:translateY(-2px);box-shadow:0 9px 20px #34485d16}
+#work .oss-package-index{margin:0 0 14px;align-self:auto;color:#7d909b;font-size:10px;line-height:1.4}
+#work .oss-package-info{gap:3px;width:100%;min-width:0}
+#work .oss-package-info strong{font-size:16px;line-height:1.22;color:#152832 !important}
+#work .oss-package-info small{font-size:10px;line-height:1.35;color:#60727e;overflow-wrap:anywhere}
+#work .oss-package-info>span{
+  margin-top:8px;
+  font-size:12px;
+  line-height:1.45;
+  color:#51636e;
+}
+#work .oss-package-arrow{position:absolute;right:13px;top:12px;color:#3a576c;font-size:18px}
+@media(max-width:1040px){
+  #work .oss-compact-body{grid-template-columns:minmax(0,1fr);gap:18px}
+  #work .oss-compact-intro{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:3px 18px}
+  #work .oss-compact-label{grid-column:1/-1}
+  #work .oss-compact-intro h3{font-size:32px;margin:0}
+  #work .oss-compact-intro h3 br{display:none}
+  #work .oss-compact-intro p{grid-column:1;margin:0;max-width:none}
+  #work .oss-compact-repos{grid-column:2;grid-row:2/4;white-space:nowrap;align-self:end}
+  #work .oss-package{min-height:140px}
+}
+@media(max-width:760px){
+  #work .project-oss .project-upper{padding:17px 19px 7px;gap:8px}
+  #work .oss-compact-body{padding:12px 19px 20px;gap:16px}
+  #work .oss-compact-intro{display:flex;gap:0;align-items:flex-start}
+  #work .oss-compact-intro h3{font-size:32px;margin:7px 0}
+  #work .oss-compact-intro p{font-size:12px;max-width:none}
+  #work .oss-compact-repos{margin-top:5px}
+  #work .oss-package-list{grid-template-columns:minmax(0,1fr);gap:8px}
+  #work .oss-package{
+    display:grid;
+    grid-template-columns:22px minmax(0,1fr) 19px;
+    align-items:center;
+    min-height:0;
+    gap:9px;
+    padding:11px 13px;
+  }
+  #work .oss-package-index{margin:0;align-self:start;padding-top:4px;font-size:10px}
+  #work .oss-package-info{gap:1px}
+  #work .oss-package-info strong{font-size:15px}
+  #work .oss-package-info>span{margin-top:3px;font-size:11px}
+  #work .oss-package-arrow{position:static;align-self:start;font-size:16px}
+}
+@media(max-width:390px){
+  #work .project-oss .project-kicker{font-size:9px;letter-spacing:0}
+}

@@ -29,6 +29,7 @@ check('Resume PDF path exists', fs.existsSync(path.join(root, 'public/resume/pdf
 check('Resume DOCX path exists', fs.existsSync(path.join(root, 'public/resume/doc/Amrishkhan-Sheik-Abdullah-Resume.docx')));
 check('Resume links in the UI', home.includes('/resume/pdf/Amrishkhan-Sheik-Abdullah-Resume.pdf') && home.includes('/resume/doc/Amrishkhan-Sheik-Abdullah-Resume.docx'));
 check('Selected Work ticket artwork and original Aruvix branding', home.includes('class="boarding-pass"') && !home.includes('class="project-star"') && polish.includes('SELECTED WORK · Restore prototype visual fidelity') && polish.includes('#work .bar-code'));
+check('Compact open-source package panel without oversized illustration', home.includes('oss-compact-body') && !/<div class="oss-visual"/.test(home) && polish.includes('OSS COMPACT PANEL') && home.includes('site-polish.css?v=6'));
 check('Three published npm packages linked inside selected work', ['%40amrishkhan05/frankly','%40amrishkhan05/hallpass','sql-select-query-generator'].every(name=>home.includes('https://www.npmjs.com/package/'+name)) && (home.match(/class="oss-package"/g)||[]).length===3);
 check('Viewport-aware section spacing instead of fixed 110px bands', polish.includes('2026 viewport rhythm pass') && polish.includes('--section-y:clamp(42px,6vh,80px)') && polish.includes('#home-content>.section{padding-top:var(--section-y)'));
 check('Homepage section navigation and writing feed', home.includes('id="writing"') && home.includes('id="work"') && homeScript.includes('/api/blogs'));
