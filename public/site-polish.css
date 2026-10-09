@@ -599,3 +599,34 @@ body.is-aruvix-view .hero-section p,body.is-aruvix-view .case-study-shell p{colo
 #home-content #journal-more:focus-visible,
 #home-content #work .project-action:focus-visible,
 .site-header .header-cta:focus-visible{outline:3px solid #396c52;outline-offset:3px}
+
+
+/* Product case study + external launch are distinct actions.
+   Keep the internal case-study link prominent while preserving the
+   readable ink-on-lime primary hover palette. */
+#home-content #work .aruvix-action-row{
+  display:flex;align-items:center;flex-wrap:wrap;gap:12px 20px;margin-top:25px
+}
+#home-content #work .aruvix-action-row .project-action{
+  margin-top:0;flex:0 0 auto
+}
+#home-content #work .aruvix-visit-link{
+  display:inline-flex;align-items:center;gap:13px;min-height:46px;
+  padding:10px 0;color:#14271d;font-size:13px;font-weight:750;
+  line-height:1.5;text-decoration:none;border-bottom:1px solid #3d674b;
+  transition:color .2s ease,border-color .2s ease
+}
+#home-content #work .aruvix-visit-link:hover{
+  color:#235640;border-color:#235640
+}
+#home-content #work .aruvix-visit-link:focus-visible{
+  outline:3px solid #14271d;outline-offset:3px
+}
+#home-content #work .aruvix-visit-link span{color:inherit}
+@media(max-width:760px){
+  #home-content #work .aruvix-action-row{gap:8px 17px;margin-top:19px}
+  #home-content #work .aruvix-visit-link{min-height:44px}
+}
+@media(prefers-reduced-motion:reduce){
+  #home-content #work .aruvix-visit-link{transition:none}
+}

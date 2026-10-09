@@ -414,6 +414,15 @@ assert.ok(await page.locator('#skills .skills-group').first().isVisible(),'skill
 await page.locator('#skills').screenshot({path:path.join(output,'skills-desktop-editorial.png')});
 
 await page.screenshot({path:path.join(output,'desktop-editorial.png'),fullPage:true});
+const aruvixLink=page.locator('#work .project-aruvix .project-action[href="/aruvix"]');
+assert.equal(await aruvixLink.count(),1,'Aruvix has a dedicated Learn more case-study link');
+assert.equal(await page.locator('#work .aruvix-visit-link').count(),1,'Aruvix has a separate product launch link');
+assert.equal(await page.locator('#work .aruvix-visit-link').getAttribute('target'),'_blank','product launch opens separately');
+assert.equal(await page.locator('#work .aruvix-visit-link').getAttribute('href'),'https://www.aruvix.com/','product launch reaches Aruvix');
+await aruvixLink.click();
+await page.waitForURL('**/aruvix');
+assert.ok(await page.locator('.aru-hero h1').isVisible(),'Learn more opens Aruvix case study, not external product');
+assert.equal(await page.locator('.aru-text-link[href="/#work"]').count(),1,'Aruvix case study returns to selected work');
 await page.goto(base+'/aruvix',{waitUntil:'domcontentloaded'});
 assert.equal(await page.evaluate(()=>document.documentElement.dataset.theme),'light','Aruvix uses the same single theme');
 assert.ok(await page.locator('#case-study').isVisible(),'Aruvix content visible');
