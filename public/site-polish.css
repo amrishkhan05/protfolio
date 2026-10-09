@@ -558,3 +558,44 @@ body.is-aruvix-view .hero-section p,body.is-aruvix-view .case-study-shell p{colo
 #home-content #contact .footer-social{
   padding-inline-end:clamp(70px,5.5vw,88px);
 }
+
+
+/* ONE EDITORIAL THEME: consistent charcoal, paper and lime surfaces.
+   Every lime hover state must have dark foreground and matching icon text. */
+:root[data-theme="light"]{color-scheme:light}
+#home-content #journal-more:hover,
+#home-content .journal-footer button:hover,
+#home-content .journal-status button:hover,
+#home-content #work .project-action:hover,
+#home-content .filter-tab.active:hover,
+#home-content .journal-filters button[aria-pressed="true"]:hover,
+#home-content .journal-filters button:hover,
+.site-header .header-cta:hover {
+  background:#d5f478;
+  border-color:#d5f478;
+  color:#11161d;
+}
+#home-content #journal-more:hover *,
+#home-content .journal-footer button:hover *,
+#home-content #work .project-action:hover *,
+.site-header .header-cta:hover * {
+  color:inherit;
+}
+#home-content #work .project-action:hover{box-shadow:0 6px 18px #10151d20}
+#home-content .filter-tab:hover:not(.active){background:#11161d;color:#f6f4ee;border-color:#11161d}
+#home-content .filter-tab.active:hover{background:#d5f478;color:#11161d}
+/* Fixed dark controls retain dark backgrounds when not hovered. */
+#home-content #journal-more,
+#home-content .journal-footer button,
+#home-content .journal-status button{color:#f6f4ee}
+#home-content .journal-filters button[aria-pressed="true"]{color:#f6f4ee}
+/* The résumé's lime background always uses ink-colored text. */
+.site-header .studio-resume-link,
+.site-header .studio-resume-link:hover,
+#home-content .hero .btn-lime,
+#home-content .hero .btn-lime:hover{color:#11161d}
+#home-content .hero .btn-lime:hover{background:#e8ffb3}
+/* Hover and keyboard focus should produce equivalent readable emphasis. */
+#home-content #journal-more:focus-visible,
+#home-content #work .project-action:focus-visible,
+.site-header .header-cta:focus-visible{outline:3px solid #396c52;outline-offset:3px}

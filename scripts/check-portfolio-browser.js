@@ -37,11 +37,7 @@ assert.ok(contextGeo.height>=40&&contextGeo.height<=52,'context bar is a compact
 console.log('WRITING CONTEXT GEOMETRY',JSON.stringify(contextGeo));
 assert.ok(Math.abs(contextGeo.top-contextGeo.headerBottom)<4,'context bar sits beneath fixed navigation, without overlap');
 assert.equal((await page.locator('#writing-context-count').innerText()).trim(),'9 stories','contextual count follows API response');
-const contextLightColor=await contextBar.evaluate(el=>getComputedStyle(el).color);
-await page.evaluate(()=>document.documentElement.dataset.theme='dark');
-const contextDarkColor=await contextBar.evaluate(el=>getComputedStyle(el).color);
-assert.notEqual(contextDarkColor,contextLightColor,'context strip follows the portfolio dark theme');
-await page.evaluate(()=>document.documentElement.dataset.theme='light');
+assert.equal(await page.evaluate(()=>document.documentElement.dataset.theme),'light','writing context uses the fixed editorial palette');
 
 await contextBar.locator('#writing-context-search').click();
 await page.waitForTimeout(750);
@@ -75,8 +71,35 @@ assert.ok(Math.abs(thumbnailGeometry.aspect-1000/420)<0.07,'thumbnail frame matc
 await wideThumbnail.screenshot({path:path.join(output,'journal-wide-banner-uncropped.png')});
 
 
-assert.equal(await page.locator('#studio-theme-toggle').count(),1,'one theme toggle');
+assert.equal(await page.locator('#studio-theme-toggle').count(),0,'theme toggle removed entirely');
+assert.equal(await page.evaluate(()=>document.documentElement.dataset.theme),'light','homepage uses one editorial theme');
 assert.equal(await page.locator('#back-to-top').count(),1,'one back-to-top button');
+
+function rgbFrom(style) {
+ const m=style.match(/[\d.]+/g);
+ return m?m.slice(0,3).map(Number):null;
+}
+function contrastRatio(fg,bg) {
+ const linear=colors=>colors.map(x=>{const c=x/255;return c<=.04045?c/12.92:((c+.055)/1.055)**2.4;});
+ const luminosity=x=>{const v=linear(x);return v[0]*.2126+v[1]*.7152+v[2]*.0722;};
+ const [a,b]=[luminosity(fg),luminosity(bg)].sort((x,y)=>y-x);
+ return (a+.05)/(b+.05);
+}
+async function assertHoverContrast(selector,label){
+ const element=page.locator(selector).first();
+ await element.scrollIntoViewIfNeeded();
+ await element.hover();
+ await page.waitForTimeout(200);
+ const colors=await element.evaluate(el=>({fg:getComputedStyle(el).color,bg:getComputedStyle(el).backgroundColor}));
+ const fg=rgbFrom(colors.fg),bg=rgbFrom(colors.bg);
+ assert.ok(fg&&bg, label+' has solid hover foreground and background colors');
+ assert.ok(contrastRatio(fg,bg)>=4.5,label+' hover contrast is at least WCAG AA for normal text: '+JSON.stringify(colors));
+}
+await assertHoverContrast('#journal-more','Show More Stories');
+await assertHoverContrast('#work .project-action','Aruvix project button');
+await assertHoverContrast('.site-header .header-cta','Header contact button');
+await assertHoverContrast('#work .filter-tab.active','Selected Work active filter');
+
 assert.ok(await page.locator('.hero h1').isVisible(),'hero heading shown');
 const board=page.locator('.hero-switchboard');
 assert.ok(await board.isVisible(),'interactive systems artwork visible');
@@ -296,15 +319,17 @@ await page.locator('#journal-grid .journal-card').first().waitFor({timeout:20000
 await page.evaluate(() => scrollTo({top:0,behavior:'instant'}));
 
 await page.screenshot({path:path.join(output,'desktop-light.png'),fullPage:true});
-await page.locator('#studio-theme-toggle').click();
-assert.equal(await page.evaluate(()=>document.documentElement.dataset.theme),'dark','theme toggle works');
-assert.ok(await page.locator('#skills .skills-group').first().isVisible(),'skills remain readable in dark mode');
-assert.equal(await page.locator('#skills .skills-group h3').first().evaluate(el=>getComputedStyle(el).color),'rgb(243, 246, 236)','skills titles have contrast in dark mode');
-await page.locator('#skills').screenshot({path:path.join(output,'skills-desktop-dark.png')});
+await page.evaluate(()=>localStorage.setItem('portfolio-theme','dark'));
+await page.reload({waitUntil:'domcontentloaded'});
+assert.equal(await page.evaluate(()=>document.documentElement.dataset.theme),'light','old saved dark preference cannot override the fixed palette');
+assert.equal(await page.locator('#studio-theme-toggle').count(),0,'toggle remains removed after reload');
 
-await page.screenshot({path:path.join(output,'desktop-dark.png'),fullPage:true});
+assert.ok(await page.locator('#skills .skills-group').first().isVisible(),'skills remain readable in the editorial palette');
+await page.locator('#skills').screenshot({path:path.join(output,'skills-desktop-editorial.png')});
+
+await page.screenshot({path:path.join(output,'desktop-editorial.png'),fullPage:true});
 await page.goto(base+'/aruvix',{waitUntil:'domcontentloaded'});
-assert.equal(await page.evaluate(()=>document.documentElement.dataset.theme),'dark','theme persists to Aruvix');
+assert.equal(await page.evaluate(()=>document.documentElement.dataset.theme),'light','Aruvix uses the same single theme');
 assert.ok(await page.locator('#case-study').isVisible(),'Aruvix content visible');
 assert.equal(await page.locator('.aru-hero h1').count(),1,'one clear Aruvix case study headline');
 assert.equal(await page.locator('.aru-tool').count(),6,'current six tool families documented');
@@ -317,17 +342,17 @@ assert.ok((await page.locator('#evolution').innerText()).includes('macOS and Win
 const aruDesktop=await page.evaluate(()=>({width:document.documentElement.scrollWidth,viewport:innerWidth,columns:getComputedStyle(document.querySelector('.aru-tools-grid')).gridTemplateColumns.trim().split(/\s+/).length}));
 assert.ok(aruDesktop.width<=aruDesktop.viewport+2,'Aruvix has no desktop horizontal overflow');
 assert.equal(aruDesktop.columns,3,'desktop Aruvix tools grid uses three columns');
-await page.screenshot({path:path.join(output,'aruvix-case-desktop-dark.png'),fullPage:true});
+await page.screenshot({path:path.join(output,'aruvix-case-desktop-editorial.png'),fullPage:true});
 
 assert.equal(await page.locator('#case-study .aru-hero h1').evaluate(el=>getComputedStyle(el).opacity),'1','Aruvix headline is visible without scroll reveal');
-await page.screenshot({path:path.join(output,'aruvix-dark.png'),fullPage:true});
+await page.screenshot({path:path.join(output,'aruvix-editorial.png'),fullPage:true});
 await page.setViewportSize({width:390,height:844});
 await page.goto(base+'/aruvix',{waitUntil:'domcontentloaded'});
 assert.ok((await page.evaluate(()=>document.documentElement.scrollWidth))<=392,'Aruvix case study fits mobile');
 assert.equal(await page.locator('.aru-tool').count(),6,'Aruvix mobile shows all tool groups');
 assert.equal(await page.locator('.aru-tools-grid').evaluate(el=>getComputedStyle(el).gridTemplateColumns.trim().split(/\s+/).length),1,'Aruvix tool cards stack cleanly on mobile');
-assert.equal(await page.evaluate(()=>document.documentElement.dataset.theme),'dark','Aruvix mobile persists dark theme');
-await page.locator('.aru-hero').screenshot({path:path.join(output,'aruvix-case-mobile-dark.png')});
+assert.equal(await page.evaluate(()=>document.documentElement.dataset.theme),'light','Aruvix mobile uses the same single theme');
+await page.locator('.aru-hero').screenshot({path:path.join(output,'aruvix-case-mobile-editorial.png')});
 await page.setViewportSize({width:1440,height:900});
 await page.goto(base+'/aruvix',{waitUntil:'domcontentloaded'});
 
@@ -369,9 +394,9 @@ assert.equal(await page.locator('#work .oss-package').count(),3,'all published p
 
 
 assert.ok(mobileTicket.barcode.includes('repeating-linear-gradient'),'mobile barcode is visible');
-await page.locator('#work').screenshot({path:path.join(output,'selected-work-mobile-dark.png')});
+await page.locator('#work').screenshot({path:path.join(output,'selected-work-mobile-editorial.png')});
 
-await page.screenshot({path:path.join(output,'mobile-dark.png'),fullPage:true});
+await page.screenshot({path:path.join(output,'mobile-editorial.png'),fullPage:true});
 const pageSource=fs.readFileSync(path.join(__dirname,'..','public','index.html'),'utf8');
 // Mirror app.js renderBlogPage(), which injects the legacy article reader CSS
 // exclusively for server-rendered /blog/:slug pages.
@@ -387,7 +412,7 @@ await page.route('**/blog/fixture',route=>route.fulfill({status:200,contentType:
 await page.route('**/api/blogs/fixture*',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({...sample[0],bodyHtml:'<p>Engineering is about thoughtful decisions in complex systems.</p>',bodyMarkdown:''})}));
 await page.goto(base+'/blog/fixture',{waitUntil:'domcontentloaded'});
 await page.locator('#blog-detail-title').waitFor({state:'visible',timeout:20000});
-assert.equal(await page.evaluate(()=>document.documentElement.dataset.theme),'dark','theme persists to article');
+assert.equal(await page.evaluate(()=>document.documentElement.dataset.theme),'light','article uses the same single theme');
 assert.ok(await page.locator('#blog-detail-body').isVisible(),'article body is visible');
 await page.waitForTimeout(250);
 assert.equal(await page.locator('#blog-detail-cover').isVisible(),false,'failed full-article cover hides without a broken image');
@@ -407,7 +432,7 @@ const articleOverflow=await page.evaluate(()=>({
 }));
 if(articleOverflow.width>articleOverflow.viewport+2)console.error('Article overflowing elements:',JSON.stringify(articleOverflow));
 assert.ok(articleOverflow.width<=articleOverflow.viewport+2,'article mobile layout does not overflow');
-await page.screenshot({path:path.join(output,'article-mobile-dark.png'),fullPage:true});
+await page.screenshot({path:path.join(output,'article-mobile-editorial.png'),fullPage:true});
 const wideArticleHtml=articleHtml.replace('src="https://media.invalid/article-cover.webp"','src="https://fixture-images.test/wide-banner.svg"');
 await page.route('**/blog/wide-banner-fixture',route=>route.fulfill({status:200,contentType:'text/html',body:wideArticleHtml}));
 await page.goto(base+'/blog/wide-banner-fixture',{waitUntil:'domcontentloaded'});
@@ -438,5 +463,5 @@ assert.equal(await page.locator('.blog-media-unavailable').count(),1,'unavailabl
 assert.ok(await page.locator('.blog-cover-fallback').isVisible(),'slow article broken cover shows fallback');
 assert.deepEqual(errors,[],'no browser JavaScript errors');
 await browser.close();
-console.log('Browser regression checks passed on desktop, mobile, theme persistence, Aruvix, article reader and resume downloads.');
+console.log('Browser regression checks passed on desktop, mobile, single editorial theme, Aruvix, article reader and resume downloads.');
 })().catch(err=>{console.error(err);process.exit(1);});

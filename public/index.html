@@ -7,24 +7,10 @@
   <meta name="theme-color" content="#11161d" />
   <meta name="color-scheme" content="only light" />
   <script>
-    (function () {
-      var lightThemeColor = "#11161d";
-      var darkThemeColor = "#11161d";
-      var saved = null;
-      try {
-        saved = localStorage.getItem("portfolio-theme");
-      } catch (e) { }
-      var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-      var theme = saved || (prefersDark ? "dark" : "light");
-      var scheme = theme === "dark" ? "dark" : "only light";
-      document.documentElement.dataset.theme = theme;
-      document.documentElement.style.colorScheme = scheme;
-      document.querySelector('meta[name="color-scheme"]')?.setAttribute("content", scheme);
-      document.querySelector('meta[name="theme-color"]')?.setAttribute("content", theme === "dark" ? darkThemeColor : lightThemeColor);
-      if (/^\/blog\/[^/]+\/?$/.test(window.location.pathname)) {
-        document.documentElement.classList.add("is-blog-route", "is-blog-loading");
-      }
-    })();
+    // Preserve article-route layout on first paint without theme persistence.
+    if (/^\/blog\/[^/]+\/?$/.test(location.pathname)) {
+      document.documentElement.classList.add("is-blog-route", "is-blog-loading");
+    }
   </script>
   <title>Amrish Khan — Technology Lead, Systems Architect & Builder</title>
   <meta name="description" content="Amrish Khan is a Dubai-based Technology Lead and Systems Architect with 10+ years building resilient APIs, airline platforms, payments and privacy-first developer tools. Creator of Aruvix." />
@@ -92,7 +78,7 @@
   <!-- Legacy page styles are injected server-side for /blog/:slug only. -->
   <script>if (/^\/blog\//.test(location.pathname)) {var icons=document.createElement('link'); icons.rel='stylesheet'; icons.href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css'; document.head.appendChild(icons)}</script>
   <link rel="stylesheet" href="/site-redesign.css?v=5" />
-  <link rel="stylesheet" href="/site-polish.css?v=8" />
+  <link rel="stylesheet" href="/site-polish.css?v=9" />
   <link rel="stylesheet" href="/article-experience.css?v=2" />
   <link rel="stylesheet" href="/studio-skills.css?v=1" />
   <link rel="stylesheet" href="/writing-context.css?v=1" />
@@ -110,10 +96,6 @@
         <a href="#work">Work</a><a href="#skills">Skills</a><a href="#experience">Experience</a><a href="#writing">Writing</a><a href="#contact" class="nav-contact-mobile">Contact ↗</a>
       </nav>
       <div class="nav-actions-studio">
-        <button id="studio-theme-toggle" class="studio-theme-toggle" type="button" aria-label="Switch color theme" aria-pressed="false" title="Toggle light and dark mode">
-          <svg class="moon-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.3A8.5 8.5 0 0 1 9.7 3.5 8.5 8.5 0 1 0 20.5 14.3Z"/></svg>
-          <svg class="sun-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg>
-        </button>
         <a class="studio-resume-link" href="/resume/pdf/Amrishkhan-Sheik-Abdullah-Resume.pdf" download aria-label="Download resume PDF">Résumé <span aria-hidden="true">↧</span></a>
         <a class="header-cta" href="#contact">LET'S CONNECT <span aria-hidden="true">↗</span></a>
         <button class="menu-toggle" id="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" aria-label="Open navigation"><span></span><span></span></button>
@@ -394,7 +376,7 @@
       </div>
     </div>
   </div>
-  <script defer src="/site-redesign.js?v=5"></script><script defer src="/site-polish.js?v=4"></script><script>if (/^\/blog\//.test(location.pathname)) {const s=document.createElement("script");s.src="/script.js?v=4";s.defer=true;document.body.appendChild(s);}</script>
+  <script defer src="/site-redesign.js?v=5"></script><script defer src="/site-polish.js?v=5"></script><script>if (/^\/blog\//.test(location.pathname)) {const s=document.createElement("script");s.src="/script.js?v=4";s.defer=true;document.body.appendChild(s);}</script>
 </body>
 
 </html>
