@@ -24,6 +24,9 @@ assert.ok(await page.locator('.hero h1').isVisible(),'hero heading shown');
 assert.ok((await page.locator('a[href$=".pdf"]').count())>0,'resume PDF available');
 assert.ok((await page.locator('a[href$=".docx"]').count())>0,'resume DOCX available');
 assert.ok((await page.evaluate(()=>document.documentElement.scrollWidth))<=1442,'no desktop horizontal overflow');
+assert.equal(await page.locator('#approach-title').evaluate(el=>getComputedStyle(el).animationName),'none','desktop intro is not trapped in a paused animation');
+assert.equal(await page.locator('#work-title').evaluate(el=>getComputedStyle(el).animationName),'none','work headline is visible');
+assert.equal(await page.locator('#hero-heading').evaluate(el=>getComputedStyle(el).color),'rgb(246, 244, 238)','light-mode hero heading contrasts with dark hero');
 await page.screenshot({path:path.join(output,'desktop-light.png'),fullPage:true});
 await page.locator('#studio-theme-toggle').click();
 assert.equal(await page.evaluate(()=>document.documentElement.dataset.theme),'dark','theme toggle works');
@@ -31,6 +34,7 @@ await page.screenshot({path:path.join(output,'desktop-dark.png'),fullPage:true})
 await page.goto(base+'/aruvix',{waitUntil:'domcontentloaded'});
 assert.equal(await page.evaluate(()=>document.documentElement.dataset.theme),'dark','theme persists to Aruvix');
 assert.ok(await page.locator('#case-study').isVisible(),'Aruvix content visible');
+assert.equal(await page.locator('#case-study .reveal').first().evaluate(el=>getComputedStyle(el).animationName),'none','Aruvix content not trapped in animation');
 await page.screenshot({path:path.join(output,'aruvix-dark.png'),fullPage:true});
 const pdf=await page.request.get(base+'/resume/pdf/Amrishkhan-Sheik-Abdullah-Resume.pdf');
 const doc=await page.request.get(base+'/resume/doc/Amrishkhan-Sheik-Abdullah-Resume.docx');
