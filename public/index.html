@@ -80,7 +80,7 @@
   <script>if (/^\/blog\//.test(location.pathname)) {var icons=document.createElement('link'); icons.rel='stylesheet'; icons.href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css'; document.head.appendChild(icons)}</script>
   <link rel="stylesheet" href="/site-redesign.css?v=5" />
   <link rel="stylesheet" href="/site-polish.css?v=10" />
-  <link rel="stylesheet" href="/article-experience.css?v=4" />
+  <link rel="stylesheet" href="/article-experience.css?v=5" />
   <link rel="stylesheet" href="/studio-skills.css?v=3" />
   <link rel="stylesheet" href="/writing-context.css?v=1" />
   <link rel="stylesheet" href="/hero-switchboard.css?v=1" />
@@ -389,16 +389,14 @@
           <span class="blog-sidebar-eyebrow"><span aria-hidden="true">/</span> READING GUIDE</span>
           <h2>On this page<span aria-hidden="true">↘</span></h2>
           <nav id="blog-toc-list" aria-label="Jump to article section"></nav>
-        </div>
-        <div class="blog-sidebar-panel share-panel">
-          <span class="blog-sidebar-eyebrow">PASS IT ON</span>
-          <h2>Worth sharing?</h2>
-          <p>Good ideas travel further together.</p>
-          <div class="blog-share-actions">
-            <button id="blog-share-btn" type="button" aria-label="Share article"><i class="fa-solid fa-share-nodes"
-                aria-hidden="true"></i><span>Share</span></button>
-            <button id="blog-copy-link-btn" type="button" aria-label="Copy article link"><i class="fa-solid fa-link"
-                aria-hidden="true"></i><span>Copy link</span></button>
+          <div class="blog-share-inline" role="group" aria-label="Share this article">
+            <span class="blog-share-caption">SHARE THIS STORY</span>
+            <div class="blog-share-actions">
+              <button id="blog-share-btn" type="button" aria-label="Share article"><i class="fa-solid fa-arrow-up-right-from-square"
+                  aria-hidden="true"></i><span>Share</span></button>
+              <button id="blog-copy-link-btn" type="button" aria-label="Copy article link"><i class="fa-regular fa-copy"
+                  aria-hidden="true"></i><span>Copy link</span></button>
+            </div>
           </div>
         </div>
       </aside>

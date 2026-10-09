@@ -888,7 +888,12 @@ const renderRelatedArticles = async (currentArticle) => {
     const { articles: blogs } = await fetchDevArticles();
     const currentTags = new Set((Array.isArray(currentArticle.tags) ? currentArticle.tags : []).map((tag) => String(tag).toLowerCase()));
     const related = blogs
-      .filter((blog) => blog.localSlug !== currentArticle.localSlug && blog.devSlug !== currentArticle.devSlug && blog.url !== currentArticle.url)
+      .filter((blog) => ![
+        ["id", blog.id, currentArticle.id],
+        ["localSlug", blog.localSlug, currentArticle.localSlug],
+        ["devSlug", blog.devSlug, currentArticle.devSlug],
+        ["url", blog.url, currentArticle.url],
+      ].some(([,left,right]) => left !== undefined && left !== null && right !== undefined && right !== null && String(left) === String(right)))
       .map((blog) => {
         const score = (Array.isArray(blog.tags) ? blog.tags : []).reduce((total, tag) => total + (currentTags.has(String(tag).toLowerCase()) ? 1 : 0), 0);
         return { ...blog, score };
@@ -1234,13 +1239,16 @@ const copyArticleLink = async () => {
     const success = await writeClipboardText(window.location.href);
     if (!success) throw new Error("Clipboard write failed");
 
-    const originalIcon = blogCopyLinkBtn.innerHTML;
-    blogCopyLinkBtn.innerHTML = '<i class="fa-solid fa-check"></i>';
+    const icon = blogCopyLinkBtn.querySelector("i");
+    const label = blogCopyLinkBtn.querySelector("span");
+    if (icon) icon.className = "fa-solid fa-check";
+    if (label) label.textContent = "Copied";
     blogCopyLinkBtn.classList.add("is-copied");
     blogCopyLinkBtn.setAttribute("aria-label", "Link copied");
 
     setTimeout(() => {
-      blogCopyLinkBtn.innerHTML = originalIcon;
+      if (icon) icon.className = "fa-regular fa-copy";
+      if (label) label.textContent = "Copy link";
       blogCopyLinkBtn.classList.remove("is-copied");
       blogCopyLinkBtn.setAttribute("aria-label", "Copy article link");
     }, 1500);

@@ -690,6 +690,15 @@ await page.goto(base+'/blog/sidebar-fixture',{waitUntil:'domcontentloaded'});
 await page.locator('.blog-toc-link').first().waitFor({state:'visible',timeout:10000});
 assert.equal(await page.locator('.blog-toc-link').count(),2,'two section links populate the reader guide');
 assert.ok(await page.locator('.blog-reading-guide h2').isVisible(),'reading guide heading is displayed');
+assert.equal(await page.locator('.share-panel').count(),0,'oversized sidebar share card is removed');
+assert.equal(await page.locator('.blog-reading-guide .blog-share-inline').count(),1,'share actions are integrated with contents');
+assert.ok(await page.locator('#blog-copy-link-btn').isVisible(),'copy link is visible without another box');
+const shareGeometry=await page.locator('.blog-share-inline').evaluate(el=>{
+ const buttons=[...el.querySelectorAll('button')].map(x=>x.getBoundingClientRect());
+ return {height:el.getBoundingClientRect().height,intersects:buttons[0].right>buttons[1].left&&buttons[0].top<buttons[1].bottom&&buttons[1].top<buttons[0].bottom};
+});
+assert.ok(shareGeometry.height<120&&!shareGeometry.intersects,'inline sharing is compact and controls do not overlap');
+
 await page.locator('#blog-tool-list .blog-tool-link').first().waitFor({state:'visible',timeout:10000});
 assert.ok(await page.locator('#blog-tool-list .blog-tool-link').count()>=2,'relevant tools are recommended');
 assert.ok((await page.locator('#blog-tool-list .blog-tool-link').first().getAttribute('href')).startsWith('https://www.aruvix.com/'),'tool cards lead to working Aruvix tool routes');
