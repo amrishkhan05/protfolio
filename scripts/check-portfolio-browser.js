@@ -373,6 +373,7 @@ assert.equal(await page.locator('.project-aruvix').evaluate(el=>getComputedStyle
 assert.equal(await page.locator('.project-aruvix h3').evaluate(el=>getComputedStyle(el).color),'rgb(17, 22, 29)','flagship heading contrasts against lime');
 
 assert.equal((await page.locator('.project-aruvix h3').innerText()).trim(),'Aruvix','product name has no decorative asterisk');
+assert.equal((await page.locator('.hero-stats > div:nth-child(2) strong').innerText()).trim(),'750+','homepage shows 750+ Aruvix users');
 assert.equal(await page.locator('.project-star').count(),0,'no misleading star symbol beside Aruvix');
 const boarding = await page.locator('#work .project-airline').evaluate(card=>{
  const ticket=card.querySelector('.boarding-pass');
@@ -579,6 +580,7 @@ assert.equal(await page.locator('.site-header .brand-mark svg').count(),1,'Aruvi
 assert.ok(await page.locator('.site-header .brand-name').isVisible(),'Aruvix uses the same brand wordmark');
 
 assert.equal(await page.locator('.aru-hero h1').count(),1,'one clear Aruvix case study headline');
+assert.ok((await page.locator('.aru-hero-note').innerText()).includes('750+ users'),'Aruvix case study reflects updated usage');
 assert.equal(await page.locator('.aru-tool').count(),6,'current six tool families documented');
 assert.equal(await page.locator('link[href^="/styles.css"]').count(),0,'new Aruvix page does not load legacy stylesheet');
 assert.ok(await page.locator('#decisions').isVisible(),'engineering decisions are visible');
